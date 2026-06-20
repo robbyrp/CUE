@@ -2,7 +2,7 @@ spring:
   application:
     name: cue
   datasource:
-    url: jdbc:postgresql://localhost:5432/cue
+    url: jdbc:postgresql://localhost:5432/cue_db
     username: admin
     password: password
     driver-class-name: org.postgresql.Driver
