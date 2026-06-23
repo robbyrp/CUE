@@ -60,3 +60,14 @@ Thumbs.db
 
 # --- Documentație ---
 HELP.md
+CLAUDE.md
+CLAUDE.local.md
+**/CLAUDE.md
+.claude/
+.cursor/
+.cursorrules
+.windsurfrules
+.aider*
+.github/copilot-instructions.md
+AGENTS.md
+**/AGENTS.md
