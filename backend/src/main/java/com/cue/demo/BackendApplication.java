@@ -47,6 +47,8 @@ public class BackendApplication {
 					logger.info(user.toString()));
 			logger.info("-------------------------");
 
+			userRepository.deleteAll();
+
 		};
 
 	}

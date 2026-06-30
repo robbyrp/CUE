@@ -1,50 +1,49 @@
 package com.cue.demo.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.cue.demo.enums.UserRole;
+import jakarta.persistence.*;
 import lombok.Getter;
+
+import java.util.Set;
 
 @Entity
 @Table(name="users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Getter
+    @GeneratedValue(strategy = GenerationType.SEQUENCE) @Getter
     private Long id;
-    @Getter
+
+    private UserRole role;
     private String username;
+    @Column(name="phone_number")
     private String phoneNumber;
+    @Column(name="profile_picture_url")
     private String profilePictureUrl;
 
     private String bio;
+    @Column(name="first_name")
     private String firstName;
+    @Column(name="last_name")
     private String lastName;
     private String email;
     private String city;
 
+    @OneToMany(mappedBy="user")
+    private Set<Review> reviews;
+
     protected User() {}
 
+    /**
+     * Automatically sets the role member to user
+     * @param username
+     * @param firstName
+     * @param lastName
+     */
     public User (String username, String firstName, String lastName) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
-    }
-
-    public User(Long id, String username, String phoneNumber,
-                String profilePictureUrl, String bio, String firstName,
-                String lastName, String email, String city) {
-        this.id = id;
-        this.username = username;
-        this.phoneNumber = phoneNumber;
-        this.profilePictureUrl = profilePictureUrl;
-        this.bio = bio;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.city = city;
+        this.role = UserRole.USER;
     }
 
     @Override
