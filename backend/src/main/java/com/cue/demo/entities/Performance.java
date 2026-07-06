@@ -1,10 +1,15 @@
 package com.cue.demo.entities;
 
+import com.cue.demo.dtos.PerformancePortalDTO;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
@@ -12,8 +17,18 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 @Builder @AllArgsConstructor
-@Entity @Table(name="spectacol")
+@Entity
+@Table(name="spectacol", indexes={
+        @Index(name="idx_title", columnList="title, average_rating DESC"),
+        @Index(name="idx_director", columnList="director, average_rating DESC"),
+        @Index(name="location", columnList="location, average_rating DESC"),
+        @Index(name="views", columnList="views_count DESC, average_rating DESC")
+})
+@SQLDelete(sql="UPDATE spectacol SET deleted = true WHERE id=?")
+@SQLRestriction("deleted=false")
+@Getter
 public class Performance {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -63,7 +78,34 @@ public class Performance {
     @Column(name="created_at", updatable = false)
     private LocalDateTime createdDateTime;
 
+    @Builder.Default
+    @Column(name="deleted")
+    private boolean deleted = false;
+
     protected Performance() {}
+
+    /**
+     * Method that maps from a DTO to a Performance Entity.
+     * Used to "update" performances in the database.
+     * IMPORTANT: Does not inherit the reviews from the DTO.
+     * createdAt, viewsCount, averageRating and deleted are omitted as well,
+     * as they are not present in the DTO.
+     * @param dto The DTO from which it updates.
+     */
+    public void mapFromDTO(final PerformancePortalDTO dto) {
+        this.title = dto.title();
+        this.director = dto.director();
+        this.location = dto.location();
+        this.theaterName = dto.theaterName();
+        this.startDateTime = dto.startDateTime();
+        this.coverImageURL = dto.coverImageURL();
+        this.ageLimit = dto.ageLimit();
+        this.duration = dto.duration();
+        this.fullCoverImageURL = dto.fullCoverImageURL();
+        this.purchaseTicketLink = dto.purchaseTicketLink();
+        this.description = dto.description();
+        this.creditList = dto.credits();
+    }
 
 
 }

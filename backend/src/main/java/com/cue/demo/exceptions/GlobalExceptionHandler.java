@@ -13,4 +13,9 @@ public class GlobalExceptionHandler {
             final PerformanceAlreadyExistsException e) {
         return  new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(PerformanceNotFoundByIdException.class)
+    public ResponseEntity<String> handlePerformanceNotFoundByIdException(final PerformanceNotFoundByIdException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
 }

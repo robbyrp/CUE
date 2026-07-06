@@ -1,9 +1,8 @@
 package com.cue.demo.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -16,6 +15,7 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name="user_id")
+    @JsonIgnore
     private User user;
 
     @CreationTimestamp
@@ -35,6 +35,7 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name="performance_id")
+    @JsonIgnore
     private Performance performance;
 
     @Override
