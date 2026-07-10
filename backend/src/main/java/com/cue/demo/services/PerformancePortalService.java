@@ -1,14 +1,18 @@
 package com.cue.demo.services;
 
+import com.cue.demo.dtos.PerformanceCardDTO;
 import com.cue.demo.dtos.PerformancePortalDTO;
 import com.cue.demo.entities.Performance;
 import com.cue.demo.exceptions.PerformanceAlreadyExistsException;
 import com.cue.demo.exceptions.PerformanceNotFoundByIdException;
+import com.cue.demo.interfaces.SearchSuggestion;
 import com.cue.demo.repositories.PerformanceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -76,7 +80,7 @@ public class PerformancePortalService {
      * if there are no performances in the database.
      */
     public Page<PerformancePortalDTO> getPerformances(Pageable pageable) {
-        Page<Performance> performancePage = performanceRepository.findByDeletedFalse(pageable);
+        Page<Performance> performancePage = performanceRepository.findAll(pageable);
         return performancePage.map(this::mapToPerformancePortalDTO);
     }
 
@@ -108,6 +112,54 @@ public class PerformancePortalService {
         performance.mapFromDTO(performancePortalDTO);
         performanceRepository.save(performance);
         return mapToPerformancePortalDTO(performance);
+    }
+
+    /**
+     *
+     * @param title String the user has typed until the method was called
+     * @return Returns the first 6 pairs of (title-id) title suggestions by relevance.
+     */
+    public List<SearchSuggestion> getSearchTitleSuggestions(String title) {
+        if (title == null || title.trim().isEmpty()) {
+            return List.of();
+        }
+
+        return performanceRepository.findTop6ByTitleContainingIgnoreCase(title);
+    }
+
+    /**
+     * Performs a global search across multiple textual fields (title, director, location) using
+     * a single keyword. The search is case-insensitive and matches partial strings.
+     * <p>
+     * <b>Performance Note:</b> Although this JPQL query references Java entity fields,
+     * the underlying PostgreSQL engine will automatically map them to the database columns
+     * and utilize the defined B-Tree indexes (e.g., 'idx_title', 'idx_director', 'location')
+     * to highly optimize the execution plan whenever possible.
+     * </p>
+     *
+     * @param keyword  The text fragment to search for across the fields.
+     * @param pageable The pagination and sorting information (page number, size, sort criteria).
+     * @return A paginated list of {@link Performance} entities matching the given keyword.
+     */
+    public Page<PerformanceCardDTO> getSearchResults(Pageable pageable, String keyword) {
+        return performanceRepository.searchProducts(keyword, pageable).map(this::mapToPerformanceCardDTO);
+    }
+
+    /**
+     * Helper method.
+     * Maps the Performance Entity to a PerformanceCardDTO object.
+     * @param p The performance to be mapped.
+     * @return Returns the newly mapped DTO object.
+     */
+    private PerformanceCardDTO mapToPerformanceCardDTO(final Performance p) {
+        return PerformanceCardDTO.builder()
+                .id(p.getId())
+                .title(p.getTitle())
+                .director(p.getDirector())
+                .coverImageUrl(p.getCoverImageURL())
+                .ageLimit(p.getAgeLimit())
+                .duration(p.getDuration())
+                .build();
     }
 
     /**
