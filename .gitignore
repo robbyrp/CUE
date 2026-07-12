@@ -9,6 +9,7 @@ target/
 *.zip
 *.tar.gz
 *.rar
+*.txt
 
 # Maven Wrapper
 .mvn/wrapper/maven-wrapper.jar
