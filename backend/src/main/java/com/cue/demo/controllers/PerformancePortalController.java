@@ -21,7 +21,7 @@ public class PerformancePortalController {
         this.service = service;
     }
 
-    @PostMapping("/create")
+    @PostMapping("/spectacole")
     public ResponseEntity<Void> createPerformance(
             @RequestBody @Valid final PerformancePortalDTO dto) {
         service.createPerformance(dto);

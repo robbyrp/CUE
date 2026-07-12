@@ -25,7 +25,7 @@ public class Review {
     private Integer stars;
     private Integer hearts;
 
-    private Integer text;
+    private String text;
 
     @Column(name="is_spoiler")
     private boolean isSpoiler;

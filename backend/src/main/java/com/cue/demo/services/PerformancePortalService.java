@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -99,13 +100,18 @@ public class PerformancePortalService {
 
     /**
      * Handles the PUT Request meant to update an existing Performance Entity.
-     * @param id Performance identified by id.
+     * @param id Id of performance, specified in URL.
      * @param performancePortalDTO DTO containing the old fields and the fields to be updated.
      * @return Returns the newly updated Entity, mapped as a DTO.
      * @throws PerformanceNotFoundByIdException Throws it if the performance with the given ID does not exist in the database.
      */
     public PerformancePortalDTO updatePerformanceById(
             final Long id, final PerformancePortalDTO performancePortalDTO) throws PerformanceNotFoundByIdException {
+
+        if (!Objects.equals(id, performancePortalDTO.id())) {
+            throw new PerformanceNotFoundByIdException("ID FROM URL " + id + " IS IN CONFLICT WITH" +
+                    " ID FROM REQUEST BODY: " + performancePortalDTO.id());
+        }
         Performance performance = performanceRepository.findById(id)
                 .orElseThrow(() -> new PerformanceNotFoundByIdException("Could not find performance with id: " + id));
 
