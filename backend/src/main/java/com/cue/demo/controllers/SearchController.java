@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/search")
+@CrossOrigin(origins = "http://localhost:5174")
 public class SearchController {
     private final PerformancePortalService service;
 
