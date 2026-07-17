@@ -1,0 +1,36 @@
+@use '../abstracts' as *;
+@font-face {
+    font-family: "Estedad-VF";
+    src: url("https://db.onlinewebfonts.com/t/216cb37ce05c1b4c17809758d0e6f48e.eot");
+    src: url("https://db.onlinewebfonts.com/t/216cb37ce05c1b4c17809758d0e6f48e.eot?#iefix")format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/216cb37ce05c1b4c17809758d0e6f48e.woff2")format("woff2"),
+    url("https://db.onlinewebfonts.com/t/216cb37ce05c1b4c17809758d0e6f48e.woff")format("woff"),
+    url("https://db.onlinewebfonts.com/t/216cb37ce05c1b4c17809758d0e6f48e.ttf")format("truetype"),
+    url("https://db.onlinewebfonts.com/t/216cb37ce05c1b4c17809758d0e6f48e.svg#Estedad VF")format("svg");
+}
+
+@font-face {
+  font-family: "Hunt";
+  src: url('../../common/assets/fonts/hunt.regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+
+
+html {
+  font-size: 14px;
+}
+
+body {
+  font-family: $font-primary;
+  font-size: $font-size-base;
+  font-weight: $font-weight-regular;
+  color: $color-text;
+  line-height: $line-height-base;
+}
+
+code {
+  font-family: $font-code;
+}

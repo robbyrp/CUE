@@ -1,0 +1,20 @@
+@use 'sass:math';
+@use 'sass:color';
+
+@function to-rem($px) {
+  @if math.is-unitless($px) {
+    $px: $px * 1px;
+  }
+
+  @return math.div($px, 16px) * 1rem;
+}
+
+/// Lighten a color by mixing with white
+@function tint($color, $percentage) {
+  @return color.mix(white, $color, $percentage);
+}
+
+/// Darken a color by mixing with black
+@function shade($color, $percentage) {
+  @return color.mix(black, $color, $percentage);
+}

@@ -1,0 +1,10 @@
+
+.ListContainer {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 20px;       //space between cards
+    padding: 20px;
+    padding-top: 10vh;
+    justify-content: center; 
+    flex: 1;
+}

@@ -1,0 +1,15 @@
+@use '../abstracts' as *;
+
+.section {
+  display: flex;
+  width: 100%;
+  min-height: calc(100vh - $navbar-height - $footer-padding);
+  padding: $space-5 0;
+}
+
+.section-full {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  padding: $space-5 0;
+}

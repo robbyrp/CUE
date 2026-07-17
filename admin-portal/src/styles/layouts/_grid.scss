@@ -1,0 +1,51 @@
+@use '../abstracts' as *;
+
+.container {
+  width: 100%;
+  max-width: $container-max-width;
+  margin: 0 auto;
+  padding: 0 $space-4;
+
+  @include respond-above('lg') {
+    padding: 0 $space-8;
+  }
+}
+
+.container-fluid {
+  width: 100%;
+  padding: 0 $space-4;
+}
+
+// Simple row/col using CSS flex
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 (-$space-2);
+}
+
+.col {
+  flex: 1 0 0;
+  padding: 0 $space-2;
+}
+
+// Common column widths
+@for $i from 1 through 12 {
+  .col-#{$i} {
+    flex: 0 0 calc(100% * #{$i} / 12);
+    max-width: calc(100% * #{$i} / 12);
+    padding: 0 $space-2;
+  }
+}
+
+// Responsive columns
+@each $bp-name, $bp-value in $breakpoints {
+  @media screen and (min-width: $bp-value) {
+    @for $i from 1 through 12 {
+      .col-#{$bp-name}-#{$i} {
+        flex: 0 0 calc(100% * #{$i} / 12);
+        max-width: calc(100% * #{$i} / 12);
+        padding: 0 $space-2;
+      }
+    }
+  }
+}

@@ -1,0 +1,159 @@
+@use '../../../styles/abstracts/' as *;
+@use '../../../styles/base/' as *;
+
+.header {
+    background-color: $replace-gray;
+    height: $navbar-height;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: $space-2 $space-4;
+    gap: $space-8;
+    align-items: center;
+
+    .logo {
+        justify-self: start;
+        height: 100%;
+        width: auto;
+
+        img {
+            height: 100%;
+            width: auto;
+        }
+    }
+
+    .navLinks {
+        display: flex;
+        justify-content: flex-end;
+        gap: $space-6;
+        align-items: center;
+        flex: 1;
+
+        .searchContainer {
+            display: flex;
+            flex-direction: column;
+            width: 15rem;
+            position: relative;
+        }
+
+        .searchInputRow {
+            display: flex;
+            align-items: center;
+            gap: $space-2;
+            height: 2.25rem;
+            padding: 0 $space-2;
+            background-color: $color-white;
+            border: 1px solid #4a4a4a;
+            border-radius: 2px 2px 0 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            border-bottom: none;
+        }
+
+        .searchIcon {
+            position: relative;
+            flex: 0 0 1rem;
+            width: 1rem;
+            height: 1rem;
+            border: 1.8px solid #222;
+            border-radius: 9999px;
+
+            &::after {
+                content: '';
+                position: absolute;
+                right: -0.15rem;
+                bottom: -0.1rem;
+                width: 0.45rem;
+                height: 1px;
+                background-color: #222;
+                transform: rotate(45deg);
+                transform-origin: center;
+            }
+        }
+
+        .searchInputRow input {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-family: $font-primary;
+            font-size: 0.9rem;
+            line-height: 1;
+            color: $color-primary;
+            background: transparent;
+            padding: 0;
+
+            &::placeholder {
+                color: #7a7a7a;
+                opacity: 1;
+            }
+        }
+
+        .searchDropdown {
+            position: absolute;
+            top: 100%;
+            z-index: 10;
+
+            width: 100%;
+            background-color: $color-white;
+            border: 1px solid #4a4a4a;
+            border-top: none;
+            border-radius: 0 0 2px 2px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .searchOption {
+            height: 1.85rem;
+            display: flex;
+            align-items: center;
+            padding: 0 $space-3;
+            border-bottom: 1px solid #a6a6a6;
+            font-family: $font-primary;
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            color: #7f7f7f;
+
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+
+        .route {
+            display: flex;
+            flex-direction: row;
+            gap: $space-2;
+            align-items: center;
+            white-space: nowrap;
+
+            .routeIcon {
+                display: flex;
+                flex-wrap: wrap;
+                width: 24px;
+                height: 24px;
+                justify-content: center;
+                align-content: center;
+
+
+                img {
+                    color: white;
+                    height: 24px;
+                    width: 24px;
+                }
+            }
+
+            .routeLabel {
+                display: flex;
+                flex-wrap: wrap;
+                color: white;
+                height: auto;
+                justify-content: center;
+                align-content: center;
+                line-height: 1;
+                margin-top: $space-1;
+
+                span {
+                    height: auto;
+                }
+            }
+        }
+    }
+}

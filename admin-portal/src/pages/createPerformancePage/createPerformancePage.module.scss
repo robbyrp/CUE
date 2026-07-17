@@ -1,0 +1,63 @@
+.PageContainer {
+    --brand-red: #7D262A;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh; // Ia 80% din înălțimea ecranului ca să fie centrat
+    padding: 2rem;
+}
+
+.FormContainer {
+    background-color: #FDF0D5;
+    border: 2px solid #000000;
+    border-radius: 10px;
+    box-shadow: -1px -18px 18.3px -10px #00000087;
+    
+    width: 100%;
+    max-width: 500px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    h1 {
+        color: var(--brand-red);
+        text-transform: uppercase;
+        text-align: center;
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+    }
+}
+
+.FormGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+        font-weight: 500;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        color: #000;
+    }
+
+    input {
+        padding: 0.8rem;
+        border: 1px solid #000;
+        border-radius: 5px;
+        font-size: 1rem;
+        background-color: white;
+        color:#000;
+        outline: none;
+
+        &:focus {
+            border-color: var(--brand-red);
+            box-shadow: 0 0 0 2px rgba(125, 38, 42, 0.2);
+        }
+        
+        .button {
+            color: var(--brand-red);
+        }
+    }
+}

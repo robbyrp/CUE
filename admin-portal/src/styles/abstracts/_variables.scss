@@ -1,0 +1,120 @@
+// ----- Base Colors -----
+$light-blue: #669BBC;
+$light-yellow: #FDF0D5;
+$onyx-black: #131313;
+$stormy-teal: #0F5E67;
+$electric-pink: #EE21AF;
+$black: #000000;
+$replace-gray:#939393;
+$bright-red: #C1111F;
+$dark-red: #7D262A;
+$dark-blue: #003049;
+
+$color-footer-background: $light-blue;
+$color-header-background: $light-blue;
+$color-primary: #1a1b2b;
+$color-primary-light: #3c3837;
+$color-accent: #EE21AF;
+$color-white: #ffffff;
+$color-user-surface: #0F5E67;
+$color-chat-surface: #18191A;
+$color-universal-background: #171B21;
+$color-sidebar-background: #131313;
+$color-text: #ffffff;
+$color-text-light: #d7cccc;
+$color-border: #EEEEEE;
+$color-rewiew-card-border:#8B3A3E;
+$color-review-card-hover-text:#808080;
+$color-report-review:#3B647F;
+$color-report-review-line: #E0F3FF6B;
+// ----- Typography -----
+$font-primary: 'Josefin Sans', sans-serif;
+$font-code: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+
+$font-weight-light: 300;
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+
+// Type scale (rem-based, responsive via html font-size in _typography.scss)
+$font-size-xs: 0.6rem;
+$font-size-sm: 0.8rem;
+$font-size-base: 1rem;
+$font-size-md: 1.2rem;
+$font-size-lg: 1.4rem;
+$font-size-xl: 1.7rem;
+$font-size-2xl: 2rem;
+$font-size-3xl: 2.5rem;
+
+$line-height-tight: 1.2;
+$line-height-base: 1.5;
+$line-height-loose: 1.8;
+
+// ----- Spacing (consistent 4px grid) -----
+$space-0: 0;
+$space-1: 0.25rem; // 4px
+$space-2: 0.5rem; // 8px
+$space-3: 0.75rem; // 12px
+$space-4: 1rem; // 16px
+$space-5: 1.25rem; // 20px
+$space-6: 1.5rem; // 24px
+$space-8: 2rem; // 32px
+$space-10: 2.5rem; // 40px
+$space-12: 3rem; // 48px
+$space-14: 3.5rem; // 56px
+$space-16: 4rem; // 64px
+$space-20: 5rem; // 80px
+
+// ----- Breakpoints -----
+$breakpoint-ms: 320px;
+$breakpoint-mm: 375px;
+$breakpoint-ml: 425px;
+$breakpoint-tablet: 768px;
+$breakpoint-laptop: 1024px;
+$breakpoint-desktop: 1440px;
+$breakpoint-xl: 1920px;
+$breakpoint-2xl: 2560px;
+
+// Breakpoint map for mixin iteration
+$breakpoints: (
+  'ms': $breakpoint-ms,
+  'mm': $breakpoint-mm,
+  'ml': $breakpoint-ml,
+  'tablet': $breakpoint-tablet,
+  'laptop': $breakpoint-laptop,
+  'desktop': $breakpoint-desktop,
+  'xl': $breakpoint-xl,
+  '2xl': $breakpoint-2xl
+);
+
+// ----- Border radius -----
+$radius-xs: 8px;
+$radius-sm: 12px;
+$radius-md: 17px;
+$radius-lg: 21px;
+$radius-xl: 26px;
+$radius-2xl: 32px;
+$radius-3xl: 40px;
+$radius-full: 9999px;
+
+// ----- Transitions -----
+$transition-fast: 150ms ease;
+$transition-base: 300ms ease;
+$transition-slow: 500ms ease;
+$transition-navbar: 1s ease;
+
+// ----- Layout -----
+$navbar-height: 6vh;
+$navbar-height-mobile: 6vh;
+$footer-height: 6vh;
+$hero-section-height-mobile: 28vh;
+$hero-section-height: 70vh;
+$dropdown-height: $hero-section-height;
+$dropdown-height-mobile: $hero-section-height-mobile;
+$container-max-width: 1400px;
+$footer-padding: 3rem;
+
+$mobile-content-max-width: $breakpoint-tablet;
+
+$desktop-content-max-width: $breakpoint-desktop;

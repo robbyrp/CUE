@@ -1,0 +1,83 @@
+@use '../../styles/abstracts/' as *;
+
+.CardContainer {
+    --brand-red: #7D262A;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    width: 85vw;
+    max-width: 400px;
+    aspect-ratio: 1.49;
+    margin: 0 auto;
+
+    background-color: white;
+
+    .ImageContainer {
+        width: 100%;
+        height: 150px;
+        flex-shrink: 0;
+        border-radius: $radius-lg;
+        background-color: #D9D9D9;
+
+        border: 2px solid var(--brand-red);
+        border-radius: 10px;
+        overflow: hidden;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    .ContentContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        flex: 1;
+
+        padding: 1rem;
+        gap: 1.2rem;
+
+        margin-left: -3px;
+        margin-right: -3px;
+        margin-top: -3px;
+
+        color: $black;
+        background-color: #FDF0D5;
+
+        border: 2px solid #000000;
+        border-radius: 10px;
+        box-shadow: -1px -18px 18.3px -10px #00000087;
+
+        .NameAndAgeRow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: $font-size-lg;
+            
+            .Title {
+                font-weight: 500;
+                text-transform: uppercase;
+            }
+        }
+
+        .DirectorAndTimeRow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: $font-size-md;
+
+            .Director {
+                font-weight: 400;
+                text-transform: uppercase;
+            }
+
+            .Time {
+                color: var(--brand-red);
+            }
+        }
+    }
+}

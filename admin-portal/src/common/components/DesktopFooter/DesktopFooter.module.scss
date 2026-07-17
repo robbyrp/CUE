@@ -1,0 +1,30 @@
+@use '../../../styles/abstracts/' as *;
+.footerContainer {
+    width: 100vw;
+    height: $footer-height;
+    background-color: $color-footer-background;
+    display: flex;
+    align-items: center;
+    padding: $space-8;
+}
+
+.footerLogos {
+    display: flex;
+    gap: $space-8;
+}
+
+.footerLeftLogo, .footerRightLogo {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: $transition-fast;
+
+    &:hover {
+        opacity: 0.7;
+    }
+    
+    img {
+        height: calc($footer-height * 0.5);
+        width: auto;
+    }
+}

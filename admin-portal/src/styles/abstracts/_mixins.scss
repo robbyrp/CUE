@@ -1,0 +1,179 @@
+@use 'sass:map';
+@use 'variables' as *;
+
+// ----- Responsive breakpoints -----
+@mixin respond-above($breakpoint) {
+  @if map.has-key($breakpoints, $breakpoint) {
+    @media screen and (min-width: map.get($breakpoints, $breakpoint)) {
+      @content;
+    }
+  } @else {
+    @media screen and (min-width: $breakpoint) {
+      @content;
+    }
+  }
+}
+
+@mixin respond-below($breakpoint) {
+  @if map.has-key($breakpoints, $breakpoint) {
+    @media screen and (max-width: calc(map.get($breakpoints, $breakpoint) - 1px)) {
+      @content;
+    }
+  } @else {
+    @media screen and (max-width: calc($breakpoint - 1px)) {
+      @content;
+    }
+  }
+}
+
+@mixin respond-between($lower, $upper) {
+  $lower-val: $lower;
+  $upper-val: $upper;
+
+  @if map.has-key($breakpoints, $lower) {
+    $lower-val: map.get($breakpoints, $lower);
+  }
+  @if map.has-key($breakpoints, $upper) {
+    $upper-val: map.get($breakpoints, $upper);
+  }
+
+  @media screen and (min-width: $lower-val) and (max-width: calc($upper-val - 1px)) {
+    @content;
+  }
+}
+
+// ----- Flexbox helpers -----
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-column-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin heading($size: $font-size-2xl, $weight: $font-weight-bold) {
+  font-family: $font-primary;
+  font-size: $size;
+  font-weight: $weight;
+  line-height: $line-height-tight;
+}
+
+@mixin body-text($size: $font-size-base, $weight: $font-weight-regular) {
+  font-family: $font-primary;
+  font-size: $size;
+  font-weight: $weight;
+  line-height: $line-height-base;
+}
+
+// ----- Visual effects -----
+@mixin glass-effect($opacity: 0.25) {
+  background: rgba(255, 255, 255, $opacity);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+@mixin card-surface {
+  background: $color-off-white;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-lg;
+}
+
+@mixin transparent-surface {
+  background: $color-overlay-gradient;
+  border-radius: $radius-xl;
+}
+
+// ----- Buttons -----
+@mixin button-primary {
+  background: $color-accent-yellow;
+  box-shadow: $shadow-md;
+  border-radius: $radius-lg;
+  color: $color-white;
+  padding: $space-2 $space-10;
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  border: none;
+  cursor: pointer;
+  transition: transform $transition-fast, box-shadow $transition-fast;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: $shadow-lg;
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: $shadow-sm;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+// ----- Animations -----
+@mixin smooth-transition($properties: all) {
+  transition: $properties $transition-base;
+}
+
+// ----- Truncation -----
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ----- Scrollbar -----
+@mixin custom-scrollbar($width: 6px, $track: transparent, $thumb: $color-text-light) {
+  &::-webkit-scrollbar {
+    width: $width;
+  }
+  &::-webkit-scrollbar-track {
+    background: $track;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $thumb;
+    border-radius: $radius-full;
+  }
+  scrollbar-width: thin;
+  scrollbar-color: $thumb $track;
+}
+
+// ----- Focus visible (accessibility) -----
+@mixin focus-ring($color: $color-accent) {
+  &:focus-visible {
+    outline: 2px solid $color;
+    outline-offset: 2px;
+  }
+}
+
+// ----- Visually hidden (for screen readers) -----
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

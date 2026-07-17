@@ -1,0 +1,86 @@
+@use '../../styles/abstracts/' as *;
+
+.PerformanceContainer {
+
+    .ImageContainer {
+        width: 100%;
+        aspect-ratio: 1.13;
+        // for height, used aspect ratio from figma
+        flex-shrink: 0;
+
+        background-color: #AAAAAA;
+
+        .TitleAndDirectorContainer {
+            display: flex;
+            flex-direction: row;
+            padding: 2rem;
+
+            color: #FFFFFF;
+            font-size: $font-size-lg;
+
+            .DirectorName {
+                font-weight: bold;
+                margin-right: 1rem;
+            }
+
+            .Title {
+                font-style: italic;
+            }
+        }
+    }
+
+    .AgeAndTimeHeader {
+        padding: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1.6rem;
+        font-size: $font-size-md;
+
+        color: #7D262A;
+        background-color: #FDF0D5;
+        padding: 1rem;
+
+        .AgeImage {
+            height: 24px;
+        }
+    }
+
+    .DescriptionAndCreditsContainer {
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        font-size: $font-size-md;
+        color: black;
+
+        .DescriptionContainer {
+            padding: 1rem;
+            white-space: pre-wrap;
+        }
+
+        .CreditsContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1.6rem;
+            padding: 1rem;
+            border-radius: 20px;
+            background-color: #FDF0D5;
+
+            .Credit {
+                display: flex;
+                flex-direction: row;
+                gap: 1rem;
+
+                .Role {
+                    min-width: 100px;
+                }
+
+                .Names {
+                    flex: 1;
+                }
+            }
+        }
+    }
+
+}
