@@ -2,7 +2,6 @@ package com.cue.demo.entities;
 
 import com.cue.demo.dtos.PerformancePortalDTO;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,8 +16,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 @Builder @AllArgsConstructor
-@Entity
-@Table(name="spectacol", indexes={
+@Entity @Table(name="spectacol", indexes={
         @Index(name="idx_title", columnList="title, average_rating DESC"),
         @Index(name="idx_director", columnList="director, average_rating DESC"),
         @Index(name="location", columnList="location, average_rating DESC"),
@@ -88,7 +86,7 @@ public class Performance {
      * Method that maps from a DTO to a Performance Entity.
      * Used to "update" performances in the database.
      * IMPORTANT: Does not inherit the reviews from the DTO.
-     * createdAt, viewsCount, averageRating and deleted are omitted as well,
+     * createdAt, viewsCount, averageRating, and deleted are omitted as well,
      * as they are not present in the DTO.
      * @param dto The DTO from which it updates.
      */

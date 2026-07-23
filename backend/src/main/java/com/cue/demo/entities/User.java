@@ -2,18 +2,31 @@ package com.cue.demo.entities;
 
 import com.cue.demo.enums.UserRole;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 
-@Entity
-@Table(name="users")
+
+@Builder @AllArgsConstructor
+@Entity @Table(name="users")
+@SQLDelete(sql="UPDATE users SET deleted = true WHERE id=?")
+@SQLRestriction("deleted=false")
+@Getter
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE) @Getter
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    private UserRole role;
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private UserRole role = UserRole.USER;
+
     private String username;
     @Column(name="phone_number")
     private String phoneNumber;
@@ -26,25 +39,35 @@ public class User {
     @Column(name="last_name")
     private String lastName;
     private String email;
-    private String city;
+    @Builder.Default
+    private String city = "Constanța";
 
     @OneToMany(mappedBy="user")
-    private Set<Review> reviews;
+    @Builder.Default
+    private Set<Review> reviews = new HashSet<>();
+
+    @OneToMany(mappedBy="user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("addedAtTime DESC")
+    @Builder.Default
+    private Set<WatchLaterPerformanceItem> watchLaterPerformances = new HashSet<>();
+
+//    @Builder.Default
+//    @ManyToMany @JoinTable(
+//            name="user_watched",
+//            joinColumns = @JoinColumn(name="user_id"),
+//            inverseJoinColumns= @JoinColumn(name="performance_id")
+//    )
+//    @OrderBy("createdDateTime DESC")
+//    private Set<Performance> watchedPerformances = new HashSet<>();
+
+    @Builder.Default
+    private boolean deleted = false;
+
+    @CreationTimestamp
+    @Column(name="created_at", updatable = false)
+    private LocalDateTime createdDateTime;
 
     protected User() {}
-
-    /**
-     * Automatically sets the role member to user
-     * @param username
-     * @param firstName
-     * @param lastName
-     */
-    public User (String username, String firstName, String lastName) {
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.role = UserRole.USER;
-    }
 
     @Override
     public String toString() {

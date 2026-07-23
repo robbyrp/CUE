@@ -5,8 +5,9 @@ import com.cue.demo.dtos.PerformancePortalDTO;
 import com.cue.demo.entities.Performance;
 import com.cue.demo.exceptions.PerformanceAlreadyExistsException;
 import com.cue.demo.exceptions.PerformanceNotFoundByIdException;
-import com.cue.demo.interfaces.SearchSuggestion;
+import com.cue.demo.dtos.SearchSuggestion;
 import com.cue.demo.repositories.PerformanceRepository;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PerformancePortalService {
     private final PerformanceRepository performanceRepository;
 
@@ -26,6 +28,7 @@ public class PerformancePortalService {
      * Performances are identified by both title and director (At the moment).
      * @param performancePortalDTO The Performance Object received from the POST request.
      */
+    @Transactional
     public void createPerformance(final PerformancePortalDTO performancePortalDTO) throws PerformanceAlreadyExistsException {
         checkNoDuplicate(performancePortalDTO);
         Performance performance = Performance.builder()
@@ -48,26 +51,12 @@ public class PerformancePortalService {
     }
 
     /**
-     * Checks if a performance already exists: performances are identified
-     * by both title and director (At the moment).
-     * @param performancePortalDTO The Performance Object received from the POST request.
-     * @throws PerformanceAlreadyExistsException Throws it if the performance the admin
-     * introduces already exists in the database.
-     */
-    public void checkNoDuplicate(final PerformancePortalDTO performancePortalDTO) throws PerformanceAlreadyExistsException {
-        String title = performancePortalDTO.title();
-        String director = performancePortalDTO.director();
-        if (performanceRepository.existsByTitleAndDirector(title, director)) {
-            throw new PerformanceAlreadyExistsException("Performance already exists in the database: criteria is title AND director");
-        }
-    }
-
-    /**
      * Returns the performance with the id given as a parameter.
      * @param id The ID of the performance, given as a path variable in the URL.
      * @return DTO
      * @throws PerformanceNotFoundByIdException Throws it if the performance with the given ID does not exist in the database.
      */
+
     public PerformancePortalDTO getPerformanceById(final Long id) throws PerformanceNotFoundByIdException {
         Performance p =  performanceRepository.findById(id)
                 .orElseThrow(() -> new PerformanceNotFoundByIdException("Performance not found by id: " + id));
@@ -90,6 +79,7 @@ public class PerformancePortalService {
      * @param id ID of the performance to be deleted.
      * @throws PerformanceNotFoundByIdException Throws it if the performance with the given ID does not exist in the database.
      */
+    @Transactional
     public void deletePerformanceById(final Long id) throws PerformanceNotFoundByIdException {
         if (!performanceRepository.existsById(id)) {
             throw new PerformanceNotFoundByIdException("Could not find performance with id: " + id);
@@ -105,6 +95,7 @@ public class PerformancePortalService {
      * @return Returns the newly updated Entity, mapped as a DTO.
      * @throws PerformanceNotFoundByIdException Throws it if the performance with the given ID does not exist in the database.
      */
+    @Transactional
     public PerformancePortalDTO updatePerformanceById(
             final Long id, final PerformancePortalDTO performancePortalDTO) throws PerformanceNotFoundByIdException {
 
@@ -149,6 +140,23 @@ public class PerformancePortalService {
      */
     public Page<PerformanceCardDTO> getSearchResults(Pageable pageable, String keyword) {
         return performanceRepository.searchProducts(keyword, pageable).map(this::mapToPerformanceCardDTO);
+    }
+
+
+    /**
+     * Helper method
+     * Checks if a performance already exists: performances are identified
+     * by both title and director (At the moment).
+     * @param performancePortalDTO The Performance Object received from the POST request.
+     * @throws PerformanceAlreadyExistsException Throws it if the performance the admin
+     * introduces already exists in the database.
+     */
+    private void checkNoDuplicate(final PerformancePortalDTO performancePortalDTO) throws PerformanceAlreadyExistsException {
+        String title = performancePortalDTO.title();
+        String director = performancePortalDTO.director();
+        if (performanceRepository.existsByTitleAndDirector(title, director)) {
+            throw new PerformanceAlreadyExistsException("Performance already exists in the database: criteria is title AND director");
+        }
     }
 
     /**
