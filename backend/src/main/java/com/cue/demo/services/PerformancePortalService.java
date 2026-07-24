@@ -6,6 +6,7 @@ import com.cue.demo.entities.Performance;
 import com.cue.demo.exceptions.PerformanceAlreadyExistsException;
 import com.cue.demo.exceptions.PerformanceNotFoundByIdException;
 import com.cue.demo.dtos.SearchSuggestion;
+import com.cue.demo.mapper.PerformanceMapper;
 import com.cue.demo.repositories.PerformanceRepository;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import java.util.Objects;
 @Transactional(readOnly = true)
 public class PerformancePortalService {
     private final PerformanceRepository performanceRepository;
+    private final PerformanceMapper mapper;
 
     /**
      * Creates and saves the Performance Entity in the database after checking validity.
@@ -60,7 +62,7 @@ public class PerformancePortalService {
     public PerformancePortalDTO getPerformanceById(final Long id) throws PerformanceNotFoundByIdException {
         Performance p =  performanceRepository.findById(id)
                 .orElseThrow(() -> new PerformanceNotFoundByIdException("Performance not found by id: " + id));
-        return mapToPerformancePortalDTO(p);
+        return mapper.fromPerformanceEntityToPerformancePortalDTO(p);
     }
 
     /**
@@ -71,7 +73,7 @@ public class PerformancePortalService {
      */
     public Page<PerformancePortalDTO> getPerformances(Pageable pageable) {
         Page<Performance> performancePage = performanceRepository.findAll(pageable);
-        return performancePage.map(this::mapToPerformancePortalDTO);
+        return performancePage.map(mapper::fromPerformanceEntityToPerformancePortalDTO);
     }
 
     /**
@@ -90,7 +92,7 @@ public class PerformancePortalService {
 
     /**
      * Handles the PUT Request meant to update an existing Performance Entity.
-     * @param id Id of performance, specified in URL.
+     * @param id ID of performance, specified in URL.
      * @param performancePortalDTO DTO containing the old fields and the fields to be updated.
      * @return Returns the newly updated Entity, mapped as a DTO.
      * @throws PerformanceNotFoundByIdException Throws it if the performance with the given ID does not exist in the database.
@@ -108,7 +110,7 @@ public class PerformancePortalService {
 
         performance.mapFromDTO(performancePortalDTO);
         performanceRepository.save(performance);
-        return mapToPerformancePortalDTO(performance);
+        return mapper.fromPerformanceEntityToPerformancePortalDTO(performance);
     }
 
     /**
@@ -139,7 +141,7 @@ public class PerformancePortalService {
      * @return A paginated list of {@link Performance} entities matching the given keyword.
      */
     public Page<PerformanceCardDTO> getSearchResults(Pageable pageable, String keyword) {
-        return performanceRepository.searchProducts(keyword, pageable).map(this::mapToPerformanceCardDTO);
+        return performanceRepository.searchProducts(keyword, pageable).map(mapper::fromPerformanceEntityToPerformanceCardDTO);
     }
 
 
@@ -159,45 +161,4 @@ public class PerformancePortalService {
         }
     }
 
-    /**
-     * Helper method.
-     * Maps the Performance Entity to a PerformanceCardDTO object.
-     * @param p The performance to be mapped.
-     * @return Returns the newly mapped DTO object.
-     */
-    private PerformanceCardDTO mapToPerformanceCardDTO(final Performance p) {
-        return PerformanceCardDTO.builder()
-                .id(p.getId())
-                .title(p.getTitle())
-                .director(p.getDirector())
-                .coverImageUrl(p.getCoverImageURL())
-                .ageLimit(p.getAgeLimit())
-                .duration(p.getDuration())
-                .build();
-    }
-
-    /**
-     * Helper method.
-     * Maps the Performance Entity to a PerformancePortalDTO object.
-     * @param p The performance to be mapped.
-     * @return Returns the newly mapped DTO object.
-     */
-    private PerformancePortalDTO mapToPerformancePortalDTO(final Performance p) {
-        return PerformancePortalDTO.builder()
-                .id(p.getId())
-                .title(p.getTitle())
-                .director(p.getDirector())
-                .location(p.getLocation())
-                .coverImageURL(p.getCoverImageURL())
-                .theaterName(p.getTheaterName())
-                .startDateTime(p.getStartDateTime())
-                .ageLimit(p.getAgeLimit())
-                .duration(p.getDuration())
-                .fullCoverImageURL(p.getFullCoverImageURL())
-                .purchaseTicketLink(p.getPurchaseTicketLink())
-                .description(p.getDescription())
-                .credits(p.getCreditList())
-                .reviews(p.getReviewList())
-                .build();
-    }
 }

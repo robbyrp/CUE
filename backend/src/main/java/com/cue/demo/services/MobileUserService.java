@@ -1,17 +1,19 @@
 package com.cue.demo.services;
 
+import com.cue.demo.dtos.PerformanceCardDTO;
 import com.cue.demo.dtos.WatchPerformanceItemDTO;
 import com.cue.demo.entities.Performance;
 import com.cue.demo.entities.User;
 import com.cue.demo.entities.WatchLaterPerformanceItem;
-import com.cue.demo.entities.WatchedPerformanceItem;
-import com.cue.demo.exceptions.ItemAlreadyInWatchListException;
 import com.cue.demo.exceptions.PerformanceNotFoundByIdException;
 import com.cue.demo.exceptions.PerformanceNotInUsersWatchListException;
 import com.cue.demo.exceptions.UserNotFoundByIdException;
+import com.cue.demo.mapper.PerformanceMapper;
 import com.cue.demo.repositories.PerformanceRepository;
 import com.cue.demo.repositories.UserRepository;
 import com.cue.demo.repositories.WatchLaterPerformanceItemRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ public class MobileUserService {
     private final PerformanceRepository performanceRepository;
     private final UserRepository userRepository;
     private final WatchLaterPerformanceItemRepository watchLaterRepository;
+    private final PerformanceMapper mapper;
 
     /**
      * Adds a performance to the user's "watch later" list based on the provided data.
@@ -39,7 +42,7 @@ public class MobileUserService {
                 .orElseThrow(() -> new PerformanceNotFoundByIdException("Performance with id: " + dto.performanceId() + " not found"));
 
         if (watchLaterRepository.existsByUserIdAndPerformanceId(dto.userId(), dto.performanceId())) {
-            throw new ItemAlreadyInWatchListException("Performance  with id: " + dto.performanceId() + " already exists" +
+            System.out.println("Performance  with id: " + dto.performanceId() + " already exists" +
                     "in user's " + dto.userId() + " WATCH LATER LIST");
         } else {
             WatchLaterPerformanceItem item = WatchLaterPerformanceItem.builder()
@@ -59,9 +62,7 @@ public class MobileUserService {
      * @throws PerformanceNotInUsersWatchListException If the specified performance is not found in the user's "watch later" list.
      */
     @Transactional
-    public void deleteItemFromWatchLater(final WatchPerformanceItemDTO dto) throws UserNotFoundByIdException, PerformanceNotFoundByIdException, UserNotFoundByIdException {
-        Performance performance = performanceRepository.findById(dto.performanceId())
-                .orElseThrow(() -> new PerformanceNotFoundByIdException("Performance with id: " + dto.performanceId() + " not found"));
+    public void deleteItemFromWatchLater(final WatchPerformanceItemDTO dto) throws PerformanceNotFoundByIdException, UserNotFoundByIdException {
         User user = userRepository.findById(dto.userId())
                 .orElseThrow(() -> new UserNotFoundByIdException("User with id: " + dto.userId() + " not found"));
         if (watchLaterRepository.existsByUserIdAndPerformanceId(dto.userId(), dto.performanceId())) {
@@ -70,6 +71,19 @@ public class MobileUserService {
             throw new PerformanceNotInUsersWatchListException("Performance with id: " + dto.performanceId() +
                     "not found in user's" + user.getId() + " WATCH LATER LIST");
         }
+    }
+
+    /**
+     * Gets a page of PerformanceCardDTO's from the user's watch later set
+     * @param pageable pageable object
+     * @param userId the id of the user received in the http header
+     * @return a page of Performance card dto's
+     * @throws UserNotFoundByIdException if the user with given id does not exist.
+     */
+    public Page<PerformanceCardDTO> getWatchLaterPerformanceCards(final Pageable pageable, final Long userId) throws UserNotFoundByIdException {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundByIdException("User with id: " + userId + " not found"));
+        Page<WatchLaterPerformanceItem> watchLaterPage = watchLaterRepository.findByUserId(user.getId(), pageable);
+        return watchLaterPage.map(mapper::fromWatchLaterItemEntityToPerformanceCardDTO);
     }
 
 }

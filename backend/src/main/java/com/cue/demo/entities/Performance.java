@@ -12,7 +12,6 @@ import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 @Builder @AllArgsConstructor
@@ -38,7 +37,7 @@ public class Performance {
     private String theaterName;
 
     @Column(name="start_date_time", columnDefinition = "TIMESTAMP WITH TIME ZONE")
-    private ZonedDateTime startDateTime;
+    private LocalDateTime startDateTime;
 
     @Column(name="truncated_cover_image_URL")
     private String coverImageURL;
