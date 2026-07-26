@@ -21,5 +21,4 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
             "LOWER(p.director) LIKE LOWER(CONCAT('%', :keyword, '%'))  OR "+
             "LOWER(p.location) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<Performance> searchProducts(@Param("keyword") String keyword, Pageable pageable);
-
 }

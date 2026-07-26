@@ -3,7 +3,6 @@ package com.cue.demo.entities;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -15,7 +14,6 @@ import java.time.LocalDateTime;
 @Builder @AllArgsConstructor
 @SQLDelete(sql="UPDATE watch_later_item SET deleted = true WHERE id=?")
 @SQLRestriction("deleted=false")
-@Getter
 public class WatchLaterPerformanceItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

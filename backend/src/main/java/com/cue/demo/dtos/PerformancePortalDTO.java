@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Builder
@@ -21,7 +21,7 @@ public record PerformancePortalDTO(
         @NotNull @Min(0) @Max(481)Integer duration,
         @NotBlank String location,
         @NotBlank String theaterName,
-        @NotNull LocalDateTime startDateTime,
+        @NotNull ZonedDateTime startDateTime,
         @NotBlank String fullCoverImageURL,
         @NotBlank String purchaseTicketLink,
         @NotBlank String description,
