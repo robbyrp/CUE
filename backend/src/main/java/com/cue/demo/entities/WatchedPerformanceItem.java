@@ -1,4 +1,40 @@
 package com.cue.demo.entities;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name="watched_item")
+@Builder @AllArgsConstructor
+@SQLDelete(sql = "UPDATE watched_item SET deleted=true WHERE id=?")
+@SQLRestriction("deleted = false")
+@Getter
 public class WatchedPerformanceItem {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "performance_id", nullable = false)
+    private Performance performance;
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime watchedAtTime;
+
+    @Builder.Default
+    private boolean deleted = false;
+
+    protected WatchedPerformanceItem() {}
 }

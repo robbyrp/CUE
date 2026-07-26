@@ -4,27 +4,18 @@ import com.cue.demo.dtos.PerformanceCardDTO;
 import com.cue.demo.dtos.PerformancePortalDTO;
 import com.cue.demo.entities.Performance;
 import com.cue.demo.entities.WatchLaterPerformanceItem;
+import com.cue.demo.entities.WatchedPerformanceItem;
 import org.springframework.stereotype.Component;
 
 @Component
 public final class PerformanceMapper {
 
     /**
-     * Maps the PerformanceWatchLater Entity to a PerformanceCardDTO object
-     * @param item the entity to be mapped
-     * @return Returns the newly mapped DTO object.
+     * Internal helper method to map a Performance entity to a PerformanceCardDTO.
+     * @param p The performance entity to be mapped.
+     * @return Returns the newly mapped PerformanceCardDTO object.
      */
-    public PerformanceCardDTO fromWatchLaterItemEntityToPerformanceCardDTO(final WatchLaterPerformanceItem item) {
-        Performance p = item.getPerformance();
-        return fromPerformanceEntityToPerformanceCardDTO(p);
-    }
-
-    /**
-     * Maps the Performance Entity to a PerformanceCardDTO object.
-     * @param p The performance to be mapped.
-     * @return Returns the newly mapped DTO object.
-     */
-    public PerformanceCardDTO fromPerformanceEntityToPerformanceCardDTO(final Performance p) {
+    private PerformanceCardDTO mapToPerformanceCardDTO(final Performance p) {
         return PerformanceCardDTO.builder()
                 .id(p.getId())
                 .title(p.getTitle())
@@ -34,6 +25,36 @@ public final class PerformanceMapper {
                 .duration(p.getDuration())
                 .build();
     }
+
+    /**
+     * Maps the PerformanceWatchLater Entity to a PerformanceCardDTO object
+     * @param item the entity to be mapped
+     * @return Returns the newly mapped DTO object.
+     */
+    public PerformanceCardDTO fromWatchLaterItemEntityToPerformanceCardDTO(final WatchLaterPerformanceItem item) {
+        Performance p = item.getPerformance();
+        return mapToPerformanceCardDTO(p);
+    }
+
+    /**
+     * Maps the WatchedPerformanceItem Entity to a PerformanceCardDTO object
+     * @param item the entity to be mapped
+     * @return Returns the newly mapped DTO object.
+     */
+    public PerformanceCardDTO fromWatchedItemEntityToPerformanceCardDTO(final WatchedPerformanceItem item) {
+        Performance p = item.getPerformance();
+        return mapToPerformanceCardDTO(p);
+    }
+
+    /**
+     * Maps the Performance Entity to a PerformanceCardDTO object.
+     * @param p The performance to be mapped.
+     * @return Returns the newly mapped DTO object.
+     */
+    public PerformanceCardDTO fromPerformanceEntityToPerformanceCardDTO(final Performance p) {
+        return mapToPerformanceCardDTO(p);
+    }
+
 
     /**
      * Maps the Performance Entity to a PerformancePortalDTO object.

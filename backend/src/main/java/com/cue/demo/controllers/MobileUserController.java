@@ -2,6 +2,7 @@ package com.cue.demo.controllers;
 
 import com.cue.demo.dtos.PerformanceCardDTO;
 import com.cue.demo.dtos.WatchPerformanceItemDTO;
+import com.cue.demo.entities.Performance;
 import com.cue.demo.services.MobileUserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,6 +45,32 @@ public final class MobileUserController {
             @PageableDefault(sort = "addedAtTime", direction = Sort.Direction.ASC) final Pageable pageable) {
 
         Page<PerformanceCardDTO> page = service.getWatchLaterPerformanceCards(pageable, userId);
+        return ResponseEntity.ok().body(page);
+    }
+
+    //-------------WATCHED---------------------------
+    @PostMapping("/me/watched/{performanceId}")
+    public ResponseEntity<Void> addItemToWatched(@PathVariable Long performanceId,
+                                                 @RequestHeader(value = "X-User-Id", defaultValue = "1") final Long userId) {
+        WatchPerformanceItemDTO dto = new WatchPerformanceItemDTO(userId, performanceId);
+         service.addItemToWatched(dto);
+         return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("me/watched/{performanceId}")
+    public ResponseEntity<Void> deleteItemFromWatched(@PathVariable Long performanceId,
+                                                      @RequestHeader(value = "X-User-Id", defaultValue = "1") final Long userId) {
+        WatchPerformanceItemDTO dto = new WatchPerformanceItemDTO(userId, performanceId);
+        service.deleteItemFromWatched(dto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("me/watched/items")
+    public ResponseEntity<Page<PerformanceCardDTO>> getWatchedPerformanceItems(
+            @RequestHeader(value = "X-User-Id", defaultValue = "1") final Long userId,
+            @PageableDefault(sort = "watchedAtTime", direction = Sort.Direction.ASC) final Pageable pageable) {
+
+        Page<PerformanceCardDTO> page = service.getWatchedPerformanceCards(pageable, userId);
         return ResponseEntity.ok().body(page);
     }
 }
