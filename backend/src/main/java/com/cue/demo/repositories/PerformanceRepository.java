@@ -14,12 +14,18 @@ import java.util.List;
 @Repository
 public interface PerformanceRepository extends JpaRepository<Performance, Long> {
     boolean existsByTitleAndDirector(String title, String director);
-    List<SearchSuggestion> findTop6ByTitleContainingIgnoreCase(String title);
 
-    @Query("SELECT p from Performance p WHERE "+
-            "LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%'))  OR "+
-            "LOWER(p.director) LIKE LOWER(CONCAT('%', :keyword, '%'))  OR "+
-            "LOWER(p.location) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    @Query(nativeQuery = true,
+            value= "SELECT p.id AS id, p.title AS title from spectacol p WHERE " +
+           "LOWER(unaccent(p.title)) LIKE LOWER(CONCAT('%', :keyword, '%')) LIMIT 6" )
+    List<SearchSuggestion> searchTitleCompletionSuggestions(String keyword);
+
+
+    @Query(nativeQuery = true,
+            value="SELECT p from spectacol p WHERE "+
+            "LOWER(unaccent(p.title)) LIKE LOWER(CONCAT('%', :keyword, '%'))  OR "+
+            "LOWER(unaccent(p.director)) LIKE LOWER(CONCAT('%', :keyword, '%'))  OR "+
+            "LOWER(unaccent(p.location)) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<Performance> searchProducts(@Param("keyword") String keyword, Pageable pageable);
 
 }

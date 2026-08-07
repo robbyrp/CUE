@@ -123,7 +123,7 @@ public class PerformancePortalService {
             return List.of();
         }
 
-        return performanceRepository.findTop6ByTitleContainingIgnoreCase(title);
+        return performanceRepository.searchTitleCompletionSuggestions(title);
     }
 
     /**
