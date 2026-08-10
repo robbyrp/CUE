@@ -1,0 +1,89 @@
+@use '../../../styles/abstracts/' as *;
+
+$carousel-gap: $space-14;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: $space-8;
+  width: 100%;
+  margin: 0 auto;
+
+  .header {
+    display: flex;
+    align-items: center;
+    gap: $space-4;
+    width: 100%;
+
+    .title {
+      font-family: $font-primary;
+      font-size: $font-size-xl;
+      font-weight: 400;
+      color: $black;
+      text-transform: uppercase;
+      letter-spacing: 0.10rem;
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    .titleLine {
+      flex: 1;
+      height: 2px;
+      background-color: $dark-blue;
+      opacity: 0.8;
+    }
+  }
+
+  .carouselWrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    gap: $space-4;
+
+    .navButton {
+      background: none;
+      border: none;
+      color: $dark-blue;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+      z-index: 10;
+
+      &:hover {
+        opacity: 0.7;
+      }
+
+      &:active {
+        transform: scale(0.9);
+      }
+    }
+
+    .embla {
+      flex: 1;
+      overflow: hidden;
+
+      .emblaContainer {
+        display: flex;
+        margin-left: calc($carousel-gap * -1);
+        width: auto; // Allow container to grow based on slides
+        justify-content: flex-start;
+        align-items: stretch;
+      }
+
+      .emblaSlide {
+        flex: 0 0 calc((100% + $carousel-gap) / 2);
+        padding-left: $carousel-gap;
+        display: flex;
+        align-items: stretch;
+
+        @include respond-above('desktop') {
+          flex: 0 0 calc((100% + $carousel-gap) / 3);
+        }
+      }
+    }
+  }
+}

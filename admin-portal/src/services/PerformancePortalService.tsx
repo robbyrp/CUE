@@ -17,6 +17,16 @@ const ENDPOINTS = {
     GET_SEARCH_RESULTS              : `${API_SEARCH_BASE_URL}/performances`
 };
 
+function emptyPage <T>(page: number, size: number): PageResponse<T> {
+    return {
+        content: [],
+        totalPages: 0,
+        totalElements: 0,
+        size,
+        number: page
+    }
+};
+
 export const PerformancePortalService = {
 
     createPerformance: async (pData : PerformancePortal): Promise<PerformancePortal> => {
@@ -68,7 +78,15 @@ export const PerformancePortalService = {
             }
        });
        return response.data;
+    },
+
+    getWatchLaterPerformances: async (page: number, size: number): Promise<PageResponse<PerformancePortal>> => {
+        return emptyPage<PerformancePortal>(page, size);
+    },
+    getWatchedPerformances: async (page: number, size: number): Promise<PageResponse<PerformancePortal>> => {
+        return emptyPage<PerformancePortal>(page, size);
+    },
+    getReviewedPerformances: async (page: number, size: number): Promise<PageResponse<PerformancePortal>> => {
+        return emptyPage<PerformancePortal>(page, size);
     }
-
-
 };

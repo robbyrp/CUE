@@ -1,3 +1,5 @@
+// noinspection JSAnnotator
+
 import React, {useState} from 'react';
 import styles from './createPerformancePage.module.scss'
 import type PerformancePortal from '../../types/PerformancePortal';
@@ -259,7 +261,7 @@ function CreatePerformancePage() {
                     />
                 </div>
 
-                <button type="submit">Salveaza</button>
+                <button className={styles.button} type="submit">Salveaza</button>
 
             </form>
 

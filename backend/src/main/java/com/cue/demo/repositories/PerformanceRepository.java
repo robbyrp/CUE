@@ -22,7 +22,6 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
                     "LIMIT 6" )
     List<SearchSuggestion> searchTitleCompletionSuggestions(String keyword);
 
-
     @Query(nativeQuery = true,
             value="SELECT p from spectacol p WHERE "+
             "LOWER(unaccent(p.title)) LIKE LOWER(CONCAT('%', :keyword, '%'))  OR "+

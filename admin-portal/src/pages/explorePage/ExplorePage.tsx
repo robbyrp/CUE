@@ -11,10 +11,13 @@ import DesktopFooter from '../../common/components/DesktopFooter/DesktopFooter';
 function ExplorePage() {
     const [performanceDTOS, setPerformanceDTOS] = useState<PerformancePortal[]>([]);
     const navigate = useNavigate();
+
+    const PAGE_NUMBER = 0;
+    const PAGE_SIZE = 10;
     useEffect(() => {
         const loadData = async () => {
             try {
-                const response = await PerformancePortalService.getAllPerformances(0, 10);
+                const response = await PerformancePortalService.getAllPerformances(PAGE_NUMBER, PAGE_SIZE);
                 setPerformanceDTOS(response.content);
             } catch (error) {
                 console.error("Eroare la aducerea spectacolelor", error);
@@ -31,7 +34,7 @@ function ExplorePage() {
             <DesktopHeader/>
             <div className = {styles.ListContainer}>
             {performanceDTOS.map((dto: PerformancePortal) => (
-                <div key = {dto.id} onClick={() => navigate(`/spectacole/${dto.id}`)} style={{cursor: `pointer`}}> 
+                <div key = {dto.id} onClick={() => navigate(`/spectacole/${dto.id}`)} style={{cursor: `pointer`}}>
                     <PerformanceCardComponent data = {dto} />
                 </div>
             ))}

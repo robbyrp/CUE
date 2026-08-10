@@ -23,7 +23,7 @@ function DesktopHeader() {
               const results = await PerformancePortalService.getSearchTitleSuggestions(searchValue);
               setSuggestions(results);
             } catch (e) {
-              console.error("Eroare la aducerea sugestiilor", e);
+              console.error("Error bringing suggestions", e);
             }
         } else {
             setSuggestions([]);
@@ -92,7 +92,7 @@ function DesktopHeader() {
             </div>
           </div>
         </a>
-        <Link to="/profile">
+        <Link to="/login">
           <div className={styles.route}>
             <div className={styles.routeIcon}>
               <img src={profileIcon} alt="profile" />

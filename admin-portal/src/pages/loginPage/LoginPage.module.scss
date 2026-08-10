@@ -1,0 +1,177 @@
+@use '../../styles/abstracts/' as *;
+@use 'sass:color';
+
+.loginPage {
+  min-height: 100vh;
+  background-color: $light-blue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: $space-8;
+}
+
+.loginPanel {
+  width: min(100%, 430px);
+}
+
+.pageLabel {
+  margin: 0 0 $space-4;
+  color: $replace-gray;
+  font-size: $font-size-md;
+  font-weight: $font-weight-medium;
+  text-transform: lowercase;
+}
+
+.loginContent {
+  min-height: 720px;
+  background-color: $light-blue;
+  border: 1px solid rgba($black, 0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 9rem $space-10 $space-10;
+}
+
+.logoBox {
+  width: 62px;
+  height: 62px;
+  border: 4px solid $dark-red;
+  background-color: $color-white;
+  margin-bottom: $space-6;
+  position: relative;
+}
+
+.logoBox::before,
+.logoBox::after {
+  content: '';
+  position: absolute;
+  width: 78px;
+  height: 4px;
+  background-color: $dark-red;
+  top: 50%;
+  left: 50%;
+  transform-origin: center;
+}
+
+.logoBox::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.logoBox::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.logoIcon::before,
+.logoIcon::after {
+  content: '';
+  position: absolute;
+  top: -7px;
+  width: 13px;
+  height: 13px;
+  border-radius: $radius-full;
+  border: 4px solid $dark-red;
+  background-color: $color-white;
+}
+
+.logoIcon::before {
+  left: -7px;
+}
+
+.logoIcon::after {
+  right: -7px;
+}
+
+.loginForm {
+  width: 100%;
+  background-color: $color-white;
+  border-radius: $radius-sm;
+  padding: $space-6;
+  display: flex;
+  flex-direction: column;
+  gap: $space-5;
+  box-shadow: 0 1px 4px rgba($black, 0.14);
+}
+
+.title {
+  margin: 0;
+  color: $color-primary-light;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-medium;
+  text-align: center;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+}
+
+.formGroup label {
+  color: $color-primary-light;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+}
+
+.formGroup input {
+  width: 100%;
+  height: 44px;
+  border: 1px solid $color-text-light;
+  border-radius: $radius-xs;
+  padding: 0 $space-4;
+  color: $onyx-black;
+  background-color: $color-white;
+  font-size: $font-size-base;
+  outline: none;
+}
+
+.formGroup input:focus {
+  border-color: $dark-red;
+  box-shadow: 0 0 0 3px rgba($dark-red, 0.18);
+}
+
+.errorMessage {
+  margin: -0.4rem 0 0;
+  color: $dark-red;
+  font-size: 0.9rem;
+}
+
+.signInButton {
+  width: 100%;
+  height: 46px;
+  border: none;
+  border-radius: $radius-xs;
+  background-color: $dark-red;
+  color: $color-white;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: background-color $transition-fast, transform $transition-fast;
+}
+
+.signInButton:hover {
+  background-color: color.adjust($dark-red, $lightness: -5%);
+}
+
+.signInButton:active {
+  transform: translateY(1px);
+}
+
+@media (max-width: 520px) {
+  .loginPage {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .loginPanel {
+    width: 100%;
+  }
+
+  .pageLabel {
+    padding: $space-4 $space-5 0;
+  }
+
+  .loginContent {
+    min-height: calc(100vh - 3rem);
+    padding: 7rem $space-8 $space-8;
+  }
+}
