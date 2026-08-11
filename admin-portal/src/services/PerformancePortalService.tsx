@@ -6,6 +6,7 @@ import type PageResponse from '../types/PageResponse.ts';
 
 const API_ADMIN_BASE_URL = "http://localhost:8080/api/admin";
 const API_SEARCH_BASE_URL = "http://localhost:8080/api/search";
+const API_MY_ACTIVITY_BASE_URL = "http://localhost:8080/api/user";
 
 const ENDPOINTS = {
     CREATE                          : `${API_ADMIN_BASE_URL}/spectacole`,
@@ -14,7 +15,10 @@ const ENDPOINTS = {
     GET_BY_ID                       : (id:number) => `${API_ADMIN_BASE_URL}/spectacole/${id}`,
     UPDATE_BY_ID                    : (id:number) => `${API_ADMIN_BASE_URL}/spectacole/${id}`,
     GET_SEARCH_TITLE_SUGGESTIONS    : `${API_SEARCH_BASE_URL}/suggestions`,
-    GET_SEARCH_RESULTS              : `${API_SEARCH_BASE_URL}/performances`
+    GET_SEARCH_RESULTS              : `${API_SEARCH_BASE_URL}/performances`,
+    GET_WATCH_LATER                 : `${API_MY_ACTIVITY_BASE_URL}/me/watch-later`,
+    GET_WATCHED                     : `${API_MY_ACTIVITY_BASE_URL}/me/watched`
+
 };
 
 function emptyPage <T>(page: number, size: number): PageResponse<T> {
@@ -81,11 +85,25 @@ export const PerformancePortalService = {
     },
 
     getWatchLaterPerformances: async (page: number, size: number): Promise<PageResponse<PerformancePortal>> => {
-        return emptyPage<PerformancePortal>(page, size);
+        const response = await axios.get(ENDPOINTS.GET_WATCH_LATER, {
+            params: {
+                page: page,
+                size: size
+            }
+        });
+        return response.data;
     },
+
     getWatchedPerformances: async (page: number, size: number): Promise<PageResponse<PerformancePortal>> => {
-        return emptyPage<PerformancePortal>(page, size);
+        const response = await axios.get(ENDPOINTS.GET_WATCHED, {
+            params: {
+                page: page,
+                size: size
+            }
+        });
+        return response.data;
     },
+    
     getReviewedPerformances: async (page: number, size: number): Promise<PageResponse<PerformancePortal>> => {
         return emptyPage<PerformancePortal>(page, size);
     }

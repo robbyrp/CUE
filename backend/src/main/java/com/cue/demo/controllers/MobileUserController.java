@@ -2,7 +2,6 @@ package com.cue.demo.controllers;
 
 import com.cue.demo.dtos.PerformanceCardDTO;
 import com.cue.demo.dtos.WatchPerformanceItemDTO;
-import com.cue.demo.entities.Performance;
 import com.cue.demo.services.MobileUserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/mobile/users")
+@RequestMapping("/api/user")
+@CrossOrigin(origins = "http://localhost:5174")
 public final class MobileUserController {
     private final MobileUserService service;
 
@@ -39,7 +39,7 @@ public final class MobileUserController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/me/watch-later/items")
+    @GetMapping("/me/watch-later")
     public ResponseEntity<Page<PerformanceCardDTO>> getWatchLaterPerformanceCards(
             @RequestHeader(value = "X-User-Id", defaultValue = "1") final Long userId,
             @PageableDefault(sort = "addedAtTime", direction = Sort.Direction.ASC) final Pageable pageable) {
@@ -65,7 +65,7 @@ public final class MobileUserController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("me/watched/items")
+    @GetMapping("me/watched")
     public ResponseEntity<Page<PerformanceCardDTO>> getWatchedPerformanceItems(
             @RequestHeader(value = "X-User-Id", defaultValue = "1") final Long userId,
             @PageableDefault(sort = "watchedAtTime", direction = Sort.Direction.ASC) final Pageable pageable) {

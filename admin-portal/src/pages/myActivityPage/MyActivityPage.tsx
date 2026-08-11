@@ -19,7 +19,7 @@ function MyActivityPage() {
 
     const PAGE_NUMBER = 0;
     const PAGE_SIZE = 10;
-    const MOCK_PERFORMANCES_PAGE_SIZE = 4;
+    const MOCK_PERFORMANCES_PAGE_SIZE = 2;
     const [MOCK_PERFORMANCES, SET_MOCK_PERFORMANCES] = useState<PerformancePortal[]>([])
 
     const getFallbackContent = (
