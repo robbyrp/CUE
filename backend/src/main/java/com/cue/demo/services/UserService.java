@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly=true)
-public class MobileUserService {
+public class UserService {
     private final PerformanceRepository performanceRepository;
     private final UserRepository userRepository;
     private final WatchLaterPerformanceItemRepository watchLaterRepository;
@@ -89,8 +89,10 @@ public class MobileUserService {
      * @throws UserNotFoundByIdException If a user with the specified ID is not found.
      */
     public Page<PerformanceCardDTO> getWatchLaterPerformanceCards(final Pageable pageable, final Long userId) throws UserNotFoundByIdException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundByIdException("User with id: " + userId + " not found"));
-        Page<WatchLaterPerformanceItem> watchLaterPage = watchLaterRepository.findByUserId(user.getId(), pageable);
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotFoundByIdException("User with id: " + userId + " not found");
+        }
+        Page<WatchLaterPerformanceItem> watchLaterPage = watchLaterRepository.findByUserId(userId, pageable);
         return watchLaterPage.map(mapper::fromWatchLaterItemEntityToPerformanceCardDTO);
     }
 
@@ -153,9 +155,46 @@ public class MobileUserService {
      * @throws UserNotFoundByIdException If a user with the specified ID is not found.
      */
     public Page<PerformanceCardDTO> getWatchedPerformanceCards(final Pageable pageable, final Long userId) throws UserNotFoundByIdException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundByIdException("User with id: " + userId + " not found"));
-        Page<WatchedPerformanceItem> watchedPage = watchedPerformanceRepository.findByUserId(user.getId(), pageable);
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotFoundByIdException("User with id: " + userId + " not found");
+        }
+        Page<WatchedPerformanceItem> watchedPage = watchedPerformanceRepository.findByUserId(userId, pageable);
         return watchedPage.map(mapper::fromWatchedItemEntityToPerformanceCardDTO);
     }
 
+    /**
+     * Returns true if performance with id is in user's watch later list.
+     * @param userId
+     * @param performanceId
+     * @return
+     */
+    public Boolean isPerformanceInWatchLater(final Long userId, final Long performanceId) {
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotFoundByIdException("User with id: " + userId + " not found");
+        }
+
+        if (!performanceRepository.existsById(performanceId)) {
+            throw new PerformanceNotFoundByIdException("Performance with id: " + performanceId + " not found");
+        }
+
+        return watchLaterRepository.existsByUserIdAndPerformanceId(userId, performanceId);
+    }
+
+    /**
+     * Returns true if performance with id is in user's watched list.
+     * @param userId
+     * @param performanceId
+     * @return
+     */
+    public Boolean isPerformanceInWatched(final Long userId, final Long performanceId) {
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotFoundByIdException("User with id: " + userId + " not found");
+        }
+
+        if (!performanceRepository.existsById(performanceId)) {
+            throw new PerformanceNotFoundByIdException("Performance with id: " + performanceId + " not found");
+        }
+
+        return watchedPerformanceRepository.existsByUserIdAndPerformanceId(userId, performanceId);
+    }
 }

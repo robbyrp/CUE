@@ -11,11 +11,14 @@ import org.hibernate.annotations.SQLRestriction;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="watch_later_item")
-@Builder @AllArgsConstructor
-@SQLDelete(sql="UPDATE watch_later_item SET deleted = true WHERE id=?")
-@SQLRestriction("deleted=false")
-@Getter
+@Table (name="watch_later_item",
+        indexes = {@Index(name = "idx_user_id", columnList = "user")},
+        uniqueConstraints = {@UniqueConstraint(name = "unique_user_and_performance",
+                          columnNames = {"user_id", "performance_id"})})
+@Getter @Builder @AllArgsConstructor
+@SQLDelete(sql = "UPDATE watch_later_item SET deleted = true WHERE id=?")
+@SQLRestriction("deleted = false")
+
 public class WatchLaterPerformanceItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
