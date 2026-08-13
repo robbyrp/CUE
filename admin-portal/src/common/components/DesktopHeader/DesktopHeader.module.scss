@@ -2,7 +2,7 @@
 @use '../../../styles/base/' as *;
 
 .header {
-    background-color: $replace-gray;
+    background-color: $color-footer-background;
     height: $navbar-height;
     display: flex;
     flex-direction: row;

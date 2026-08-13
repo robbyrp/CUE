@@ -19,20 +19,20 @@ const AuthProvider = ({children} : AuthProviderProps) => {
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        const saveUserId = localStorage.getItem('userId');
+        const saveUserId = sessionStorage.getItem('userId');
         if (saveUserId) {
             setUserId(saveUserId);
         }
         setLoading(false);
     }, []);
 
-    const login = (id :string) => {
-        localStorage.setItem('userId', id);
+    const login = (id: string) => {
+        sessionStorage.setItem('userId', id);
         setUserId(id.toString());
     };
 
     const logout = () => {
-        localStorage.removeItem('userId');
+        sessionStorage.removeItem('userId');
         setUserId(null);
     };
 

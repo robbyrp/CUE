@@ -1,24 +1,25 @@
-import axios from 'axios';
+import apiClient from '../services/Api.tsx'
 import type PerformancePortal from '../types/PerformancePortal.ts';
 import type PerformanceCard from '../types/PerformanceCard.ts';
 import type { SearchSuggestion as SearchSuggestionType } from '../types/SearchSuggestion.ts';
 import type PageResponse from '../types/PageResponse.ts';
 
-const API_ADMIN_BASE_URL = "http://localhost:8080/api/admin";
-const API_SEARCH_BASE_URL = "http://localhost:8080/api/search";
-const API_MY_ACTIVITY_BASE_URL = "http://localhost:8080/api/user";
-
 const ENDPOINTS = {
-    CREATE                          : `${API_ADMIN_BASE_URL}/spectacole`,
-    GET_ALL                         : `${API_ADMIN_BASE_URL}/spectacole`,
-    DELETE                          : (id:number) =>  `${API_ADMIN_BASE_URL}/spectacole/${id}`,
-    GET_BY_ID                       : (id:number) => `${API_ADMIN_BASE_URL}/spectacole/${id}`,
-    UPDATE_BY_ID                    : (id:number) => `${API_ADMIN_BASE_URL}/spectacole/${id}`,
-    GET_SEARCH_TITLE_SUGGESTIONS    : `${API_SEARCH_BASE_URL}/suggestions`,
-    GET_SEARCH_RESULTS              : `${API_SEARCH_BASE_URL}/performances`,
-    GET_WATCH_LATER                 : `${API_MY_ACTIVITY_BASE_URL}/me/watch-later`,
-    GET_WATCHED                     : `${API_MY_ACTIVITY_BASE_URL}/me/watched`
-
+    CREATE                          : `/admin/spectacole`,
+    GET_ALL                         : `/admin/spectacole`,
+    DELETE                          : (id:number) => `/admin/spectacole/${id}`,
+    GET_BY_ID                       : (id:number) => `/admin/spectacole/${id}`,
+    UPDATE_BY_ID                    : (id:number) => `/admin/spectacole/${id}`,
+    GET_SEARCH_TITLE_SUGGESTIONS    : `/search/suggestions`,
+    GET_SEARCH_RESULTS              : `/search/performances`,
+    GET_WATCH_LATER                 : `/user/me/watch-later`,
+    GET_WATCHED                     : `/user/me/watched`,
+    ADD_TO_WATCH_LATER              : (id:number) => `/user/me/watch-later/${id}`,
+    ADD_TO_WATCHED                  : (id:number) => `/user/me/watched/${id}`,
+    DELETE_FROM_WATCH_LATER         : (id:number) => `/user/me/watch-later/${id}`,
+    DELETE_FROM_WATCHED             : (id:number) => `/user/me/watched/${id}`,
+    EXISTS_IN_WATCH_LATER          : (id:number) => `/user/me/watch-later/${id}/exists`,
+    EXISTS_IN_WATCHED              : (id:number) => `/user/me/watched/${id}/exists`,
 };
 
 function emptyPage <T>(page: number, size: number): PageResponse<T> {
@@ -34,28 +35,28 @@ function emptyPage <T>(page: number, size: number): PageResponse<T> {
 export const PerformancePortalService = {
 
     createPerformance: async (pData : PerformancePortal): Promise<PerformancePortal> => {
-        const response = await axios.post<PerformancePortal>(ENDPOINTS.CREATE, pData);
+        const response = await apiClient.post<PerformancePortal>(ENDPOINTS.CREATE, pData);
         return response.data;
     },
 
     //TODO: Modify return type if backend method deletePerformanceByID() will return 
     // the entity that was deleted instead of void.
     deletePerformance: async (id: number): Promise<void> => {
-        await axios.delete(ENDPOINTS.DELETE(id));
+        await apiClient.delete(ENDPOINTS.DELETE(id));
     },
 
     getPerformanceById: async (id:number): Promise<PerformancePortal> => {
-        const response = await axios.get<PerformancePortal>(ENDPOINTS.GET_BY_ID(id));
+        const response = await apiClient.get<PerformancePortal>(ENDPOINTS.GET_BY_ID(id));
         return response.data;
     },
 
     updatePerformanceById: async (id:number, pData: PerformancePortal): Promise<PerformancePortal> => {
-        const response = await axios.put<PerformancePortal>(ENDPOINTS.UPDATE_BY_ID(id), pData);
+        const response = await apiClient.put<PerformancePortal>(ENDPOINTS.UPDATE_BY_ID(id), pData);
         return response.data
     },
 
     getAllPerformances: async (page: number, size: number): Promise<PageResponse<PerformancePortal>> => {
-        const response = await axios.get(ENDPOINTS.GET_ALL, {
+        const response = await apiClient.get(ENDPOINTS.GET_ALL, {
             params: {
                 page: page,
                 size: size
@@ -65,7 +66,7 @@ export const PerformancePortalService = {
     },
 
     getSearchTitleSuggestions: async (q: string): Promise<SearchSuggestionType[]> => {
-        const response = await axios.get(ENDPOINTS.GET_SEARCH_TITLE_SUGGESTIONS, {
+        const response = await apiClient.get(ENDPOINTS.GET_SEARCH_TITLE_SUGGESTIONS, {
             params: {
                 q:q
             }
@@ -74,7 +75,7 @@ export const PerformancePortalService = {
     },
 
     getSearchResults: async (page: number, size: number, q: string): Promise<PageResponse<PerformanceCard>> => {
-       const response = await axios.get(ENDPOINTS.GET_SEARCH_RESULTS, {
+       const response = await apiClient.get(ENDPOINTS.GET_SEARCH_RESULTS, {
             params: {
                 page: page,
                 size: size,
@@ -85,7 +86,7 @@ export const PerformancePortalService = {
     },
 
     getWatchLaterPerformances: async (page: number, size: number): Promise<PageResponse<PerformancePortal>> => {
-        const response = await axios.get(ENDPOINTS.GET_WATCH_LATER, {
+        const response = await apiClient.get(ENDPOINTS.GET_WATCH_LATER, {
             params: {
                 page: page,
                 size: size
@@ -95,7 +96,7 @@ export const PerformancePortalService = {
     },
 
     getWatchedPerformances: async (page: number, size: number): Promise<PageResponse<PerformancePortal>> => {
-        const response = await axios.get(ENDPOINTS.GET_WATCHED, {
+        const response = await apiClient.get(ENDPOINTS.GET_WATCHED, {
             params: {
                 page: page,
                 size: size
@@ -106,5 +107,33 @@ export const PerformancePortalService = {
     
     getReviewedPerformances: async (page: number, size: number): Promise<PageResponse<PerformancePortal>> => {
         return emptyPage<PerformancePortal>(page, size);
+    },
+
+    addToWatchLater: async (id: number) : Promise<void> => {
+        const response = await apiClient.post(ENDPOINTS.ADD_TO_WATCH_LATER(id));
+        return response.data;
+    },
+
+    addToWatched: async (id: number) : Promise<void> => {
+        const response = await apiClient.post(ENDPOINTS.ADD_TO_WATCHED(id));
+        return response.data;
+    },
+
+    deleteFromWatchLater: async (id: number) : Promise<void> => {
+        await apiClient.delete(ENDPOINTS.DELETE_FROM_WATCH_LATER(id));
+    },
+
+    deleteFromWatched: async (id: number) : Promise<void> => {
+        await apiClient.delete(ENDPOINTS.DELETE_FROM_WATCHED(id));
+    },
+
+    isInWatchLater: async (id: number): Promise<boolean> => {
+        const response = await apiClient.get(ENDPOINTS.EXISTS_IN_WATCH_LATER(id));
+        return response.data;
+    },
+
+    isInWatched: async (id: number): Promise<boolean> => {
+        const response = await apiClient.get(ENDPOINTS.EXISTS_IN_WATCHED(id));
+        return response.data;
     }
 };

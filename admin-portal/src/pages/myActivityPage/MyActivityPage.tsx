@@ -20,7 +20,6 @@ function MyActivityPage() {
     const PAGE_NUMBER = 0;
     const PAGE_SIZE = 10;
     const MOCK_PERFORMANCES_PAGE_SIZE = 2;
-    const [MOCK_PERFORMANCES, SET_MOCK_PERFORMANCES] = useState<PerformancePortal[]>([])
 
     const getFallbackContent = (
         content: PerformancePortal[] | undefined,
@@ -28,14 +27,6 @@ function MyActivityPage() {
     ) => {
         return content && content.length > 0 ? content : fallback;
     };
-
-    useEffect(() => {
-        PerformancePortalService.getAllPerformances(PAGE_NUMBER, MOCK_PERFORMANCES_PAGE_SIZE)
-            .then( (response) => {
-                SET_MOCK_PERFORMANCES(response.content);
-            })
-            .catch((error) => console.log("Error fetching mock performances: ", error));
-    }, []);
 
     useEffect(() => {
         const loadMyActivity = async () => {

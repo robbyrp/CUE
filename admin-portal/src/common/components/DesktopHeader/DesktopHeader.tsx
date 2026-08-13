@@ -1,6 +1,5 @@
 import styles from "./DesktopHeader.module.scss";
 import LogoIcon from "./assets/logoIcon.svg";
-import homeIcon from "./assets/whiteHouseIcon.svg";
 import exploreIcon from "./assets/whiteStarIcon.svg";
 import calendarIcon from "./assets/whiteCalendarIcon.svg";
 import profileIcon from "./assets/whiteProfileIcon.svg";
@@ -8,7 +7,6 @@ import type {SearchSuggestion} from '../../../types/SearchSuggestion';
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { PerformancePortalService } from "../../../services/PerformancePortalService";
-
 
 function DesktopHeader() {
   const [searchValue, setSearchValue] = useState("");
@@ -65,20 +63,10 @@ function DesktopHeader() {
         <Link to="/">
           <div className={styles.route}>
             <div className={styles.routeIcon}>
-              <img src={homeIcon} alt="home" />
-            </div>
-            <div className={styles.routeLabel}>
-              <span>HOME</span>
-            </div>
-          </div>
-        </Link>
-        <Link to="/">
-          <div className={styles.route}>
-            <div className={styles.routeIcon}>
               <img src={exploreIcon} alt="explore" />
             </div>
             <div className={styles.routeLabel}>
-              <span>EXPLORE</span>
+              <span>EXPLOREAZA</span>
             </div>
           </div>
         </Link>

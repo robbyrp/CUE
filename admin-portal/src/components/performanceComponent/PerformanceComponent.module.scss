@@ -1,86 +1,310 @@
 @use '../../styles/abstracts/' as *;
 
 .PerformanceContainer {
+    display: flex;
+    flex-direction: column;
+    background: #f7efe0;
+    color: #151515;
+}
 
-    .ImageContainer {
+.HeroContainer {
+    width: 100%;
+}
+
+.ImageContainer {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2.25;
+    min-height: 300px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #bcbcbc 0%, #a7a7a7 100%);
+
+    img {
         width: 100%;
-        aspect-ratio: 1.13;
-        // for height, used aspect ratio from figma
-        flex-shrink: 0;
+        height: 100%;
+        object-fit: cover;
+    }
 
-        background-color: #AAAAAA;
+    .TitleAndDirectorContainer {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        padding: 2rem;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.34) 100%);
+
+        color: #FFFFFF;
+        font-size: clamp(1.2rem, 2vw, 2rem);
+
+        .DirectorName {
+            font-weight: bold;
+            letter-spacing: 0.12em;
+        }
+
+        .Title {
+            font-style: italic;
+            letter-spacing: 0.08em;
+        }
+    }
+}
+
+.AgeAndTimeHeader {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    font-size: $font-size-md;
+
+    color: #7D262A;
+    background-color: #FDF0D5;
+
+    .AgeAndDuration {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .ActionButtonsGroup {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-left: auto;
+        margin-right: 12rem;
+    }
+
+    .TicketButton {
+        position: absolute;
+        right: 2rem;
+        top: 50%;
+        transform: translateY(-50%);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1.25rem;
+        border-radius: 0.35rem;
+        border: 1.5px solid #7D262A;
+        background: #7D262A;
+        color: #FFFFFF;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        white-space: nowrap;
+        transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+
+        &:hover {
+            background: #6a1f23;
+            border-color: #6a1f23;
+            transform: translateY(-50%) translateY(-2px);
+            box-shadow: 0 4px 12px rgba(125, 38, 42, 0.3);
+        }
+
+        &:active {
+            transform: translateY(-50%);
+            box-shadow: none;
+        }
+    }
+
+    .WatchedButton,
+    .WatchLaterButton {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1.25rem;
+        border-radius: 0.35rem;
+        border: 1.5px solid #7D262A;
+        background: transparent;
+        color: #7D262A;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        cursor: pointer;
+        overflow: hidden;
+        transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+
+        &:hover:not(:disabled) {
+            background: rgba(125, 38, 42, 0.08);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(125, 38, 42, 0.15);
+        }
+
+        &:active:not(:disabled) {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        &:disabled {
+            cursor: wait;
+            opacity: 0.65;
+        }
+    }
+
+    .ActionButtonActive {
+        background: #9b2c32;
+        color: #FFFFFF;
+        border-color: #9b2c32;
+
+        &:hover:not(:disabled) {
+            background: #812227;
+            border-color: #812227;
+            box-shadow: 0 4px 14px rgba(155, 44, 50, 0.35);
+        }
+    }
+
+    .ActionButtonText {
+        display: inline-block;
+        transition: opacity 160ms ease, transform 160ms ease;
+    }
+
+    .WatchedButton:not(:disabled):hover .ActionButtonText,
+    .WatchLaterButton:not(:disabled):hover .ActionButtonText {
+        transform: scale(1.02);
+    }
+
+    .AgeImage {
+        height: 34px;
+    }
+}
+
+.ContentGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.9fr);
+    gap: 2rem;
+    padding: 2rem;
+    align-items: start;
+}
+
+.DescriptionPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    font-size: $font-size-md;
+    color: black;
+}
+
+.DescriptionText {
+    padding: 0;
+    line-height: 1.9;
+    white-space: pre-wrap;
+}
+
+.RightColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.CreditsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    background-color: #FDF0D5;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.06);
+
+    .SectionTitle {
+        margin-bottom: 0.25rem;
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #7D262A;
+    }
+
+    .Credit {
+        display: grid;
+        grid-template-columns: minmax(120px, 180px) 1fr;
+        gap: 1rem;
+        line-height: 1.5;
+
+        .Role {
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .Names {
+            flex: 1;
+        }
+    }
+}
+
+.ReviewsScrollArea {
+    max-height: 320px;
+    overflow-y: auto;
+    padding-right: 0.25rem;
+}
+
+.ReviewsSection {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.ReviewsEmptyState {
+    min-height: 240px;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    background: #0f4158;
+    color: #f7fbfd;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.75rem;
+    box-shadow: 0 18px 36px rgba(15, 65, 88, 0.25);
+
+    .EmptyStateTitle {
+        font-size: 1rem;
+        font-weight: 700;
+    }
+
+    .EmptyStateText {
+        color: rgba(247, 251, 253, 0.78);
+        line-height: 1.6;
+    }
+}
+
+@media (max-width: 960px) {
+    .ContentGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 720px) {
+    .ImageContainer {
+        aspect-ratio: 1.4;
 
         .TitleAndDirectorContainer {
-            display: flex;
-            flex-direction: row;
-            padding: 2rem;
-
-            color: #FFFFFF;
-            font-size: $font-size-lg;
-
-            .DirectorName {
-                font-weight: bold;
-                margin-right: 1rem;
-            }
-
-            .Title {
-                font-style: italic;
-            }
+            padding: 1.25rem;
         }
     }
 
     .AgeAndTimeHeader {
-        padding: 2rem;
-        display: flex;
-        align-items: center;
-        gap: 1.6rem;
-        font-size: $font-size-md;
-
-        color: #7D262A;
-        background-color: #FDF0D5;
-        padding: 1rem;
-
-        .AgeImage {
-            height: 24px;
-        }
-    }
-
-    .DescriptionAndCreditsContainer {
-        padding: 2rem;
-        display: flex;
+        padding: 1rem 1.25rem;
         flex-direction: column;
-        gap: 1rem;
-        font-size: $font-size-md;
-        color: black;
-
-        .DescriptionContainer {
-            padding: 1rem;
-            white-space: pre-wrap;
-        }
-
-        .CreditsContainer {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin: 1.6rem;
-            padding: 1rem;
-            border-radius: 20px;
-            background-color: #FDF0D5;
-
-            .Credit {
-                display: flex;
-                flex-direction: row;
-                gap: 1rem;
-
-                .Role {
-                    min-width: 100px;
-                }
-
-                .Names {
-                    flex: 1;
-                }
-            }
-        }
+        align-items: flex-start;
     }
 
+    .ContentGrid {
+        padding: 1.25rem;
+        gap: 1.25rem;
+    }
+
+    .CreditsContainer {
+        padding: 1.25rem;
+
+        .Credit {
+            grid-template-columns: 1fr;
+            gap: 0.25rem;
+        }
+    }
 }
