@@ -2,7 +2,7 @@ package com.cue.demo.controllers;
 
 import com.cue.demo.dtos.PerformanceCardDTO;
 import com.cue.demo.dtos.WatchPerformanceItemDTO;
-import com.cue.demo.services.MobileUserService;
+import com.cue.demo.services.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -13,14 +13,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/user")
 @CrossOrigin(origins = "http://localhost:5174")
-public final class MobileUserController {
-    private final MobileUserService service;
+public final class UserController {
+    private final UserService service;
 
-    public MobileUserController(final MobileUserService service) {
+    public UserController(final UserService service) {
         this.service = service;
     }
-
-    //POST, DELETE, GETALL (PAGEABLE)
 
     //-------------WATCH LATER------------------
     @PostMapping("/me/watch-later/{performanceId}")
@@ -48,6 +46,13 @@ public final class MobileUserController {
         return ResponseEntity.ok().body(page);
     }
 
+    @GetMapping("/me/watch-later/{performanceId}/exists")
+    public ResponseEntity<Boolean> isPerformanceInWatchLater(@PathVariable final Long performanceId,
+                                                             @RequestHeader(value = "X-User-Id", defaultValue = "1") final Long userId) {
+        Boolean exists = service.isPerformanceInWatchLater(userId, performanceId);
+        return ResponseEntity.ok().body(exists);
+    }
+
     //-------------WATCHED---------------------------
     @PostMapping("/me/watched/{performanceId}")
     public ResponseEntity<Void> addItemToWatched(@PathVariable Long performanceId,
@@ -72,5 +77,12 @@ public final class MobileUserController {
 
         Page<PerformanceCardDTO> page = service.getWatchedPerformanceCards(pageable, userId);
         return ResponseEntity.ok().body(page);
+    }
+
+    @GetMapping("/me/watched/{performanceId}/exists")
+    public ResponseEntity<Boolean> isPerformanceInWatched(@PathVariable final Long performanceId,
+                                                             @RequestHeader(value = "X-User-Id", defaultValue = "1") final Long userId) {
+        Boolean exists = service.isPerformanceInWatched(userId, performanceId);
+        return ResponseEntity.ok().body(exists);
     }
 }

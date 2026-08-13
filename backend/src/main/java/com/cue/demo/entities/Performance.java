@@ -54,6 +54,7 @@ public class Performance {
     @Column(name="purchase_ticket_link")
     private String purchaseTicketLink;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @JdbcTypeCode(SqlTypes.JSON) @Column(columnDefinition = "jsonb")
