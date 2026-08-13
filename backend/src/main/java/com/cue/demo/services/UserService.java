@@ -41,9 +41,9 @@ public class UserService {
     @Transactional
     public void addItemToWatchLater(final WatchPerformanceItemDTO dto) throws UserNotFoundByIdException, PerformanceNotFoundByIdException {
         User user = userRepository.findById(dto.userId())
-                .orElseThrow(() -> new UserNotFoundByIdException("User with id: " + dto.userId() + " not found"));
+                .orElseThrow(() -> new UserNotFoundByIdException(dto.userId()));
         Performance performance = performanceRepository.findById(dto.performanceId())
-                .orElseThrow(() -> new PerformanceNotFoundByIdException("Performance with id: " + dto.performanceId() + " not found"));
+                .orElseThrow(() -> new PerformanceNotFoundByIdException(dto.performanceId()));
 
         if (watchLaterRepository.existsByUserIdAndPerformanceId(user.getId(), performance.getId())) {
             System.out.println("Performance  with id: " + performance.getId() + " already exists" +
@@ -68,9 +68,9 @@ public class UserService {
     @Transactional
     public void deleteItemFromWatchLater(final WatchPerformanceItemDTO dto) throws PerformanceNotFoundByIdException, UserNotFoundByIdException {
         User user = userRepository.findById(dto.userId())
-                .orElseThrow(() -> new UserNotFoundByIdException("User with id: " + dto.userId() + " not found"));
+                .orElseThrow(() -> new UserNotFoundByIdException(dto.userId()));
         Performance performance = performanceRepository.findById(dto.performanceId())
-                .orElseThrow(() -> new PerformanceNotFoundByIdException("Performance with id: " + dto.performanceId() + " not found"));
+                .orElseThrow(() -> new PerformanceNotFoundByIdException(dto.performanceId()));
 
         if (watchLaterRepository.existsByUserIdAndPerformanceId(user.getId(), performance.getId())) {
             watchLaterRepository.deleteByUserIdAndPerformanceId(user.getId(), performance.getId());
@@ -90,7 +90,7 @@ public class UserService {
      */
     public Page<PerformanceCardDTO> getWatchLaterPerformanceCards(final Pageable pageable, final Long userId) throws UserNotFoundByIdException {
         if (!userRepository.existsById(userId)) {
-            throw new UserNotFoundByIdException("User with id: " + userId + " not found");
+            throw new UserNotFoundByIdException(userId);
         }
         Page<WatchLaterPerformanceItem> watchLaterPage = watchLaterRepository.findByUserId(userId, pageable);
         return watchLaterPage.map(mapper::fromWatchLaterItemEntityToPerformanceCardDTO);
@@ -106,9 +106,9 @@ public class UserService {
     @Transactional
     public void addItemToWatched(final WatchPerformanceItemDTO dto) throws UserNotFoundByIdException, PerformanceNotFoundByIdException {
         User user = userRepository.findById(dto.userId())
-                .orElseThrow(() -> new UserNotFoundByIdException("User with id: " + dto.userId() + " not found"));
+                .orElseThrow(() -> new UserNotFoundByIdException(dto.userId()));
         Performance performance = performanceRepository.findById(dto.performanceId())
-                .orElseThrow(() -> new PerformanceNotFoundByIdException("Performance with id: " + dto.performanceId() + " not found"));
+                .orElseThrow(() -> new PerformanceNotFoundByIdException(dto.performanceId()));
 
         if (watchedPerformanceRepository.existsByUserIdAndPerformanceId(user.getId(), performance.getId())) {
             System.out.println("Performance  with id: " + performance.getId() + " already exists" +
@@ -133,9 +133,9 @@ public class UserService {
     @Transactional
     public void deleteItemFromWatched(final WatchPerformanceItemDTO dto) throws UserNotFoundByIdException, PerformanceNotFoundByIdException {
         User user = userRepository.findById(dto.userId())
-                .orElseThrow(() -> new UserNotFoundByIdException("User with id: " + dto.userId() + " not found"));
+                .orElseThrow(() -> new UserNotFoundByIdException(dto.userId()));
         Performance performance = performanceRepository.findById(dto.performanceId())
-                .orElseThrow(() -> new PerformanceNotFoundByIdException("Performance with id: " + dto.performanceId() + " not found"));
+                .orElseThrow(() -> new PerformanceNotFoundByIdException(dto.performanceId()));
 
         if (watchedPerformanceRepository.existsByUserIdAndPerformanceId(user.getId(), performance.getId())) {
             watchedPerformanceRepository.deleteByUserIdAndPerformanceId(user.getId(), performance.getId());
@@ -156,43 +156,43 @@ public class UserService {
      */
     public Page<PerformanceCardDTO> getWatchedPerformanceCards(final Pageable pageable, final Long userId) throws UserNotFoundByIdException {
         if (!userRepository.existsById(userId)) {
-            throw new UserNotFoundByIdException("User with id: " + userId + " not found");
+            throw new UserNotFoundByIdException(userId);
         }
         Page<WatchedPerformanceItem> watchedPage = watchedPerformanceRepository.findByUserId(userId, pageable);
         return watchedPage.map(mapper::fromWatchedItemEntityToPerformanceCardDTO);
     }
 
     /**
-     * Returns true if performance with id is in user's watch later list.
-     * @param userId
-     * @param performanceId
-     * @return
+     * Returns true if performance with id is in the user's watch later list.
+     * @param userId The ID of the user received in the HTTP header.
+     * @param performanceId The ID of the performance that is checked.
+     * @return True if the performance is in the list, false otherwise.
      */
     public Boolean isPerformanceInWatchLater(final Long userId, final Long performanceId) {
         if (!userRepository.existsById(userId)) {
-            throw new UserNotFoundByIdException("User with id: " + userId + " not found");
+            throw new UserNotFoundByIdException(userId);
         }
 
         if (!performanceRepository.existsById(performanceId)) {
-            throw new PerformanceNotFoundByIdException("Performance with id: " + performanceId + " not found");
+            throw new PerformanceNotFoundByIdException(performanceId);
         }
 
         return watchLaterRepository.existsByUserIdAndPerformanceId(userId, performanceId);
     }
 
     /**
-     * Returns true if performance with id is in user's watched list.
-     * @param userId
-     * @param performanceId
-     * @return
+     * Returns true if performance with id is in the user's watched list.
+     * @param userId The ID of the user received in the HTTP header.
+     * @param performanceId The ID of the performance that is checked.
+     * @return True if the performance is in the list, false otherwise.
      */
     public Boolean isPerformanceInWatched(final Long userId, final Long performanceId) {
         if (!userRepository.existsById(userId)) {
-            throw new UserNotFoundByIdException("User with id: " + userId + " not found");
+            throw new UserNotFoundByIdException(userId);
         }
 
         if (!performanceRepository.existsById(performanceId)) {
-            throw new PerformanceNotFoundByIdException("Performance with id: " + performanceId + " not found");
+            throw new PerformanceNotFoundByIdException(performanceId);
         }
 
         return watchedPerformanceRepository.existsByUserIdAndPerformanceId(userId, performanceId);
