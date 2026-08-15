@@ -46,20 +46,6 @@ public class User {
     @Builder.Default
     private Set<Review> reviews = new HashSet<>();
 
-    @OneToMany(mappedBy="user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("addedAtTime DESC")
-    @Builder.Default
-    private Set<WatchLaterPerformanceItem> watchLaterPerformances = new HashSet<>();
-
-//    @Builder.Default
-//    @ManyToMany @JoinTable(
-//            name="user_watched",
-//            joinColumns = @JoinColumn(name="user_id"),
-//            inverseJoinColumns= @JoinColumn(name="performance_id")
-//    )
-//    @OrderBy("createdDateTime DESC")
-//    private Set<Performance> watchedPerformances = new HashSet<>();
-
     @Builder.Default
     private boolean deleted = false;
 

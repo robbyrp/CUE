@@ -36,7 +36,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MissingRequestHeaderException.class)
-    public ResponseEntity<Void> handleMissingHeader(MissingRequestHeaderException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<String> handleMissingHeader(MissingRequestHeaderException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(PerformanceIdMismatchException.class)
+    public ResponseEntity<String> handlePerformanceIdMismatchException(final PerformanceIdMismatchException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 }

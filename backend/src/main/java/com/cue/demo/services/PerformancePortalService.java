@@ -4,6 +4,7 @@ import com.cue.demo.dtos.PerformanceCardDTO;
 import com.cue.demo.dtos.PerformancePortalDTO;
 import com.cue.demo.entities.Performance;
 import com.cue.demo.exceptions.PerformanceAlreadyExistsException;
+import com.cue.demo.exceptions.PerformanceIdMismatchException;
 import com.cue.demo.exceptions.PerformanceNotFoundByIdException;
 import com.cue.demo.dtos.SearchSuggestion;
 import com.cue.demo.mapper.PerformanceMapper;
@@ -61,7 +62,7 @@ public class PerformancePortalService {
 
     public PerformancePortalDTO getPerformanceById(final Long id) throws PerformanceNotFoundByIdException {
         Performance p =  performanceRepository.findById(id)
-                .orElseThrow(() -> new PerformanceNotFoundByIdException("Performance not found by id: " + id));
+                .orElseThrow(() -> new PerformanceNotFoundByIdException(id));
         return mapper.fromPerformanceEntityToPerformancePortalDTO(p);
     }
 
@@ -84,7 +85,7 @@ public class PerformancePortalService {
     @Transactional
     public void deletePerformanceById(final Long id) throws PerformanceNotFoundByIdException {
         if (!performanceRepository.existsById(id)) {
-            throw new PerformanceNotFoundByIdException("Could not find performance with id: " + id);
+            throw new PerformanceNotFoundByIdException(id);
         }
 
         performanceRepository.deleteById(id);
@@ -92,7 +93,7 @@ public class PerformancePortalService {
 
     /**
      * Handles the PUT Request meant to update an existing Performance Entity.
-     * @param id ID of performance, specified in URL.
+     * @param id ID of performance, given as a query param.
      * @param performancePortalDTO DTO containing the old fields and the fields to be updated.
      * @return Returns the newly updated Entity, mapped as a DTO.
      * @throws PerformanceNotFoundByIdException Throws it if the performance with the given ID does not exist in the database.
@@ -102,11 +103,10 @@ public class PerformancePortalService {
             final Long id, final PerformancePortalDTO performancePortalDTO) throws PerformanceNotFoundByIdException {
 
         if (!Objects.equals(id, performancePortalDTO.id())) {
-            throw new PerformanceNotFoundByIdException("ID FROM URL " + id + " IS IN CONFLICT WITH" +
-                    " ID FROM REQUEST BODY: " + performancePortalDTO.id());
+            throw new PerformanceIdMismatchException(id, performancePortalDTO.id());
         }
         Performance performance = performanceRepository.findById(id)
-                .orElseThrow(() -> new PerformanceNotFoundByIdException("Could not find performance with id: " + id));
+                .orElseThrow(() -> new PerformanceNotFoundByIdException(id));
 
         performance.mapFromDTO(performancePortalDTO);
         performanceRepository.save(performance);
