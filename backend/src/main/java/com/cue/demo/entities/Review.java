@@ -3,6 +3,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -12,7 +14,7 @@ import java.time.LocalDateTime;
         uniqueConstraints = {@UniqueConstraint(name = "unique_user_and_performance",
                 columnNames = {"user_id", "performance_id"})})
 @Builder @AllArgsConstructor
-@Entity
+@Getter @Entity
 public class Review {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -29,15 +31,21 @@ public class Review {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @Setter
     private Integer stars;
-    private Integer hearts;
 
+
+    @Setter @Builder.Default
+    private Integer hearts = 0;
+
+    @Setter
     @Column(columnDefinition = "TEXT")
     private String text;
 
     private boolean isSpoiler;
 
     /** Number of times it has been reported **/
+    @Setter
     @Builder.Default
     private Integer reports = 0;
 

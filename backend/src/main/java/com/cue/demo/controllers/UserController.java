@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public final class UserController {
                                                @RequestHeader(value = "X-User-Id") final Long userId) {
         WatchPerformanceItemDTO dto = new WatchPerformanceItemDTO(userId, performanceId);
         service.addItemToWatchLater(dto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/me/watch-later/{performanceId}")
@@ -59,7 +60,7 @@ public final class UserController {
                                                  @RequestHeader(value = "X-User-Id") final Long userId) {
         WatchPerformanceItemDTO dto = new WatchPerformanceItemDTO(userId, performanceId);
          service.addItemToWatched(dto);
-         return ResponseEntity.ok().build();
+         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("me/watched/{performanceId}")

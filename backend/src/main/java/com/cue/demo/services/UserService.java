@@ -168,7 +168,7 @@ public class UserService {
      * @param performanceId The ID of the performance that is checked.
      * @return True if the performance is in the list, false otherwise.
      */
-    public Boolean isPerformanceInWatchLater(final Long userId, final Long performanceId) {
+    public Boolean isPerformanceInWatchLater(final Long userId, final Long performanceId) throws UserNotFoundByIdException, PerformanceNotFoundByIdException{
         if (!userRepository.existsById(userId)) {
             throw new UserNotFoundByIdException(userId);
         }
@@ -186,7 +186,7 @@ public class UserService {
      * @param performanceId The ID of the performance that is checked.
      * @return True if the performance is in the list, false otherwise.
      */
-    public Boolean isPerformanceInWatched(final Long userId, final Long performanceId) {
+    public Boolean isPerformanceInWatched(final Long userId, final Long performanceId) throws UserNotFoundByIdException, PerformanceNotFoundByIdException {
         if (!userRepository.existsById(userId)) {
             throw new UserNotFoundByIdException(userId);
         }
