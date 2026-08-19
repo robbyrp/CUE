@@ -8,6 +8,8 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Table (name="review",
         indexes = {@Index(name = "idx_user_id", columnList = "user")},
@@ -34,9 +36,11 @@ public class Review {
     @Setter
     private Integer stars;
 
-
+    @ManyToMany @JoinTable(name = "review_hearts",
+                joinColumns = @JoinColumn(name="review_id"),
+                inverseJoinColumns = @JoinColumn(name="user_id"))
     @Setter @Builder.Default
-    private Integer hearts = 0;
+    private Set<User> heartedByUsers = new HashSet<>();
 
     @Setter
     @Column(columnDefinition = "TEXT")

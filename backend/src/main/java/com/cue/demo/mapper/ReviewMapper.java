@@ -13,11 +13,12 @@ public final class ReviewMapper {
      * @return the reviewDTO object.
      */
     public ReviewDTO fromReviewToReviewDTO(final Review review) {
+        Integer heartsNumber = review.getHeartedByUsers() != null ? review.getHeartedByUsers().size() : 0;
         return ReviewDTO.builder()
                 .id(review.getId())
                 .createdAt(review.getCreatedAt())
                 .stars(review.getStars())
-                .hearts(review.getHearts())
+                .hearts(heartsNumber)
                 .text(review.getText())
                 .isSpoiler(review.isSpoiler())
                 .build();

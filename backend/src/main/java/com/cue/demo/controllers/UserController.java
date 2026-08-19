@@ -86,4 +86,8 @@ public final class UserController {
         Boolean exists = service.isPerformanceInWatched(userId, performanceId);
         return ResponseEntity.ok().body(exists);
     }
+
+    //-------------REVIEWED---------------------------
+    //TODO: Add enpoint that gets all performances that were reviewed by user identified by x-user-id request header
+
 }

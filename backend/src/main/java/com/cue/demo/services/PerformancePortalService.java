@@ -68,7 +68,7 @@ public class PerformancePortalService {
 
     /**
      *
-     * @param pageable Pageable object received as a path variable in the URL.
+     * @param pageable The pagination and sorting information (page number, size, sort criteria).
      * @return Returns a dynamically sized page of PerformancePortalDTO's. Returns an empty array
      * if there are no performances in the database.
      */

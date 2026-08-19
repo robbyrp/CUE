@@ -82,9 +82,8 @@ public class UserService {
 
     /**
      * Gets a page of PerformanceCardDTOs from the user's "watch later" list.
-     *
-     * @param pageable The pageable object.
-     * @param userId The ID of the user received in the HTTP header.
+     * @param pageable The pagination and sorting information (page number, size, sort criteria).
+     * @param userId The ID of the user received in the HTTP Request header.
      * @return A page of performance card DTOs.
      * @throws UserNotFoundByIdException If a user with the specified ID is not found.
      */
@@ -148,8 +147,7 @@ public class UserService {
 
     /**
      * Gets a page of PerformanceCardDTOs from the user's "watched" list.
-     *
-     * @param pageable The pageable object.
+     * @param pageable The pagination and sorting information (page number, size, sort criteria).
      * @param userId The ID of the user received in the HTTP header.
      * @return A page of performance card DTOs.
      * @throws UserNotFoundByIdException If a user with the specified ID is not found.

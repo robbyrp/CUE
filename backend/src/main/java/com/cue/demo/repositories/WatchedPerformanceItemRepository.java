@@ -24,7 +24,7 @@ public interface WatchedPerformanceItemRepository extends JpaRepository<WatchedP
     /**
      * Returns a page from the user's watch later set.
      * @param userId primary key of user entity
-     * @param pageable pageable object
+     * @param pageable The pagination and sorting information (page number, size, sort criteria).
      * @return A Page of watch later performance item objects.
      */
     Page<WatchedPerformanceItem> findByUserId(Long userId, Pageable pageable);
