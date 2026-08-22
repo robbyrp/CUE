@@ -2,19 +2,13 @@ package com.cue.demo.services;
 
 import com.cue.demo.dtos.PerformanceCardDTO;
 import com.cue.demo.dtos.WatchPerformanceItemDTO;
-import com.cue.demo.entities.Performance;
-import com.cue.demo.entities.User;
-import com.cue.demo.entities.WatchLaterPerformanceItem;
-import com.cue.demo.entities.WatchedPerformanceItem;
+import com.cue.demo.entities.*;
 import com.cue.demo.exceptions.PerformanceNotFoundByIdException;
 import com.cue.demo.exceptions.PerformanceNotInUsersWatchListException;
 import com.cue.demo.exceptions.PerformanceNotInUsersWatchedListException;
 import com.cue.demo.exceptions.UserNotFoundByIdException;
 import com.cue.demo.mapper.PerformanceMapper;
-import com.cue.demo.repositories.PerformanceRepository;
-import com.cue.demo.repositories.UserRepository;
-import com.cue.demo.repositories.WatchLaterPerformanceItemRepository;
-import com.cue.demo.repositories.WatchedPerformanceItemRepository;
+import com.cue.demo.repositories.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +24,7 @@ public class UserService {
     private final WatchLaterPerformanceItemRepository watchLaterRepository;
     private final WatchedPerformanceItemRepository watchedPerformanceRepository;
     private final PerformanceMapper mapper;
+    private final ReviewRepository reviewRepository;
 
     /**
      * Adds a performance to the user's "watch later" list based on the provided data.
@@ -81,12 +76,13 @@ public class UserService {
 
     /**
      * Gets a page of PerformanceCardDTOs from the user's "watch later" list.
+     *
      * @param pageable The pagination and sorting information (page number, size, sort criteria).
      * @param userId The ID of the user received in the HTTP Request header.
      * @return A page of performance card DTOs.
      * @throws UserNotFoundByIdException If a user with the specified ID is not found.
      */
-    public Page<PerformanceCardDTO> getWatchLaterPerformanceCards(final Pageable pageable, final Long userId) throws UserNotFoundByIdException {
+    public Page<PerformanceCardDTO> getWatchLaterPerformanceCards(final Long userId, final Pageable pageable) throws UserNotFoundByIdException {
         if (!userRepository.existsById(userId)) {
             throw new UserNotFoundByIdException(userId);
         }
@@ -145,12 +141,13 @@ public class UserService {
 
     /**
      * Gets a page of PerformanceCardDTOs from the user's "watched" list.
+     *
      * @param pageable The pagination and sorting information (page number, size, sort criteria).
      * @param userId The ID of the user received in the HTTP header.
      * @return A page of performance card DTOs.
      * @throws UserNotFoundByIdException If a user with the specified ID is not found.
      */
-    public Page<PerformanceCardDTO> getWatchedPerformanceCards(final Pageable pageable, final Long userId) throws UserNotFoundByIdException {
+    public Page<PerformanceCardDTO> getWatchedPerformanceCards(final Long userId, final Pageable pageable) throws UserNotFoundByIdException {
         if (!userRepository.existsById(userId)) {
             throw new UserNotFoundByIdException(userId);
         }
@@ -160,6 +157,7 @@ public class UserService {
 
     /**
      * Returns true if performance with id is in the user's watch later list.
+     *
      * @param userId The ID of the user received in the HTTP header.
      * @param performanceId The ID of the performance that is checked.
      * @return True if the performance is in the list, false otherwise.
@@ -178,6 +176,7 @@ public class UserService {
 
     /**
      * Returns true if performance with id is in the user's watched list.
+     *
      * @param userId The ID of the user received in the HTTP header.
      * @param performanceId The ID of the performance that is checked.
      * @return True if the performance is in the list, false otherwise.
@@ -192,5 +191,23 @@ public class UserService {
         }
 
         return watchedPerformanceRepository.existsByUserIdAndPerformanceId(userId, performanceId);
+    }
+
+    /**
+     * Gets the list of performances reviewed by a user.
+     *
+     * @param userId The ID of the user received in the HTTP header.
+     * @param pageable The pagination and sorting information (page number, size, sort criteria).
+     * @return Returns a page of performance cards that have been reviewed by the querying user identified by his id.
+     * @throws UserNotFoundByIdException If a user with the specified ID is not found.
+     */
+    public Page<PerformanceCardDTO> getReviewedPerformanceCards(final Long userId, final Pageable pageable)
+            throws UserNotFoundByIdException {
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotFoundByIdException(userId);
+        }
+
+        Page<Performance> reviewedPerformances = reviewRepository.findPerformancesReviewedByUserId(userId, pageable);
+        return reviewedPerformances.map(mapper::fromPerformanceEntityToPerformanceCardDTO);
     }
 }

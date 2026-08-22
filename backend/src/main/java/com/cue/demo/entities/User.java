@@ -14,7 +14,7 @@ import java.util.*;
 
 
 @Builder @AllArgsConstructor
-@Entity @Table(name="users")
+@Entity @Table(name= "app_user")
 @SQLDelete(sql="UPDATE users SET deleted = true WHERE id=?")
 @SQLRestriction("deleted=false")
 @Getter

@@ -123,7 +123,7 @@ public class PerformanceService {
         Performance performance = performanceRepository.findById(id)
                 .orElseThrow(() -> new PerformanceNotFoundByIdException(id));
 
-        performance.mapFromDTO(performanceDTO);
+        mapper.updatePerformanceEntityFromPerformanceDTO(performanceDTO, performance);
         performanceRepository.save(performance);
         return mapper.fromPerformanceEntityToPerformanceDTO(performance);
     }

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.SQLDelete;
@@ -29,39 +30,44 @@ public class Performance {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     private String title;
+
+    @Setter
     private String director;
+
+    @Setter
     private String location;
 
-    @Column(name="theater_name")
+    @Setter @Column(name="theater_name")
     private String theaterName;
 
-    @Column(name="start_date_time", columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    @Setter @Column(name="start_date_time", columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private LocalDateTime startDateTime;
 
-    @Column(name="truncated_cover_image_URL")
+    @Setter @Column(name="truncated_cover_image_URL")
     private String coverImageURL;
 
-    @Column(name = "age_limit")
+    @Setter @Column(name = "age_limit")
     private Integer ageLimit;
 
-    @Column(name = "duration_minutes")
+    @Setter @Column(name = "duration_minutes")
     private Integer duration;
 
-    @Column(name="fullsize_cover_image_URL")
+    @Setter @Column(name="fullsize_cover_image_URL")
     private String fullCoverImageURL;
 
-    @Column(name="purchase_ticket_link")
+    @Setter @Column(name="purchase_ticket_link")
     private String purchaseTicketLink;
 
-    @Column(columnDefinition = "TEXT")
+    @Setter @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Setter
     @JdbcTypeCode(SqlTypes.JSON) @Column(columnDefinition = "jsonb")
     private List<Credit> creditList;
 
     @OneToMany(mappedBy = "performance", cascade = CascadeType.ALL)
-    @Column(name="review_list")
     private List<Review> reviewList;
 
     @Builder.Default
@@ -81,29 +87,5 @@ public class Performance {
     private boolean deleted = false;
 
     protected Performance() {}
-
-    /**
-     * Method that maps from a DTO to a Performance Entity.
-     * Used to "update" performances in the database.
-     * IMPORTANT: Does not inherit the reviews from the DTO.
-     * createdAt, viewsCount, averageRating, and deleted are omitted as well,
-     * as they are not present in the DTO.
-     * @param dto The DTO from which it updates.
-     */
-    public void mapFromDTO(final PerformanceDTO dto) {
-        this.title = dto.title();
-        this.director = dto.director();
-        this.location = dto.location();
-        this.theaterName = dto.theaterName();
-        this.startDateTime = dto.startDateTime();
-        this.coverImageURL = dto.coverImageURL();
-        this.ageLimit = dto.ageLimit();
-        this.duration = dto.duration();
-        this.fullCoverImageURL = dto.fullCoverImageURL();
-        this.purchaseTicketLink = dto.purchaseTicketLink();
-        this.description = dto.description();
-        this.creditList = dto.credits();
-    }
-
 
 }

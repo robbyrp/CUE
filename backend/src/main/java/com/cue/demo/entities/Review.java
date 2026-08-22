@@ -36,7 +36,7 @@ public class Review {
     @Setter
     private Integer stars;
 
-    @ManyToMany @JoinTable(name = "review_hearts",
+    @ManyToMany @JoinTable(name = "review_heart",
                 joinColumns = @JoinColumn(name="review_id"),
                 inverseJoinColumns = @JoinColumn(name="user_id"))
     @Setter @Builder.Default

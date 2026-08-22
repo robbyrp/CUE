@@ -43,7 +43,7 @@ public final class UserController {
             @RequestHeader(value = "X-User-Id") final Long userId,
             @PageableDefault(sort = "addedAtTime", direction = Sort.Direction.ASC) final Pageable pageable) {
 
-        Page<PerformanceCardDTO> page = service.getWatchLaterPerformanceCards(pageable, userId);
+        Page<PerformanceCardDTO> page = service.getWatchLaterPerformanceCards(userId, pageable);
         return ResponseEntity.ok().body(page);
     }
 
@@ -74,9 +74,9 @@ public final class UserController {
     @GetMapping("me/watched")
     public ResponseEntity<Page<PerformanceCardDTO>> getWatchedPerformanceItems(
             @RequestHeader(value = "X-User-Id") final Long userId,
-            @PageableDefault(sort = "watchedAtTime", direction = Sort.Direction.ASC) final Pageable pageable) {
+            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) final Pageable pageable) {
 
-        Page<PerformanceCardDTO> page = service.getWatchedPerformanceCards(pageable, userId);
+        Page<PerformanceCardDTO> page = service.getWatchedPerformanceCards(userId, pageable);
         return ResponseEntity.ok().body(page);
     }
 
@@ -88,6 +88,12 @@ public final class UserController {
     }
 
     //-------------REVIEWED---------------------------
-    //TODO: Add enpoint that gets all performances that were reviewed by user identified by x-user-id request header
+    @GetMapping("/me/reviewed")
+    public ResponseEntity<Page<PerformanceCardDTO>> getReviewedPerformanceCards(
+            @RequestHeader(value = "X-User-Id") final Long userId,
+            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) final Pageable pageable) {
 
+        Page<PerformanceCardDTO> reviewed = service.getReviewedPerformanceCards(userId, pageable);
+        return ResponseEntity.ok().body(reviewed);
+    }
 }

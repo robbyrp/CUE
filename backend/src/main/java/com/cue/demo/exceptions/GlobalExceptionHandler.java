@@ -2,12 +2,23 @@ package com.cue.demo.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    public ResponseEntity<Map<String, String>> handleMissingRequestHeaderException(MissingRequestHeaderException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "MISSING_REQUEST_HEADER");
+        response.put("message", "Required request header '" + ex.getHeaderName() + "' is not present!");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
     @ExceptionHandler(PerformanceAlreadyExistsException.class)
     public ResponseEntity<String> handlePerformanceAlreadyExistsException(
             final PerformanceAlreadyExistsException ex) {
