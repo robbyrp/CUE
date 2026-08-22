@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -71,8 +70,10 @@ public class ReviewService {
             throws ReviewNotFoundException, UserNotAuthorizedException {
         Review review = reviewRepository.findByUser_IdAndPerformance_Id(userId, performanceId)
                 .orElseThrow(() -> new ReviewNotFoundException(userId, performanceId));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundByIdException(userId));
 
-        if (!Objects.equals(review.getUser().getId(), userId)) {
+        if (!review.isCreatedBy(userId) && !user. isAdmin()) {
             throw new UserNotAuthorizedException(userId);
         }
 
@@ -81,7 +82,6 @@ public class ReviewService {
 
         reviewRepository.save(review);
         return mapper.fromReviewToReviewDTO(review);
-
     }
 
     /**

@@ -21,25 +21,19 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(PerformanceNotInUsersWatchedListException.class)
-    public ResponseEntity<String> handlePerformanceNotInUsersWatchedListException(final PerformanceNotFoundByIdException ex) {
+    public ResponseEntity<String> handlePerformanceNotInUsersWatchedListException(final PerformanceNotInUsersWatchedListException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
     @ExceptionHandler(PerformanceNotInUsersWatchListException.class)
-    public ResponseEntity<String> handlePerformanceNotInUsersWatchListException(final PerformanceNotFoundByIdException ex) {
+    public ResponseEntity<String> handlePerformanceNotInUsersWatchListException(final PerformanceNotInUsersWatchListException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
     @ExceptionHandler(UserNotFoundByIdException.class)
-    public ResponseEntity<String> handleUserNotFoundByIdException(final PerformanceNotFoundByIdException ex) {
+    public ResponseEntity<String> handleUserNotFoundByIdException(final UserNotFoundByIdException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
-//TODO: Update all exceptions with messages in their classes instead of messages in the service.
-
-//    @ExceptionHandler(MissingRequestHeaderException.class)
-//    public ResponseEntity<String> handleMissingHeader(MissingRequestHeaderException ex) {
-//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
-//    }
 
     @ExceptionHandler(PerformanceIdMismatchException.class)
     public ResponseEntity<String> handlePerformanceIdMismatchException(final PerformanceIdMismatchException ex) {

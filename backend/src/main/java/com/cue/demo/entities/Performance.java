@@ -1,6 +1,6 @@
 package com.cue.demo.entities;
 
-import com.cue.demo.dtos.PerformancePortalDTO;
+import com.cue.demo.dtos.PerformanceDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -90,7 +90,7 @@ public class Performance {
      * as they are not present in the DTO.
      * @param dto The DTO from which it updates.
      */
-    public void mapFromDTO(final PerformancePortalDTO dto) {
+    public void mapFromDTO(final PerformanceDTO dto) {
         this.title = dto.title();
         this.director = dto.director();
         this.location = dto.location();

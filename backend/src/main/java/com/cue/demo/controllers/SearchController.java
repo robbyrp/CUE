@@ -2,7 +2,7 @@ package com.cue.demo.controllers;
 
 import com.cue.demo.dtos.PerformanceCardDTO;
 import com.cue.demo.dtos.SearchSuggestion;
-import com.cue.demo.services.PerformancePortalService;
+import com.cue.demo.services.PerformanceService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -16,9 +16,9 @@ import java.util.List;
 @RequestMapping("/api/search")
 @CrossOrigin(origins = "http://localhost:5174")
 public final class SearchController {
-    private final PerformancePortalService service;
+    private final PerformanceService service;
 
-    public SearchController(final PerformancePortalService service) {
+    public SearchController(final PerformanceService service) {
         this.service = service;
     }
 

@@ -75,8 +75,7 @@ public class UserService {
         if (watchLaterRepository.existsByUserIdAndPerformanceId(user.getId(), performance.getId())) {
             watchLaterRepository.deleteByUserIdAndPerformanceId(user.getId(), performance.getId());
         } else {
-            throw new PerformanceNotInUsersWatchListException("Performance with id: " + performance.getId() +
-                    "not found in user's" + user.getId() + " WATCH LATER LIST");
+            throw new PerformanceNotInUsersWatchListException(user.getId(), performance.getId());
         }
     }
 
@@ -140,8 +139,7 @@ public class UserService {
             watchedPerformanceRepository.deleteByUserIdAndPerformanceId(user.getId(), performance.getId());
 
         } else {
-            throw new PerformanceNotInUsersWatchedListException("Performance  with id: " + performance.getId() +
-                    " does not exist in user's " + user.getId() + " WATCHED LIST");
+            throw new PerformanceNotInUsersWatchedListException(user.getId(), performance.getId());
         }
     }
 

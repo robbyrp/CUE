@@ -1,7 +1,7 @@
 package com.cue.demo.mapper;
 
 import com.cue.demo.dtos.PerformanceCardDTO;
-import com.cue.demo.dtos.PerformancePortalDTO;
+import com.cue.demo.dtos.PerformanceDTO;
 import com.cue.demo.entities.Performance;
 import com.cue.demo.entities.WatchLaterPerformanceItem;
 import com.cue.demo.entities.WatchedPerformanceItem;
@@ -57,12 +57,12 @@ public final class PerformanceMapper {
 
 
     /**
-     * Maps the Performance Entity to a PerformancePortalDTO object.
+     * Maps the Performance Entity to a PerformanceDTO object.
      * @param p The performance to be mapped.
      * @return Returns the newly mapped DTO object.
      */
-    public PerformancePortalDTO fromPerformanceEntityToPerformancePortalDTO(final Performance p) {
-        return PerformancePortalDTO.builder()
+    public PerformanceDTO fromPerformanceEntityToPerformanceDTO(final Performance p) {
+        return PerformanceDTO.builder()
                 .id(p.getId())
                 .title(p.getTitle())
                 .director(p.getDirector())

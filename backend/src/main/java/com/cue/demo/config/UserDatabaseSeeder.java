@@ -3,13 +3,11 @@ package com.cue.demo.config;
 import com.cue.demo.entities.User;
 import com.cue.demo.enums.UserRole;
 import com.cue.demo.repositories.UserRepository;
-import com.cue.demo.services.PerformancePortalService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
-import java.util.Set;
 
 @Configuration
 public class UserDatabaseSeeder {
