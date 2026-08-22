@@ -36,9 +36,10 @@ public class ReviewController {
         return ResponseEntity.ok().body(updated);
     }
 
-    @GetMapping("/spectacole/{performanceId}/all")
+    @GetMapping("/spectacole/{performanceId}")
     public ResponseEntity<Page<ReviewDTO>> getPerformanceReviews(@PathVariable Long performanceId,
                                                                  Pageable pageable) {
+
         Page<ReviewDTO> reviews = service.getPerformanceReviews(performanceId, pageable);
         return ResponseEntity.ok().body(reviews);
     }
@@ -46,6 +47,7 @@ public class ReviewController {
     @GetMapping("/spectacole/{performanceId}/me")
     public ResponseEntity<ReviewDTO> getMyReview(@PathVariable Long performanceId,
                                                  @RequestHeader(value = "X-User-Id") Long userId) {
+
         Optional<ReviewDTO> review = service.getMyReview(userId, performanceId);
         return review.map(reviewDTO -> ResponseEntity.ok().body(reviewDTO))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).body(null));
@@ -54,8 +56,17 @@ public class ReviewController {
     @PutMapping("/heart/{reviewId}")
     public ResponseEntity<Void> toggleHeartReview (@PathVariable Long reviewId,
                                                    @RequestHeader(value = "X-User-Id") Long userId) {
+
          service.toggleHeartReview(userId, reviewId);
          return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<ReviewDTO> deleteReview(@PathVariable Long reviewId,
+                                                  @RequestHeader(value = "X-User-Id") Long userId) {
+
+        service.deleteReview(userId, reviewId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
 }

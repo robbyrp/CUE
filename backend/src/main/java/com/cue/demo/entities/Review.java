@@ -55,6 +55,16 @@ public class Review {
 
     protected Review() {}
 
+    /**
+     * Checks if the User (author) of the review is
+     * the same as the userId parameter.
+     * @param userIdRequestHeader User ID received in the Request Header.
+     * @return True if the review has an owner and if its id coincides with the parameter id.
+     */
+    public boolean isCreatedBy(Long userIdRequestHeader) {
+        return this.user != null && this.getUser().getId().equals(userIdRequestHeader);
+    }
+
     @Override
     public String toString() {
         return "Review{" +

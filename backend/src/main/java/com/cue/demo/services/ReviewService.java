@@ -136,6 +136,26 @@ public class ReviewService {
     }
 
     /**
+     * Deletes a review.
+     * @param userId Provided in the request header. Is compared to the Review.user.id member for auth reasons.
+     * @param reviewId Provided in the query param. The review is identified by its id, not the unique pair <user, performance>
+     */
+    @Transactional
+    public void deleteReview(final Long userId, final Long reviewId) throws
+            UserNotFoundByIdException, ReviewNotFoundException, UserNotAuthorizedException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundByIdException(userId));
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewNotFoundException(reviewId));
+
+        if (review.isCreatedBy(userId) || user.isAdmin()) {
+            reviewRepository.delete(review);
+        } else {
+            throw new UserNotAuthorizedException(userId);
+        }
+    }
+
+    /**
      * Internal helper method, checks if user has already reviewed a performance.
      * @param userId Provided in the request header.
      * @param performanceId PerformanceId in query param.

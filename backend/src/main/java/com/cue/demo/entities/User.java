@@ -55,6 +55,10 @@ public class User {
 
     protected User() {}
 
+    public boolean isAdmin() {
+        return this.role == UserRole.ADMIN;
+    }
+
     @Override
     public String toString() {
         return String.format(
