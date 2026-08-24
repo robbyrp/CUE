@@ -14,7 +14,7 @@ public class UserDatabaseSeeder {
     @Bean
     CommandLineRunner initDatabase(UserRepository userRepository) {
         return args -> {
-          if (userRepository.count() == 0) {
+          if (userRepository.count() != 6) {
               User maria = User.builder()
                       .role(UserRole.ADMIN)
                       .username("maria_surubaru1")
@@ -64,16 +64,45 @@ public class UserDatabaseSeeder {
                       .role(UserRole.USER)
                       .username("rp-ul")
                       .phoneNumber("0740000005")
-                      .profilePictureUrl("https://ui-avatars.com/api/?name=Maria+Surubaru")
-                      .bio("Eat sleep gymr repeat")
+                      .profilePictureUrl("https://ui-avatars.com/api/?name=Robert+Pana")
+                      .bio("Eat sleep gym repeat")
                       .firstName("Robert")
                       .lastName("Panda")
                       .email("robert.p@example.com")
                       .city("Constanța")
                       .build();
 
+              User testUser = User.builder()
+                      .id(10L)
+                      .role(UserRole.USER)
+                      .username("testUser")
+                      .phoneNumber("07400903")
+                      .profilePictureUrl("https://ui-avatars.com/api/?name=Test+User")
+                      .bio("UNATC Student")
+                      .firstName("TestUser")
+                      .lastName("TestUser")
+                      .email("test.user@example.com")
+                      .city("Constanța")
+                      .build();
+//
+//              Performance testPerformance = Performance.builder()
+//                      .id(100L)
+//                      .title("Spectacol test")
+//                      .director("Director test")
+//                      .location("TNB Test")
+//                      .theaterName("Teatrul de stat Constanta Test")
+//                      .startDateTime(LocalDateTime.parse("2027-10-10T10:10:00"))
+//                      .coverImageURL("https://example.com/images/dance.jpg")
+//                      .ageLimit(10)
+//                      .duration(100)
+//                      .fullCoverImageURL("https://example.com/images/dance-banner.jpg")
+//                      .purchaseTicketLink("https://cndb.ro/bilete/sincronicitate/test")
+//                      .description("Un spectacol Test impresionant din toate punctele de vedere.")
+//                      .creditList(List.of())
+//                      .build();
+//
+              userRepository.saveAll(List.of(maria, iris, andru, robert, cosmin, testUser));
 
-              userRepository.saveAll(List.of(maria, iris, andru, robert, cosmin));
           }
         };
     }

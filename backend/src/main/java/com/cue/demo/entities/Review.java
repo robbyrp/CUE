@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Table (name="review",
-        indexes = {@Index(name = "idx_user_id", columnList = "user")},
+        indexes = {@Index(name = "idx_user_id", columnList = "user_id")},
         uniqueConstraints = {@UniqueConstraint(name = "unique_user_and_performance",
                 columnNames = {"user_id", "performance_id"})})
 @Builder @AllArgsConstructor
