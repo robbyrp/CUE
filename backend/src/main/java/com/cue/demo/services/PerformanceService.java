@@ -113,7 +113,7 @@ public class PerformanceService {
     @Transactional
     public PerformanceDTO updatePerformanceById(final Long userId, final Long id,
                                                 final PerformanceDTO performanceDTO)
-            throws PerformanceNotFoundByIdException {
+            throws PerformanceIdMismatchException, PerformanceNotFoundByIdException {
 
         verifyAdminStatus(userId);
 

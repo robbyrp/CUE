@@ -34,15 +34,20 @@ public final class UserServiceTest {
     @Mock private ReviewRepository reviewRepository;
     @Mock private PerformanceMapper mapper;
 
-
     @InjectMocks
     private UserService userService;
 
+    final Long existingUserId = 10L;
+    final Long nonExistingUserId = 999L;
+    final Long existingPerformanceId = 5L;
+    final Long nonExistingPerformanceId = 999L;
+
+
+
     //-------------WATCH LATER------------------
     @Test
-    void givenValidData_whenAddsToWatchLaterUserPerformance_thenAddToWatchLater () {
-        final Long existingUserId = 10L;
-        final Long existingPerformanceId = 5L;
+    void givenValidData_whenAddsToWatchLaterUserPerformance_thenAddToWatchLater ()
+    {
         User testUser = User.builder().id(existingUserId).build();
 
         Performance testPerformance = Performance.builder()
@@ -56,26 +61,29 @@ public final class UserServiceTest {
 
         userService.addItemToWatchLater(dto);
 
+        Mockito.verify(userRepository, Mockito.times(1)).findById(existingUserId);
+        Mockito.verify(performanceRepository, Mockito.times(1)).findById(existingPerformanceId);
+        Mockito.verify(watchLaterRepository, Mockito.times(1)).existsByUserIdAndPerformanceId(existingUserId, existingPerformanceId);
         Mockito.verify(watchLaterRepository, Mockito.times(1)).save(Mockito.any(WatchLaterPerformanceItem.class));
     }
 
     @Test
-    void givenNonExistingUser_whenAddsToWatchLaterUserPerformance_thenThrowUserNotFoundException () {
-        final Long nonExistingUserId = 999L;
-        final Long existingPerformanceId = 5L;
+    void givenNonExistingUser_whenAddsToWatchLaterUserPerformance_thenThrowUserNotFoundException ()
+    {
         WatchPerformanceItemDTO dto = new WatchPerformanceItemDTO(nonExistingUserId, existingPerformanceId);
         Mockito.when(userRepository.findById(nonExistingUserId)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(UserNotFoundByIdException.class, () -> userService.addItemToWatchLater(dto));
 
+        Mockito.verify(userRepository, Mockito.times(1)).findById(nonExistingUserId);
+        Mockito.verify(performanceRepository, Mockito.never()).findById(Mockito.anyLong());
+        Mockito.verify(watchLaterRepository, Mockito.never()).existsByUserIdAndPerformanceId(Mockito.anyLong(), Mockito.anyLong());
         Mockito.verify(watchLaterRepository, Mockito.never()).save(Mockito.any());
     }
 
     @Test
-    void givenNonExistingPerformance_whenAddsToWatchLaterUserPerformance_thenThrowPerformanceNotFoundException () {
-        final Long existingUserId = 10L;
-        final Long nonExistingPerformanceId = 999L;
-
+    void givenNonExistingPerformance_whenAddsToWatchLaterUserPerformance_thenThrowPerformanceNotFoundException ()
+    {
         User testUser = User.builder().id(existingUserId).build();
         WatchPerformanceItemDTO dto = new WatchPerformanceItemDTO(existingUserId, nonExistingPerformanceId);
 
@@ -84,14 +92,15 @@ public final class UserServiceTest {
 
         Assertions.assertThrows(PerformanceNotFoundByIdException.class, () -> userService.addItemToWatchLater(dto));
 
+        Mockito.verify(userRepository, Mockito.times(1)).findById(existingUserId);
+        Mockito.verify(performanceRepository, Mockito.times(1)).findById(nonExistingPerformanceId);
+        Mockito.verify(watchLaterRepository, Mockito.never()).existsByUserIdAndPerformanceId(Mockito.anyLong(), Mockito.anyLong());
         Mockito.verify(watchLaterRepository, Mockito.never()).save(Mockito.any());
     }
 
     @Test
-    void givenValidData_whenDeletesItemFromWatchLater_thenDeleteItemFromWatchLater () {
-        final Long existingUserId = 10L;
-        final Long existingPerformanceId = 5L;
-
+    void givenValidData_whenDeletesItemFromWatchLater_thenDeleteItemFromWatchLater ()
+    {
         User testUser = User.builder().id(existingUserId).build();
         Performance testPerformance = Performance.builder()
                 .id(existingPerformanceId).build();
@@ -103,28 +112,30 @@ public final class UserServiceTest {
         Mockito.when(watchLaterRepository.existsByUserIdAndPerformanceId(existingUserId, existingPerformanceId)).thenReturn(true);
 
         userService.deleteItemFromWatchLater(dto);
+        Mockito.verify(userRepository, Mockito.times(1)).findById(existingUserId);
+        Mockito.verify(performanceRepository, Mockito.times(1)).findById(existingPerformanceId);
+        Mockito.verify(watchLaterRepository, Mockito.times(1)).existsByUserIdAndPerformanceId(existingUserId, existingPerformanceId);
         Mockito.verify(watchLaterRepository,
                 Mockito.times(1)).deleteByUserIdAndPerformanceId(existingUserId, existingPerformanceId);
     }
 
     @Test
-    void givenNonExistingUser_whenDeletesItemFromWatchLater_thenThrowUserNotFoundException () {
-        final Long nonExistingUserId = 999L;
-        final Long existingPerformanceId = 5L;
-
+    void givenNonExistingUser_whenDeletesItemFromWatchLater_thenThrowUserNotFoundException ()
+    {
         WatchPerformanceItemDTO dto = new WatchPerformanceItemDTO(nonExistingUserId, existingPerformanceId);
         Mockito.when(userRepository.findById(nonExistingUserId)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(UserNotFoundByIdException.class, () -> userService.deleteItemFromWatchLater(dto));
 
-        Mockito.verify(watchLaterRepository, Mockito.never()).save(Mockito.any());
+        Mockito.verify(userRepository, Mockito.times(1)).findById(nonExistingUserId);
+        Mockito.verify(performanceRepository, Mockito.never()).findById(Mockito.anyLong());
+        Mockito.verify(watchLaterRepository, Mockito.never()).existsByUserIdAndPerformanceId(Mockito.anyLong(), Mockito.anyLong());
+        Mockito.verify(watchLaterRepository, Mockito.never()).deleteByUserIdAndPerformanceId(Mockito.anyLong(), Mockito.anyLong());
     }
 
     @Test
-    void givenNonExistingPerformance_whenDeletesItemFromWatchLater_thenThrowPerformanceNotFoundException () {
-        final Long existingUserId = 10L;
-        final Long nonExistingPerformanceId = 999L;
-
+    void givenNonExistingPerformance_whenDeletesItemFromWatchLater_thenThrowPerformanceNotFoundException ()
+    {
         User testUser = User.builder().id(existingUserId).build();
         WatchPerformanceItemDTO dto = new WatchPerformanceItemDTO(existingUserId, nonExistingPerformanceId);
         Mockito.when(userRepository.findById(existingUserId)).thenReturn(Optional.of(testUser));
@@ -132,13 +143,15 @@ public final class UserServiceTest {
 
         Assertions.assertThrows(PerformanceNotFoundByIdException.class, () -> userService.deleteItemFromWatchLater(dto));
 
-        Mockito.verify(watchLaterRepository, Mockito.never()).save(Mockito.any());
+        Mockito.verify(userRepository, Mockito.times(1)).findById(existingUserId);
+        Mockito.verify(performanceRepository, Mockito.times(1)).findById(nonExistingPerformanceId);
+        Mockito.verify(watchLaterRepository, Mockito.never()).existsByUserIdAndPerformanceId(Mockito.anyLong(), Mockito.anyLong());
+        Mockito.verify(watchLaterRepository, Mockito.never()).deleteByUserIdAndPerformanceId(Mockito.anyLong(), Mockito.anyLong());
     }
 
     @Test
-    void givenValidData_whenGetWatchLaterPerformanceCards_thenGetWatchLaterPerformanceCards () {
-       final Long existingUserId = 10L;
-       final Long existingPerformanceId = 5L;
+    void givenValidData_whenGetWatchLaterPerformanceCards_thenGetWatchLaterPerformanceCards ()
+    {
        final Long existingWatchLaterItemId = 150L;
        Pageable pageable = PageRequest.of(0, 10);
 
@@ -157,23 +170,29 @@ public final class UserServiceTest {
         Assertions.assertFalse(result.isEmpty());
         Assertions.assertEquals(1, result.getContent().size());
         Assertions.assertEquals(expectedPerformanceCardDto, result.getContent().getFirst());
+
+        Mockito.verify(userRepository, Mockito.times(1)).existsById(existingUserId);
+        Mockito.verify(watchLaterRepository, Mockito.times(1)).findByUserId(existingUserId, pageable);
+        Mockito.verify(mapper, Mockito.times(1)).fromWatchLaterItemEntityToPerformanceCardDTO(watchLaterMockItem);
     }
 
     @Test
-    void givenNonExistingUser_whenGetWatchLaterPerformanceCards_thenThrowUserNotFoundException () {
-        final Long nonExistingUserId = 999L;
+    void givenNonExistingUser_whenGetWatchLaterPerformanceCards_thenThrowUserNotFoundException ()
+    {
         Pageable pageable = PageRequest.of(0, 10);
 
         Mockito.when(userRepository.existsById(nonExistingUserId)).thenReturn(false);
 
         Assertions.assertThrows(UserNotFoundByIdException.class, () -> userService.getWatchLaterPerformanceCards(nonExistingUserId, pageable));
+
+        Mockito.verify(userRepository, Mockito.times(1)).existsById(nonExistingUserId);
+        Mockito.verify(watchLaterRepository, Mockito.never()).findByUserId(Mockito.anyLong(), Mockito.any(Pageable.class));
     }
 
     //-------------WATCHED------------------
     @Test
-    void givenValidData_whenAddsToWatchedUserPerformance_thenAddToWatched () {
-        final Long existingUserId = 10L;
-        final Long existingPerformanceId = 5L;
+    void givenValidData_whenAddsToWatchedUserPerformance_thenAddToWatched ()
+    {
         User testUser = User.builder().id(existingUserId).build();
 
         Performance testPerformance = Performance.builder()
@@ -187,26 +206,29 @@ public final class UserServiceTest {
 
         userService.addItemToWatched(dto);
 
+        Mockito.verify(userRepository, Mockito.times(1)).findById(existingUserId);
+        Mockito.verify(performanceRepository, Mockito.times(1)).findById(existingPerformanceId);
+        Mockito.verify(watchedPerformanceRepository, Mockito.times(1)).existsByUserIdAndPerformanceId(existingUserId, existingPerformanceId);
         Mockito.verify(watchedPerformanceRepository, Mockito.times(1)).save(Mockito.any(WatchedPerformanceItem.class));
     }
 
     @Test
-    void givenNonExistingUser_whenAddsToWatchedUserPerformance_thenThrowUserNotFoundException () {
-        final Long nonExistingUserId = 999L;
-        final Long existingPerformanceId = 5L;
+    void givenNonExistingUser_whenAddsToWatchedUserPerformance_thenThrowUserNotFoundException ()
+    {
         WatchPerformanceItemDTO dto = new WatchPerformanceItemDTO(nonExistingUserId, existingPerformanceId);
         Mockito.when(userRepository.findById(nonExistingUserId)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(UserNotFoundByIdException.class, () -> userService.addItemToWatched(dto));
 
+        Mockito.verify(userRepository, Mockito.times(1)).findById(nonExistingUserId);
+        Mockito.verify(performanceRepository, Mockito.never()).findById(Mockito.anyLong());
+        Mockito.verify(watchedPerformanceRepository, Mockito.never()).existsByUserIdAndPerformanceId(Mockito.anyLong(), Mockito.anyLong());
         Mockito.verify(watchedPerformanceRepository, Mockito.never()).save(Mockito.any());
     }
 
     @Test
-    void givenNonExistingPerformance_whenAddsToWatchedUserPerformance_thenThrowPerformanceNotFoundException () {
-        final Long existingUserId = 10L;
-        final Long nonExistingPerformanceId = 999L;
-
+    void givenNonExistingPerformance_whenAddsToWatchedUserPerformance_thenThrowPerformanceNotFoundException ()
+    {
         User testUser = User.builder().id(existingUserId).build();
         WatchPerformanceItemDTO dto = new WatchPerformanceItemDTO(existingUserId, nonExistingPerformanceId);
 
@@ -215,14 +237,15 @@ public final class UserServiceTest {
 
         Assertions.assertThrows(PerformanceNotFoundByIdException.class, () -> userService.addItemToWatched(dto));
 
+        Mockito.verify(userRepository, Mockito.times(1)).findById(existingUserId);
+        Mockito.verify(performanceRepository, Mockito.times(1)).findById(nonExistingPerformanceId);
+        Mockito.verify(watchedPerformanceRepository, Mockito.never()).existsByUserIdAndPerformanceId(Mockito.anyLong(), Mockito.anyLong());
         Mockito.verify(watchedPerformanceRepository, Mockito.never()).save(Mockito.any());
     }
 
     @Test
-    void givenValidData_whenDeletesItemFromWatched_thenDeleteItemFromWatched () {
-        final Long existingUserId = 10L;
-        final Long existingPerformanceId = 5L;
-
+    void givenValidData_whenDeletesItemFromWatched_thenDeleteItemFromWatched ()
+    {
         User testUser = User.builder().id(existingUserId).build();
         Performance testPerformance = Performance.builder()
                 .id(existingPerformanceId).build();
@@ -234,28 +257,30 @@ public final class UserServiceTest {
         Mockito.when(watchedPerformanceRepository.existsByUserIdAndPerformanceId(existingUserId, existingPerformanceId)).thenReturn(true);
 
         userService.deleteItemFromWatched(dto);
+        Mockito.verify(userRepository, Mockito.times(1)).findById(existingUserId);
+        Mockito.verify(performanceRepository, Mockito.times(1)).findById(existingPerformanceId);
+        Mockito.verify(watchedPerformanceRepository, Mockito.times(1)).existsByUserIdAndPerformanceId(existingUserId, existingPerformanceId);
         Mockito.verify(watchedPerformanceRepository,
                 Mockito.times(1)).deleteByUserIdAndPerformanceId(existingUserId, existingPerformanceId);
     }
 
     @Test
-    void givenNonExistingUser_whenDeletesItemFromWatched_thenThrowUserNotFoundException () {
-        final Long nonExistingUserId = 999L;
-        final Long existingPerformanceId = 5L;
-
+    void givenNonExistingUser_whenDeletesItemFromWatched_thenThrowUserNotFoundException ()
+    {
         WatchPerformanceItemDTO dto = new WatchPerformanceItemDTO(nonExistingUserId, existingPerformanceId);
         Mockito.when(userRepository.findById(nonExistingUserId)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(UserNotFoundByIdException.class, () -> userService.deleteItemFromWatched(dto));
 
-        Mockito.verify(watchedPerformanceRepository, Mockito.never()).save(Mockito.any());
+        Mockito.verify(userRepository, Mockito.times(1)).findById(nonExistingUserId);
+        Mockito.verify(performanceRepository, Mockito.never()).findById(Mockito.anyLong());
+        Mockito.verify(watchedPerformanceRepository, Mockito.never()).existsByUserIdAndPerformanceId(Mockito.anyLong(), Mockito.anyLong());
+        Mockito.verify(watchedPerformanceRepository, Mockito.never()).deleteByUserIdAndPerformanceId(Mockito.anyLong(), Mockito.anyLong());
     }
 
     @Test
-    void givenNonExistingPerformance_whenDeletesItemFromWatched_thenThrowPerformanceNotFoundException () {
-        final Long existingUserId = 10L;
-        final Long nonExistingPerformanceId = 999L;
-
+    void givenNonExistingPerformance_whenDeletesItemFromWatched_thenThrowPerformanceNotFoundException ()
+    {
         User testUser = User.builder().id(existingUserId).build();
         WatchPerformanceItemDTO dto = new WatchPerformanceItemDTO(existingUserId, nonExistingPerformanceId);
         Mockito.when(userRepository.findById(existingUserId)).thenReturn(Optional.of(testUser));
@@ -263,13 +288,15 @@ public final class UserServiceTest {
 
         Assertions.assertThrows(PerformanceNotFoundByIdException.class, () -> userService.deleteItemFromWatched(dto));
 
-        Mockito.verify(watchedPerformanceRepository, Mockito.never()).save(Mockito.any());
+        Mockito.verify(userRepository, Mockito.times(1)).findById(existingUserId);
+        Mockito.verify(performanceRepository, Mockito.times(1)).findById(nonExistingPerformanceId);
+        Mockito.verify(watchedPerformanceRepository, Mockito.never()).existsByUserIdAndPerformanceId(Mockito.anyLong(), Mockito.anyLong());
+        Mockito.verify(watchedPerformanceRepository, Mockito.never()).deleteByUserIdAndPerformanceId(Mockito.anyLong(), Mockito.anyLong());
     }
 
     @Test
-    void givenValidData_whenGetWatchedPerformanceCards_thenGetWatchedPerformanceCards () {
-        final Long existingUserId = 10L;
-        final Long existingPerformanceId = 5L;
+    void givenValidData_whenGetWatchedPerformanceCards_thenGetWatchedPerformanceCards ()
+    {
         final Long existingWatchedItemId = 150L;
         Pageable pageable = PageRequest.of(0, 10);
 
@@ -288,23 +315,29 @@ public final class UserServiceTest {
         Assertions.assertFalse(result.isEmpty());
         Assertions.assertEquals(1, result.getContent().size());
         Assertions.assertEquals(expectedPerformanceCardDto, result.getContent().getFirst());
+
+        Mockito.verify(userRepository, Mockito.times(1)).existsById(existingUserId);
+        Mockito.verify(watchedPerformanceRepository, Mockito.times(1)).findByUserId(existingUserId, pageable);
+        Mockito.verify(mapper, Mockito.times(1)).fromWatchedItemEntityToPerformanceCardDTO(watchedMockItem);
     }
 
     @Test
-    void givenNonExistingUser_whenGetWatchedPerformanceCards_thenThrowUserNotFoundException () {
-        final Long nonExistingUserId = 999L;
+    void givenNonExistingUser_whenGetWatchedPerformanceCards_thenThrowUserNotFoundException ()
+    {
         Pageable pageable = PageRequest.of(0, 10);
 
         Mockito.when(userRepository.existsById(nonExistingUserId)).thenReturn(false);
 
         Assertions.assertThrows(UserNotFoundByIdException.class, () -> userService.getWatchedPerformanceCards(nonExistingUserId, pageable));
+
+        Mockito.verify(userRepository, Mockito.times(1)).existsById(nonExistingUserId);
+        Mockito.verify(watchedPerformanceRepository, Mockito.never()).findByUserId(Mockito.anyLong(), Mockito.any(Pageable.class));
     }
 
     //-------------REVIEWED------------------
     @Test
-    void givenValidData_whenGetReviewedPerformanceCards_thenGetReviewedPerformanceCards () {
-        final Long existingUserId = 10L;
-        final Long existingPerformanceId = 5L;
+    void givenValidData_whenGetReviewedPerformanceCards_thenGetReviewedPerformanceCards ()
+    {
         Pageable pageable = PageRequest.of(0, 10);
 
         Performance reviewedPerformanceMock = Performance.builder().id(existingPerformanceId).build();
@@ -323,17 +356,23 @@ public final class UserServiceTest {
         Assertions.assertFalse(result.isEmpty());
         Assertions.assertEquals(1, result.getContent().size());
         Assertions.assertEquals(expectedPerformanceCardDto, result.getContent().getFirst());
+
+        Mockito.verify(userRepository, Mockito.times(1)).existsById(existingUserId);
+        Mockito.verify(reviewRepository, Mockito.times(1)).findPerformancesReviewedByUserId(existingUserId, pageable);
+        Mockito.verify(mapper, Mockito.times(1)).fromPerformanceEntityToPerformanceCardDTO(reviewedPerformanceMock);
     }
 
     @Test
-    void givenNonExistingUser_whenGetReviewedPerformanceCards_thenThrowUserNotFoundException () {
-        final Long nonExistingUserId = 10L;
+    void givenNonExistingUser_whenGetReviewedPerformanceCards_thenThrowUserNotFoundException ()
+    {
         Pageable pageable = PageRequest.of(0, 10);
 
         Mockito.when(userRepository.existsById(nonExistingUserId)).thenReturn(false);
 
         Assertions.assertThrows(UserNotFoundByIdException.class, () -> userService.getReviewedPerformanceCards(nonExistingUserId, pageable));
-    }
 
+        Mockito.verify(userRepository, Mockito.times(1)).existsById(nonExistingUserId);
+        Mockito.verify(reviewRepository, Mockito.never()).findPerformancesReviewedByUserId(Mockito.anyLong(), Mockito.any(Pageable.class));
+    }
 
 }
