@@ -40,6 +40,9 @@ public class PerformanceServiceTest {
     final Long existingPerformanceId = 10L;
     final Long invalidPerformanceId = 999L;
 
+    /**
+     * Tests the successful creation of a performance by an admin.
+     */
     @Test
     void givenValidData_whenCreatePerformance_thenReturnPerformance()
     {
@@ -63,6 +66,9 @@ public class PerformanceServiceTest {
         Mockito.verify(performanceRepository, Mockito.times(1)).save(Mockito.any(Performance.class));
     }
 
+    /**
+     * Tests that a PerformanceAlreadyExistsException is thrown when attempting to create a performance that already exists.
+     */
     @Test
     void givenDuplicatePerformance_whenCreatePerformance_thenThrowPerformanceAlreadyExistsException()
     {
@@ -86,6 +92,9 @@ public class PerformanceServiceTest {
         Mockito.verify(performanceRepository, Mockito.never()).save(Mockito.any());
     }
 
+    /**
+     * Tests that a UserNotAuthorizedException is thrown when a non-admin user attempts to create a performance.
+     */
     @Test
     void givenInvalidUserRole_whenCreatePerformance_thenThrowUserNotAuthorizedException()
     {
@@ -108,6 +117,9 @@ public class PerformanceServiceTest {
         Mockito.verify(performanceRepository, Mockito.never()).save(Mockito.any());
     }
 
+    /**
+     * Tests the successful retrieval of a performance by its ID.
+     */
     @Test
     void givenValidPerformanceId_whenGetPerformanceById_thenReturnPerformance()
     {
@@ -123,6 +135,9 @@ public class PerformanceServiceTest {
         Mockito.verify(performanceMapper, Mockito.times(1)).fromPerformanceEntityToPerformanceDTO(performanceMock);
     }
 
+    /**
+     * Tests that a PerformanceNotFoundByIdException is thrown when a performance with the given ID does not exist.
+     */
     @Test
     void givenInvalidPerformanceId_whenGetPerformanceById_thenThrowPerformanceNotFoundByIdException()
     {
@@ -172,6 +187,9 @@ public class PerformanceServiceTest {
         Mockito.verify(performanceMapper, Mockito.times(pageSize)).fromPerformanceEntityToPerformanceDTO(Mockito.any(Performance.class));
     }
 
+    /**
+     * Tests the successful deletion of a performance by its ID by an admin.
+     */
     @Test
     void givenValidData_whenDeletePerformance_thenDeletePerformance()
     {
@@ -187,6 +205,9 @@ public class PerformanceServiceTest {
         Mockito.verify(performanceRepository, Mockito.times(1)).deleteById(existingPerformanceId);
     }
 
+    /**
+     * Tests that a PerformanceNotFoundByIdException is thrown when attempting to delete a non-existing performance.
+     */
     @Test
     void givenInvalidPerformance_whenDeletePerformance_thenThrowPerformanceNotFoundByIdException()
     {
@@ -204,6 +225,9 @@ public class PerformanceServiceTest {
         Mockito.verify(performanceRepository, Mockito.never()).delete(Mockito.any(Performance.class));
     }
 
+    /**
+     * Tests that a UserNotAuthorizedException is thrown when a non-admin user attempts to delete a performance.
+     */
     @Test
     void givenInvalidUserRole_whenDeletePerformance_thenThrowUserNotAuthorizedException()
     {
@@ -262,6 +286,9 @@ public class PerformanceServiceTest {
         Mockito.verify(performanceMapper, Mockito.times(1)).fromPerformanceEntityToPerformanceDTO(performance);
     }
 
+    /**
+     * Tests that a UserNotAuthorizedException is thrown when a non-admin user attempts to update a performance.
+     */
     @Test
     void givenInvalidUserRole_whenUpdatePerformanceById_thenThrowUserNotAuthorizedException ()
     {
@@ -281,6 +308,9 @@ public class PerformanceServiceTest {
         Mockito.verify(performanceRepository, Mockito.never()).save(Mockito.any(Performance.class));
     }
 
+    /**
+     * Tests that a PerformanceIdMismatchException is thrown when the ID in the path does not match the ID in the DTO during update.
+     */
     @Test
     void givenWrongPathVariablePerformanceId_whenUpdatePerformanceById_thenThrowUserNotAuthorizedException ()
     {
@@ -300,6 +330,9 @@ public class PerformanceServiceTest {
         Mockito.verify(performanceRepository, Mockito.never()).save(Mockito.any(Performance.class));
     }
 
+    /**
+     * Tests the successful retrieval of search title completion suggestions based on a keyword.
+     */
     @Test
     void givenValidKeyword_whenGetSearchTitleSuggestion_thenGetSearchTitleSuggestion ()
     {
@@ -333,6 +366,9 @@ public class PerformanceServiceTest {
         Mockito.verify(performanceRepository, Mockito.times(1)).searchTitleCompletionSuggestions(keyword);
     }
 
+    /**
+     * Tests the successful retrieval of paginated search results for performances based on a keyword.
+     */
     @Test
     void givenValidKeyword_whenGetSearchResults_thenGetSearchResults ()
     {

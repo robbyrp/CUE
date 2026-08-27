@@ -27,12 +27,12 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @PutMapping("/spectacole/{performanceId}")
-    public ResponseEntity<ReviewDTO> updateReview(@PathVariable Long performanceId,
+    @PutMapping("/{reviewId}")
+    public ResponseEntity<ReviewDTO> updateReview(@PathVariable Long reviewId,
                                                   @RequestHeader(value = "X-User-Id") Long userId,
                                                   @RequestBody @Valid ReviewDTO reviewDTO) {
 
-        ReviewDTO updated = service.updateReview(userId, performanceId, reviewDTO);
+        ReviewDTO updated = service.updateReview(userId, reviewId, reviewDTO);
         return ResponseEntity.ok().body(updated);
     }
 

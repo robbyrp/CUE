@@ -37,6 +37,7 @@ public class ReviewService {
     @Transactional
     public ReviewDTO createReview(final Long userId, final Long performanceId, final ReviewDTO reviewDTO)
             throws ReviewAlreadyExistsException, UserNotFoundByIdException, PerformanceNotFoundByIdException {
+
         if (hasUserReviewedPerformance(userId, performanceId)) throw new ReviewAlreadyExistsException(userId, performanceId);
 
         User user = userRepository.findById(userId)
@@ -52,7 +53,7 @@ public class ReviewService {
                 .isSpoiler(reviewDTO.isSpoiler())
                 .build();
 
-        reviewRepository.saveAndFlush(review);
+        review = reviewRepository.saveAndFlush(review);
 
         return mapper.fromReviewToReviewDTO(review);
     }
@@ -60,16 +61,17 @@ public class ReviewService {
     /**
      * IMPORTANT: This method can only update the Text comment or the Stars number!
      * @param userId Provided in the request header. Is compared to the Review.user.id member for auth reasons.
-     * @param performanceId PerformanceId in query param.
+     * @param reviewId The SST for which review the user modifies is this path variable.
+     *                 This also allows an Admin to edit any user's reviews.
      * @param reviewDTO The review object which contains the new fields.
      * @return Returns the newly updated reviewDTO object.
      * @throws ReviewAlreadyExistsException The user has already left a review for the performance.
      */
     @Transactional
-    public ReviewDTO updateReview(final Long userId, final Long performanceId, final ReviewDTO reviewDTO)
+    public ReviewDTO updateReview(final Long userId, final Long reviewId, final ReviewDTO reviewDTO)
             throws ReviewNotFoundException, UserNotAuthorizedException {
-        Review review = reviewRepository.findByUser_IdAndPerformance_Id(userId, performanceId)
-                .orElseThrow(() -> new ReviewNotFoundException(userId, performanceId));
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new ReviewNotFoundException(reviewId));
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundByIdException(userId));
 
@@ -80,7 +82,7 @@ public class ReviewService {
         review.setStars(reviewDTO.stars());
         review.setText(reviewDTO.text());
 
-        reviewRepository.save(review);
+        review = reviewRepository.save(review);
         return mapper.fromReviewToReviewDTO(review);
     }
 

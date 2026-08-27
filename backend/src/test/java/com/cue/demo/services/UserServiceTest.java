@@ -42,9 +42,9 @@ public final class UserServiceTest {
     final Long existingPerformanceId = 5L;
     final Long nonExistingPerformanceId = 999L;
 
-
-
-    //-------------WATCH LATER------------------
+    /**
+     * Tests the successful addition of a performance to a user's "Watch Later" list.
+     */
     @Test
     void givenValidData_whenAddsToWatchLaterUserPerformance_thenAddToWatchLater ()
     {
@@ -67,6 +67,9 @@ public final class UserServiceTest {
         Mockito.verify(watchLaterRepository, Mockito.times(1)).save(Mockito.any(WatchLaterPerformanceItem.class));
     }
 
+    /**
+     * Tests that a UserNotFoundByIdException is thrown when a non-existing user attempts to add a performance to "Watch Later".
+     */
     @Test
     void givenNonExistingUser_whenAddsToWatchLaterUserPerformance_thenThrowUserNotFoundException ()
     {
@@ -81,6 +84,9 @@ public final class UserServiceTest {
         Mockito.verify(watchLaterRepository, Mockito.never()).save(Mockito.any());
     }
 
+    /**
+     * Tests that a PerformanceNotFoundByIdException is thrown when a user attempts to add a non-existing performance to "Watch Later".
+     */
     @Test
     void givenNonExistingPerformance_whenAddsToWatchLaterUserPerformance_thenThrowPerformanceNotFoundException ()
     {
@@ -98,6 +104,9 @@ public final class UserServiceTest {
         Mockito.verify(watchLaterRepository, Mockito.never()).save(Mockito.any());
     }
 
+    /**
+     * Tests the successful deletion of a performance from a user's "Watch Later" list.
+     */
     @Test
     void givenValidData_whenDeletesItemFromWatchLater_thenDeleteItemFromWatchLater ()
     {
@@ -119,6 +128,9 @@ public final class UserServiceTest {
                 Mockito.times(1)).deleteByUserIdAndPerformanceId(existingUserId, existingPerformanceId);
     }
 
+    /**
+     * Tests that a UserNotFoundByIdException is thrown when a non-existing user attempts to delete a performance from "Watch Later".
+     */
     @Test
     void givenNonExistingUser_whenDeletesItemFromWatchLater_thenThrowUserNotFoundException ()
     {
@@ -133,6 +145,9 @@ public final class UserServiceTest {
         Mockito.verify(watchLaterRepository, Mockito.never()).deleteByUserIdAndPerformanceId(Mockito.anyLong(), Mockito.anyLong());
     }
 
+    /**
+     * Tests that a PerformanceNotFoundByIdException is thrown when a user attempts to delete a non-existing performance from "Watch Later".
+     */
     @Test
     void givenNonExistingPerformance_whenDeletesItemFromWatchLater_thenThrowPerformanceNotFoundException ()
     {
@@ -149,6 +164,9 @@ public final class UserServiceTest {
         Mockito.verify(watchLaterRepository, Mockito.never()).deleteByUserIdAndPerformanceId(Mockito.anyLong(), Mockito.anyLong());
     }
 
+    /**
+     * Tests the successful retrieval of a user's "Watch Later" performances as card DTOs.
+     */
     @Test
     void givenValidData_whenGetWatchLaterPerformanceCards_thenGetWatchLaterPerformanceCards ()
     {
@@ -176,6 +194,9 @@ public final class UserServiceTest {
         Mockito.verify(mapper, Mockito.times(1)).fromWatchLaterItemEntityToPerformanceCardDTO(watchLaterMockItem);
     }
 
+    /**
+     * Tests that a UserNotFoundByIdException is thrown when retrieving "Watch Later" performances for a non-existing user.
+     */
     @Test
     void givenNonExistingUser_whenGetWatchLaterPerformanceCards_thenThrowUserNotFoundException ()
     {
@@ -189,7 +210,9 @@ public final class UserServiceTest {
         Mockito.verify(watchLaterRepository, Mockito.never()).findByUserId(Mockito.anyLong(), Mockito.any(Pageable.class));
     }
 
-    //-------------WATCHED------------------
+    /**
+     * Tests the successful addition of a performance to a user's "Watched" list.
+     */
     @Test
     void givenValidData_whenAddsToWatchedUserPerformance_thenAddToWatched ()
     {
@@ -212,6 +235,9 @@ public final class UserServiceTest {
         Mockito.verify(watchedPerformanceRepository, Mockito.times(1)).save(Mockito.any(WatchedPerformanceItem.class));
     }
 
+    /**
+     * Tests that a UserNotFoundByIdException is thrown when a non-existing user attempts to add a performance to "Watched".
+     */
     @Test
     void givenNonExistingUser_whenAddsToWatchedUserPerformance_thenThrowUserNotFoundException ()
     {
@@ -226,6 +252,9 @@ public final class UserServiceTest {
         Mockito.verify(watchedPerformanceRepository, Mockito.never()).save(Mockito.any());
     }
 
+    /**
+     * Tests that a PerformanceNotFoundByIdException is thrown when a user attempts to add a non-existing performance to "Watched".
+     */
     @Test
     void givenNonExistingPerformance_whenAddsToWatchedUserPerformance_thenThrowPerformanceNotFoundException ()
     {
@@ -243,6 +272,9 @@ public final class UserServiceTest {
         Mockito.verify(watchedPerformanceRepository, Mockito.never()).save(Mockito.any());
     }
 
+    /**
+     * Tests the successful deletion of a performance from a user's "Watched" list.
+     */
     @Test
     void givenValidData_whenDeletesItemFromWatched_thenDeleteItemFromWatched ()
     {
@@ -264,6 +296,9 @@ public final class UserServiceTest {
                 Mockito.times(1)).deleteByUserIdAndPerformanceId(existingUserId, existingPerformanceId);
     }
 
+    /**
+     * Tests that a UserNotFoundByIdException is thrown when a non-existing user attempts to delete a performance from "Watched".
+     */
     @Test
     void givenNonExistingUser_whenDeletesItemFromWatched_thenThrowUserNotFoundException ()
     {
@@ -278,6 +313,9 @@ public final class UserServiceTest {
         Mockito.verify(watchedPerformanceRepository, Mockito.never()).deleteByUserIdAndPerformanceId(Mockito.anyLong(), Mockito.anyLong());
     }
 
+    /**
+     * Tests that a PerformanceNotFoundByIdException is thrown when a user attempts to delete a non-existing performance from "Watched".
+     */
     @Test
     void givenNonExistingPerformance_whenDeletesItemFromWatched_thenThrowPerformanceNotFoundException ()
     {
@@ -294,6 +332,9 @@ public final class UserServiceTest {
         Mockito.verify(watchedPerformanceRepository, Mockito.never()).deleteByUserIdAndPerformanceId(Mockito.anyLong(), Mockito.anyLong());
     }
 
+    /**
+     * Tests the successful retrieval of a user's "Watched" performances as card DTOs.
+     */
     @Test
     void givenValidData_whenGetWatchedPerformanceCards_thenGetWatchedPerformanceCards ()
     {
@@ -321,6 +362,9 @@ public final class UserServiceTest {
         Mockito.verify(mapper, Mockito.times(1)).fromWatchedItemEntityToPerformanceCardDTO(watchedMockItem);
     }
 
+    /**
+     * Tests that a UserNotFoundByIdException is thrown when retrieving "Watched" performances for a non-existing user.
+     */
     @Test
     void givenNonExistingUser_whenGetWatchedPerformanceCards_thenThrowUserNotFoundException ()
     {
@@ -334,7 +378,9 @@ public final class UserServiceTest {
         Mockito.verify(watchedPerformanceRepository, Mockito.never()).findByUserId(Mockito.anyLong(), Mockito.any(Pageable.class));
     }
 
-    //-------------REVIEWED------------------
+    /**
+     * Tests the successful retrieval of performances reviewed by a user as card DTOs.
+     */
     @Test
     void givenValidData_whenGetReviewedPerformanceCards_thenGetReviewedPerformanceCards ()
     {
@@ -362,6 +408,9 @@ public final class UserServiceTest {
         Mockito.verify(mapper, Mockito.times(1)).fromPerformanceEntityToPerformanceCardDTO(reviewedPerformanceMock);
     }
 
+    /**
+     * Tests that a UserNotFoundByIdException is thrown when retrieving reviewed performances for a non-existing user.
+     */
     @Test
     void givenNonExistingUser_whenGetReviewedPerformanceCards_thenThrowUserNotFoundException ()
     {
