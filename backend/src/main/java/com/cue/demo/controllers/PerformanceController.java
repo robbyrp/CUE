@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/spectacole")
 @CrossOrigin(origins = "http://localhost:5174")
 public final class PerformanceController {
 
@@ -22,16 +22,15 @@ public final class PerformanceController {
         this.service = service;
     }
 
-    @PostMapping("/spectacole")
+    @PostMapping("/admin")
     public ResponseEntity<Void> createPerformance(
-            @RequestHeader(value = "X-User-Id") Long userId,
             @RequestBody @Valid final PerformanceDTO dto) {
 
-        service.createPerformance(userId, dto);
+        service.createPerformance(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/spectacole")
+    @GetMapping("/")
     public ResponseEntity<Page<PerformanceDTO>> getPerformances(
             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) final Pageable pageable) {
 
@@ -39,27 +38,25 @@ public final class PerformanceController {
         return ResponseEntity.ok().body(page);
     }
 
-    @GetMapping("/spectacole/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<PerformanceDTO> getPerformanceById(@PathVariable final Long id) {
         PerformanceDTO dto = service.getPerformanceById(id);
         return ResponseEntity.ok().body(dto);
     }
 
-    @DeleteMapping("/spectacole/{id}")
+    @DeleteMapping("/{id}/admin")
     public ResponseEntity<Void> deletePerformanceById(
-            @RequestHeader(value = "X-User-Id") Long userId,
             @PathVariable final Long id) {
 
-        service.deletePerformanceById(userId, id);
+        service.deletePerformanceById(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/spectacole/{id}")
+    @PutMapping("/{id}/admin")
     public ResponseEntity<PerformanceDTO> updatePerformanceById(
-            @RequestHeader(value = "X-User-Id") Long userId,
             @PathVariable final Long id,
             @RequestBody @Valid final PerformanceDTO dto) {
-        PerformanceDTO updatedTo = service.updatePerformanceById(userId, id, dto);
+        PerformanceDTO updatedTo = service.updatePerformanceById(id, dto);
         return ResponseEntity.ok().body(updatedTo);
     }
 

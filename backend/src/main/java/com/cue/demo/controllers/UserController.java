@@ -2,6 +2,7 @@ package com.cue.demo.controllers;
 
 import com.cue.demo.dtos.PerformanceCardDTO;
 import com.cue.demo.dtos.WatchPerformanceItemDTO;
+import com.cue.demo.security.UserSecurityAdapter;
 import com.cue.demo.services.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,7 +26,9 @@ public final class UserController {
     //-------------WATCH LATER------------------
     @PostMapping("/me/watch-later/{performanceId}")
     public ResponseEntity<Void> addItemToWatchLater(@PathVariable final Long performanceId,
-                                               @RequestHeader(value = "X-User-Id") final Long userId) {
+                                                    @AuthenticationPrincipal UserSecurityAdapter principal) {
+
+        final Long userId = principal.getId();
         WatchPerformanceItemDTO dto = new WatchPerformanceItemDTO(userId, performanceId);
         service.addItemToWatchLater(dto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -32,7 +36,9 @@ public final class UserController {
 
     @DeleteMapping("/me/watch-later/{performanceId}")
     public ResponseEntity<Void> deleteItemFromWatchLater(@PathVariable final Long performanceId,
-                                                        @RequestHeader(value = "X-User-Id") final Long userId) {
+                                                         @AuthenticationPrincipal UserSecurityAdapter principal) {
+
+        final Long userId = principal.getId();
         WatchPerformanceItemDTO dto = new WatchPerformanceItemDTO(userId, performanceId);
         service.deleteItemFromWatchLater(dto);
         return ResponseEntity.noContent().build();
@@ -40,16 +46,19 @@ public final class UserController {
 
     @GetMapping("/me/watch-later")
     public ResponseEntity<Page<PerformanceCardDTO>> getWatchLaterPerformanceCards(
-            @RequestHeader(value = "X-User-Id") final Long userId,
+            @AuthenticationPrincipal UserSecurityAdapter principal,
             @PageableDefault(sort = "addedAtTime", direction = Sort.Direction.ASC) final Pageable pageable) {
 
+        final Long  userId = principal.getId();
         Page<PerformanceCardDTO> page = service.getWatchLaterPerformanceCards(userId, pageable);
         return ResponseEntity.ok().body(page);
     }
 
     @GetMapping("/me/watch-later/{performanceId}/exists")
     public ResponseEntity<Boolean> isPerformanceInWatchLater(@PathVariable final Long performanceId,
-                                                             @RequestHeader(value = "X-User-Id") final Long userId) {
+                                                             @AuthenticationPrincipal UserSecurityAdapter principal) {
+
+        final Long userId = principal.getId();
         Boolean exists = service.isPerformanceInWatchLater(userId, performanceId);
         return ResponseEntity.ok().body(exists);
     }
@@ -57,7 +66,9 @@ public final class UserController {
     //-------------WATCHED---------------------------
     @PostMapping("/me/watched/{performanceId}")
     public ResponseEntity<Void> addItemToWatched(@PathVariable Long performanceId,
-                                                 @RequestHeader(value = "X-User-Id") final Long userId) {
+                                                 @AuthenticationPrincipal UserSecurityAdapter principal) {
+
+        final Long userId = principal.getId();
         WatchPerformanceItemDTO dto = new WatchPerformanceItemDTO(userId, performanceId);
          service.addItemToWatched(dto);
          return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -65,7 +76,9 @@ public final class UserController {
 
     @DeleteMapping("me/watched/{performanceId}")
     public ResponseEntity<Void> deleteItemFromWatched(@PathVariable Long performanceId,
-                                                      @RequestHeader(value = "X-User-Id") final Long userId) {
+                                                      @AuthenticationPrincipal UserSecurityAdapter principal) {
+
+        final Long userId = principal.getId();
         WatchPerformanceItemDTO dto = new WatchPerformanceItemDTO(userId, performanceId);
         service.deleteItemFromWatched(dto);
         return ResponseEntity.noContent().build();
@@ -73,16 +86,19 @@ public final class UserController {
 
     @GetMapping("me/watched")
     public ResponseEntity<Page<PerformanceCardDTO>> getWatchedPerformanceItems(
-            @RequestHeader(value = "X-User-Id") final Long userId,
+            @AuthenticationPrincipal UserSecurityAdapter principal,
             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) final Pageable pageable) {
 
+        final Long  userId = principal.getId();
         Page<PerformanceCardDTO> page = service.getWatchedPerformanceCards(userId, pageable);
         return ResponseEntity.ok().body(page);
     }
 
     @GetMapping("/me/watched/{performanceId}/exists")
     public ResponseEntity<Boolean> isPerformanceInWatched(@PathVariable final Long performanceId,
-                                                             @RequestHeader(value = "X-User-Id") final Long userId) {
+                                                          @AuthenticationPrincipal UserSecurityAdapter principal) {
+
+        final Long userId = principal.getId();
         Boolean exists = service.isPerformanceInWatched(userId, performanceId);
         return ResponseEntity.ok().body(exists);
     }
@@ -90,9 +106,10 @@ public final class UserController {
     //-------------REVIEWED---------------------------
     @GetMapping("/me/reviewed")
     public ResponseEntity<Page<PerformanceCardDTO>> getReviewedPerformanceCards(
-            @RequestHeader(value = "X-User-Id") final Long userId,
+            @AuthenticationPrincipal UserSecurityAdapter principal,
             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) final Pageable pageable) {
 
+        final Long  userId = principal.getId();
         Page<PerformanceCardDTO> reviewed = service.getReviewedPerformanceCards(userId, pageable);
         return ResponseEntity.ok().body(reviewed);
     }

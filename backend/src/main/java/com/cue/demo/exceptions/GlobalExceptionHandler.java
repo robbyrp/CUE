@@ -41,11 +41,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
-    @ExceptionHandler(UserNotFoundByIdException.class)
-    public ResponseEntity<String> handleUserNotFoundByIdException(final UserNotFoundByIdException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-    }
-
     @ExceptionHandler(PerformanceIdMismatchException.class)
     public ResponseEntity<String> handlePerformanceIdMismatchException(final PerformanceIdMismatchException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
@@ -64,5 +59,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotAuthorizedException.class)
     public ResponseEntity<String> handleUserNotAuthorizedException(final UserNotAuthorizedException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<String> handleUserNotFoundException(final UserNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 }

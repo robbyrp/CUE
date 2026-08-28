@@ -4,15 +4,11 @@ import com.cue.demo.dtos.PerformanceCardDTO;
 import com.cue.demo.dtos.PerformanceDTO;
 import com.cue.demo.dtos.SearchSuggestion;
 import com.cue.demo.entities.Performance;
-import com.cue.demo.entities.User;
-import com.cue.demo.enums.UserRole;
 import com.cue.demo.exceptions.PerformanceAlreadyExistsException;
 import com.cue.demo.exceptions.PerformanceIdMismatchException;
 import com.cue.demo.exceptions.PerformanceNotFoundByIdException;
-import com.cue.demo.exceptions.UserNotAuthorizedException;
 import com.cue.demo.mapper.PerformanceMapper;
 import com.cue.demo.repositories.PerformanceRepository;
-import com.cue.demo.repositories.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,12 +27,10 @@ import java.util.Optional;
 @ExtendWith(MockitoExtension.class)
 public class PerformanceServiceTest {
     @Mock private PerformanceRepository performanceRepository;
-    @Mock private UserRepository userRepository;
     @Mock private PerformanceMapper performanceMapper;
 
     @InjectMocks private PerformanceService service;
 
-    final Long existingUserId = 10L;
     final Long existingPerformanceId = 10L;
     final Long invalidPerformanceId = 999L;
 
@@ -49,19 +43,15 @@ public class PerformanceServiceTest {
         final String title = "Test title";
         final String director = "Test director";
 
-        User testUser = User.builder().id(existingUserId).role(UserRole.ADMIN).build();
-
         PerformanceDTO testPerformanceDTO = PerformanceDTO.builder()
                 .title(title)
                 .director(director)
                 .build();
 
-        Mockito.when(userRepository.findById(existingUserId)).thenReturn(Optional.of(testUser));
         Mockito.when(performanceRepository.existsByTitleAndDirector(title, director)).thenReturn(false);
 
-        service.createPerformance(existingUserId, testPerformanceDTO);
+        service.createPerformance(testPerformanceDTO);
 
-        Mockito.verify(userRepository, Mockito.times(1)).findById(existingUserId);
         Mockito.verify(performanceRepository, Mockito.times(1)).existsByTitleAndDirector(title, director);
         Mockito.verify(performanceRepository, Mockito.times(1)).save(Mockito.any(Performance.class));
     }
@@ -75,45 +65,16 @@ public class PerformanceServiceTest {
         final String title = "Test title";
         final String director = "Test director";
 
-        User testUser = User.builder().id(existingUserId).role(UserRole.ADMIN).build();
-
         PerformanceDTO testPerformanceDTO = PerformanceDTO.builder()
                 .title(title)
                 .director(director)
                 .build();
 
-        Mockito.when(userRepository.findById(existingUserId)).thenReturn(Optional.of(testUser));
         Mockito.when(performanceRepository.existsByTitleAndDirector(title, director)).thenReturn(true);
 
-        Assertions.assertThrows(PerformanceAlreadyExistsException.class, () -> service.createPerformance(existingUserId, testPerformanceDTO));
+        Assertions.assertThrows(PerformanceAlreadyExistsException.class, () -> service.createPerformance(testPerformanceDTO));
 
-        Mockito.verify(userRepository, Mockito.times(1)).findById(existingUserId);
         Mockito.verify(performanceRepository, Mockito.times(1)).existsByTitleAndDirector(title, director);
-        Mockito.verify(performanceRepository, Mockito.never()).save(Mockito.any());
-    }
-
-    /**
-     * Tests that a UserNotAuthorizedException is thrown when a non-admin user attempts to create a performance.
-     */
-    @Test
-    void givenInvalidUserRole_whenCreatePerformance_thenThrowUserNotAuthorizedException()
-    {
-        final String title = "Test title";
-        final String director = "Test director";
-
-        User testUser = User.builder().id(existingUserId).role(UserRole.USER).build();
-
-        PerformanceDTO testPerformanceDTO = PerformanceDTO.builder()
-                .title(title)
-                .director(director)
-                .build();
-
-        Mockito.when(userRepository.findById(existingUserId)).thenReturn(Optional.of(testUser));
-
-        Assertions.assertThrows(UserNotAuthorizedException.class, () -> service.createPerformance(existingUserId, testPerformanceDTO));
-
-        Mockito.verify(userRepository, Mockito.times(1)).findById(existingUserId);
-        Mockito.verify(performanceRepository, Mockito.never()).existsByTitleAndDirector(Mockito.anyString(), Mockito.anyString());
         Mockito.verify(performanceRepository, Mockito.never()).save(Mockito.any());
     }
 
@@ -193,14 +154,11 @@ public class PerformanceServiceTest {
     @Test
     void givenValidData_whenDeletePerformance_thenDeletePerformance()
     {
-        User testUser = User.builder().id(existingUserId).role(UserRole.ADMIN).build();
 
-        Mockito.when(userRepository.findById(existingUserId)).thenReturn(Optional.of(testUser));
         Mockito.when(performanceRepository.existsById(existingPerformanceId)).thenReturn(true);
 
-        service.deletePerformanceById(existingUserId, existingPerformanceId);
+        service.deletePerformanceById(existingPerformanceId);
 
-        Mockito.verify(userRepository, Mockito.times(1)).findById(existingUserId);
         Mockito.verify(performanceRepository, Mockito.times(1)).existsById(existingPerformanceId);
         Mockito.verify(performanceRepository, Mockito.times(1)).deleteById(existingPerformanceId);
     }
@@ -211,36 +169,15 @@ public class PerformanceServiceTest {
     @Test
     void givenInvalidPerformance_whenDeletePerformance_thenThrowPerformanceNotFoundByIdException()
     {
-        User testUser = User.builder().id(existingUserId).role(UserRole.ADMIN).build();
 
-        Mockito.when(userRepository.findById(existingUserId)).thenReturn(Optional.of(testUser));
         Mockito.when(performanceRepository.existsById(invalidPerformanceId)).thenReturn(false);
 
         Assertions.assertThrows(PerformanceNotFoundByIdException.class, () ->
-                service.deletePerformanceById(existingUserId, invalidPerformanceId));
+                service.deletePerformanceById(invalidPerformanceId));
 
-        Mockito.verify(userRepository, Mockito.times(1)).findById(existingUserId);
         Mockito.verify(performanceRepository, Mockito.times(1)).existsById(invalidPerformanceId);
         Mockito.verify(performanceRepository, Mockito.never()).deleteById(Mockito.anyLong());
         Mockito.verify(performanceRepository, Mockito.never()).delete(Mockito.any(Performance.class));
-    }
-
-    /**
-     * Tests that a UserNotAuthorizedException is thrown when a non-admin user attempts to delete a performance.
-     */
-    @Test
-    void givenInvalidUserRole_whenDeletePerformance_thenThrowUserNotAuthorizedException()
-    {
-        User testUser = User.builder().id(existingUserId).role(UserRole.USER).build();
-
-        Mockito.when(userRepository.findById(existingUserId)).thenReturn(Optional.of(testUser));
-
-        Assertions.assertThrows(UserNotAuthorizedException.class, () ->
-                service.deletePerformanceById(existingUserId, existingPerformanceId));
-
-        Mockito.verify(userRepository, Mockito.times(1)).findById(existingUserId);
-        Mockito.verify(performanceRepository, Mockito.never()).existsById(Mockito.anyLong());
-        Mockito.verify(performanceRepository, Mockito.never()).deleteById(Mockito.anyLong());
     }
 
     /**
@@ -256,13 +193,11 @@ public class PerformanceServiceTest {
         final String oldTitle = "Old title";
         final String updatedTitle = "Updated Title";
 
-        User testUser = User.builder().id(existingUserId).role(UserRole.ADMIN).build();
         PerformanceDTO requestBodyPerformanceDto = PerformanceDTO.builder().id(pathVariablePerformanceId).title(updatedTitle).build();
         Performance performance =  Performance.builder().id(existingPerformanceId).title(oldTitle).build();
 
         PerformanceDTO mergedPerformanceDto = PerformanceDTO.builder().id(existingPerformanceId).title(updatedTitle).build();
 
-        Mockito.when(userRepository.findById(existingUserId)).thenReturn(Optional.of(testUser));
         Mockito.when(performanceRepository.findById(pathVariablePerformanceId)).thenReturn(Optional.of(performance));
         Mockito.doAnswer(invocation -> {
             Performance p = invocation.getArgument(1);
@@ -273,12 +208,11 @@ public class PerformanceServiceTest {
         Mockito.when(performanceRepository.save(performance)).thenReturn(performance);
         Mockito.when(performanceMapper.fromPerformanceEntityToPerformanceDTO(performance)).thenReturn(mergedPerformanceDto);
 
-        PerformanceDTO result = service.updatePerformanceById(existingUserId, pathVariablePerformanceId, requestBodyPerformanceDto);
+        PerformanceDTO result = service.updatePerformanceById(pathVariablePerformanceId, requestBodyPerformanceDto);
 
         Assertions.assertNotNull(result);
         Assertions.assertEquals(mergedPerformanceDto, result);
 
-        Mockito.verify(userRepository, Mockito.times(1)).findById(existingUserId);
         Mockito.verify(performanceRepository, Mockito.times(1)).findById(pathVariablePerformanceId);
         Mockito.verify(performanceMapper, Mockito.times(1))
                 .updatePerformanceEntityFromPerformanceDTO(requestBodyPerformanceDto, performance);
@@ -287,45 +221,19 @@ public class PerformanceServiceTest {
     }
 
     /**
-     * Tests that a UserNotAuthorizedException is thrown when a non-admin user attempts to update a performance.
-     */
-    @Test
-    void givenInvalidUserRole_whenUpdatePerformanceById_thenThrowUserNotAuthorizedException ()
-    {
-        final Long pathVariablePerformanceId = 10L;
-        final String updatedTitle = "Updated Title";
-
-        User testUser = User.builder().id(existingUserId).role(UserRole.USER).build();
-        PerformanceDTO requestBodyPerformanceDto = PerformanceDTO.builder().id(pathVariablePerformanceId).title(updatedTitle).build();
-
-        Mockito.when(userRepository.findById(existingUserId)).thenReturn(Optional.of(testUser));
-
-        Assertions.assertThrows(UserNotAuthorizedException.class, () ->
-                service.updatePerformanceById(existingUserId, pathVariablePerformanceId, requestBodyPerformanceDto));
-
-        Mockito.verify(userRepository, Mockito.times(1)).findById(existingUserId);
-        Mockito.verify(performanceRepository, Mockito.never()).findById(Mockito.anyLong());
-        Mockito.verify(performanceRepository, Mockito.never()).save(Mockito.any(Performance.class));
-    }
-
-    /**
      * Tests that a PerformanceIdMismatchException is thrown when the ID in the path does not match the ID in the DTO during update.
      */
     @Test
-    void givenWrongPathVariablePerformanceId_whenUpdatePerformanceById_thenThrowUserNotAuthorizedException ()
+    void givenWrongPathVariablePerformanceId_whenUpdatePerformanceById_thenThrowPerformanceIdMismatchException ()
     {
         final Long pathVariablePerformanceId = 999L;
         final String updatedTitle = "Updated Title";
 
-        User testUser = User.builder().id(existingUserId).role(UserRole.ADMIN).build();
         PerformanceDTO requestBodyPerformanceDto = PerformanceDTO.builder().id(existingPerformanceId).title(updatedTitle).build();
 
-        Mockito.when(userRepository.findById(existingUserId)).thenReturn(Optional.of(testUser));
-
         Assertions.assertThrows(PerformanceIdMismatchException.class, () ->
-                service.updatePerformanceById(existingUserId, pathVariablePerformanceId, requestBodyPerformanceDto));
+                service.updatePerformanceById(pathVariablePerformanceId, requestBodyPerformanceDto));
 
-        Mockito.verify(userRepository, Mockito.times(1)).findById(existingUserId);
         Mockito.verify(performanceRepository, Mockito.never()).findById(Mockito.anyLong());
         Mockito.verify(performanceRepository, Mockito.never()).save(Mockito.any(Performance.class));
     }

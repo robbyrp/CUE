@@ -1,12 +1,14 @@
 package com.cue.demo.controllers;
 
 import com.cue.demo.dtos.ReviewDTO;
+import com.cue.demo.security.UserSecurityAdapter;
 import com.cue.demo.services.ReviewService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -20,18 +22,20 @@ public class ReviewController {
 
     @PostMapping("/spectacole/{performanceId}")
     public ResponseEntity<ReviewDTO> createReview(@PathVariable Long performanceId,
-                                               @RequestHeader(value = "X-User-Id") Long userId,
+                                               @AuthenticationPrincipal UserSecurityAdapter principal,
                                                @RequestBody @Valid ReviewDTO reviewDTO) {
 
+        final Long userId = principal.getId();
         ReviewDTO created = service.createReview(userId, performanceId, reviewDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{reviewId}")
     public ResponseEntity<ReviewDTO> updateReview(@PathVariable Long reviewId,
-                                                  @RequestHeader(value = "X-User-Id") Long userId,
+                                                  @AuthenticationPrincipal UserSecurityAdapter principal,
                                                   @RequestBody @Valid ReviewDTO reviewDTO) {
 
+        final  Long userId = principal.getId();
         ReviewDTO updated = service.updateReview(userId, reviewId, reviewDTO);
         return ResponseEntity.ok().body(updated);
     }
@@ -46,8 +50,9 @@ public class ReviewController {
 
     @GetMapping("/spectacole/{performanceId}/me")
     public ResponseEntity<ReviewDTO> getMyReview(@PathVariable Long performanceId,
-                                                 @RequestHeader(value = "X-User-Id") Long userId) {
+                                                 @AuthenticationPrincipal UserSecurityAdapter principal) {
 
+        final Long  userId = principal.getId();
         Optional<ReviewDTO> review = service.getMyReview(userId, performanceId);
         return review.map(reviewDTO -> ResponseEntity.ok().body(reviewDTO))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).body(null));
@@ -55,16 +60,18 @@ public class ReviewController {
 
     @PutMapping("/heart/{reviewId}")
     public ResponseEntity<Void> toggleHeartReview (@PathVariable Long reviewId,
-                                                   @RequestHeader(value = "X-User-Id") Long userId) {
+                                                   @AuthenticationPrincipal UserSecurityAdapter principal) {
 
+        final Long  userId = principal.getId();
          service.toggleHeartReview(userId, reviewId);
          return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<ReviewDTO> deleteReview(@PathVariable Long reviewId,
-                                                  @RequestHeader(value = "X-User-Id") Long userId) {
+                                                  @AuthenticationPrincipal UserSecurityAdapter principal) {
 
+        final Long userId = principal.getId();
         service.deleteReview(userId, reviewId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }

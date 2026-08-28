@@ -6,7 +6,6 @@ import com.cue.demo.entities.*;
 import com.cue.demo.exceptions.PerformanceNotFoundByIdException;
 import com.cue.demo.exceptions.PerformanceNotInUsersWatchListException;
 import com.cue.demo.exceptions.PerformanceNotInUsersWatchedListException;
-import com.cue.demo.exceptions.UserNotFoundByIdException;
 import com.cue.demo.mapper.PerformanceMapper;
 import com.cue.demo.repositories.*;
 import org.springframework.data.domain.Page;
@@ -27,145 +26,80 @@ public class UserService {
     private final ReviewRepository reviewRepository;
 
     /**
-     * Adds a performance to the user's "watch later" list based on the provided data.
+     * Adds a performance to the user's "watch later" list based on the data.
      *
-     * @param dto Contains the user ID and performance ID to be associated with the "watch later" list entry.
-     * @throws UserNotFoundByIdException If a user with the specified ID is not found.
-     * @throws PerformanceNotFoundByIdException If a performance with the specified ID is not found.
+     * @param dto The DTO containing the user ID and performance ID.
+     * @throws PerformanceNotFoundByIdException If a performance with the
+     *                                           specified ID is not found.
      */
     @Transactional
-    public void addItemToWatchLater(final WatchPerformanceItemDTO dto) throws UserNotFoundByIdException, PerformanceNotFoundByIdException {
-        User user = userRepository.findById(dto.userId())
-                .orElseThrow(() -> new UserNotFoundByIdException(dto.userId()));
+    public void addItemToWatchLater(final WatchPerformanceItemDTO dto)
+            throws PerformanceNotFoundByIdException {
+
+        User userProxy = userRepository.getReferenceById(dto.userId());
+
         Performance performance = performanceRepository.findById(dto.performanceId())
                 .orElseThrow(() -> new PerformanceNotFoundByIdException(dto.performanceId()));
 
-        if (watchLaterRepository.existsByUserIdAndPerformanceId(user.getId(), performance.getId())) {
-            System.out.println("Performance  with id: " + performance.getId() + " already exists" +
-                    "in user's " + user.getId() + " WATCH LATER LIST");
-        } else {
+        if (!watchLaterRepository.existsByUserIdAndPerformanceId(dto.userId(), performance.getId())) {
             WatchLaterPerformanceItem item = WatchLaterPerformanceItem.builder()
-                    .user(user)
+                    .user(userProxy)
                     .performance(performance)
                     .build();
             watchLaterRepository.save(item);
         }
+        //TODO: Add an else case, and modify the function return type so that it returns text that says: The performance is already in user's watch later list.
     }
 
     /**
-     * Removes a performance from the user's "watch later" list based on the provided data.
+     * Removes a performance from the user's "watch later" list.
      *
-     * @param dto Contains the user ID and performance ID related to the "watch later" list entry to be removed.
-     * @throws UserNotFoundByIdException If a user with the specified ID is not found.
-     * @throws PerformanceNotFoundByIdException If a performance with the specified ID is not found.
-     * @throws PerformanceNotInUsersWatchListException If the specified performance is not found in the user's "watch later" list.
+     * @param dto The DTO containing the user ID and performance ID.
+     * @throws PerformanceNotFoundByIdException If a performance with the
+     *                                           specified ID is not found.
+     * @throws PerformanceNotInUsersWatchListException If the performance is not
+     *                                                  in the watch later list.
      */
     @Transactional
-    public void deleteItemFromWatchLater(final WatchPerformanceItemDTO dto) throws PerformanceNotFoundByIdException, UserNotFoundByIdException {
-        User user = userRepository.findById(dto.userId())
-                .orElseThrow(() -> new UserNotFoundByIdException(dto.userId()));
+    public void deleteItemFromWatchLater(final WatchPerformanceItemDTO dto)
+            throws PerformanceNotFoundByIdException {
+
         Performance performance = performanceRepository.findById(dto.performanceId())
                 .orElseThrow(() -> new PerformanceNotFoundByIdException(dto.performanceId()));
 
-        if (watchLaterRepository.existsByUserIdAndPerformanceId(user.getId(), performance.getId())) {
-            watchLaterRepository.deleteByUserIdAndPerformanceId(user.getId(), performance.getId());
+        if (watchLaterRepository.existsByUserIdAndPerformanceId(dto.userId(), performance.getId())) {
+            watchLaterRepository.deleteByUserIdAndPerformanceId(dto.userId(), performance.getId());
         } else {
-            throw new PerformanceNotInUsersWatchListException(user.getId(), performance.getId());
+            throw new PerformanceNotInUsersWatchListException(dto.userId(), performance.getId());
         }
     }
 
     /**
      * Gets a page of PerformanceCardDTOs from the user's "watch later" list.
      *
-     * @param pageable The pagination and sorting information (page number, size, sort criteria).
-     * @param userId The ID of the user received in the HTTP Request header.
+     * @param userId The ID of a valid user, filtered before reaching the
+     *                controller.
+     * @param pageable The pagination and sorting information.
      * @return A page of performance card DTOs.
-     * @throws UserNotFoundByIdException If a user with the specified ID is not found.
      */
-    public Page<PerformanceCardDTO> getWatchLaterPerformanceCards(final Long userId, final Pageable pageable) throws UserNotFoundByIdException {
-        if (!userRepository.existsById(userId)) {
-            throw new UserNotFoundByIdException(userId);
-        }
+    public Page<PerformanceCardDTO> getWatchLaterPerformanceCards(final Long userId, final Pageable pageable) {
+
         Page<WatchLaterPerformanceItem> watchLaterPage = watchLaterRepository.findByUserId(userId, pageable);
         return watchLaterPage.map(mapper::fromWatchLaterItemEntityToPerformanceCardDTO);
     }
 
     /**
-     * Adds a performance to the user's "watched" list based on the provided data.
-     *
-     * @param dto Contains the user ID and performance ID to be associated with the "watched" list entry.
-     * @throws UserNotFoundByIdException If a user with the specified ID is not found.
-     * @throws PerformanceNotFoundByIdException If a performance with the specified ID is not found.
-     */
-    @Transactional
-    public void addItemToWatched(final WatchPerformanceItemDTO dto) throws UserNotFoundByIdException, PerformanceNotFoundByIdException {
-        User user = userRepository.findById(dto.userId())
-                .orElseThrow(() -> new UserNotFoundByIdException(dto.userId()));
-        Performance performance = performanceRepository.findById(dto.performanceId())
-                .orElseThrow(() -> new PerformanceNotFoundByIdException(dto.performanceId()));
-
-        if (watchedPerformanceRepository.existsByUserIdAndPerformanceId(user.getId(), performance.getId())) {
-            System.out.println("Performance  with id: " + performance.getId() + " already exists" +
-                    "in user's " + user.getId() + " WATCHED LIST");
-        } else {
-            WatchedPerformanceItem item = WatchedPerformanceItem.builder()
-                    .user(user)
-                    .performance(performance)
-                    .build();
-            watchedPerformanceRepository.save(item);
-        }
-    }
-
-    /**
-     * Removes a performance from the user's "watched" list based on the provided data.
-     *
-     * @param dto Contains the user ID and performance ID related to the "watched" list entry to be removed.
-     * @throws UserNotFoundByIdException If a user with the specified ID is not found.
-     * @throws PerformanceNotFoundByIdException If a performance with the specified ID is not found.
-     * @throws PerformanceNotInUsersWatchedListException If the specified performance is not found in the user's "watched" list.
-     */
-    @Transactional
-    public void deleteItemFromWatched(final WatchPerformanceItemDTO dto) throws UserNotFoundByIdException, PerformanceNotFoundByIdException {
-        User user = userRepository.findById(dto.userId())
-                .orElseThrow(() -> new UserNotFoundByIdException(dto.userId()));
-        Performance performance = performanceRepository.findById(dto.performanceId())
-                .orElseThrow(() -> new PerformanceNotFoundByIdException(dto.performanceId()));
-
-        if (watchedPerformanceRepository.existsByUserIdAndPerformanceId(user.getId(), performance.getId())) {
-            watchedPerformanceRepository.deleteByUserIdAndPerformanceId(user.getId(), performance.getId());
-
-        } else {
-            throw new PerformanceNotInUsersWatchedListException(user.getId(), performance.getId());
-        }
-    }
-
-    /**
-     * Gets a page of PerformanceCardDTOs from the user's "watched" list.
-     *
-     * @param pageable The pagination and sorting information (page number, size, sort criteria).
-     * @param userId The ID of the user received in the HTTP header.
-     * @return A page of performance card DTOs.
-     * @throws UserNotFoundByIdException If a user with the specified ID is not found.
-     */
-    public Page<PerformanceCardDTO> getWatchedPerformanceCards(final Long userId, final Pageable pageable) throws UserNotFoundByIdException {
-        if (!userRepository.existsById(userId)) {
-            throw new UserNotFoundByIdException(userId);
-        }
-        Page<WatchedPerformanceItem> watchedPage = watchedPerformanceRepository.findByUserId(userId, pageable);
-        return watchedPage.map(mapper::fromWatchedItemEntityToPerformanceCardDTO);
-    }
-
-    /**
      * Returns true if performance with id is in the user's watch later list.
      *
-     * @param userId The ID of the user received in the HTTP header.
-     * @param performanceId The ID of the performance that is checked.
+     * @param userId The ID of a valid user, filtered before reaching the
+     *                controller.
+     * @param performanceId The ID of the performance.
      * @return True if the performance is in the list, false otherwise.
+     * @throws PerformanceNotFoundByIdException If a performance with the
+     *                                           specified ID is not found.
      */
-    public Boolean isPerformanceInWatchLater(final Long userId, final Long performanceId) throws UserNotFoundByIdException, PerformanceNotFoundByIdException{
-        if (!userRepository.existsById(userId)) {
-            throw new UserNotFoundByIdException(userId);
-        }
+    public Boolean isPerformanceInWatchLater(final Long userId, final Long performanceId)
+            throws PerformanceNotFoundByIdException {
 
         if (!performanceRepository.existsById(performanceId)) {
             throw new PerformanceNotFoundByIdException(performanceId);
@@ -175,16 +109,81 @@ public class UserService {
     }
 
     /**
+     * Adds a performance to the user's "watched" list based on the provided data.
+     *
+     * @param dto The DTO containing the user ID and performance ID.
+     * @throws PerformanceNotFoundByIdException If a performance with the
+     *                                           specified ID is not found.
+     */
+    @Transactional
+    public void addItemToWatched(final WatchPerformanceItemDTO dto)
+            throws PerformanceNotFoundByIdException {
+
+        User userProxy = userRepository.getReferenceById(dto.userId());
+
+        Performance performance = performanceRepository.findById(dto.performanceId())
+                .orElseThrow(() -> new PerformanceNotFoundByIdException(dto.performanceId()));
+
+        if (!watchedPerformanceRepository.existsByUserIdAndPerformanceId(dto.userId(), performance.getId())) {
+            WatchedPerformanceItem item = WatchedPerformanceItem.builder()
+                    .user(userProxy)
+                    .performance(performance)
+                    .build();
+            watchedPerformanceRepository.save(item);
+        }
+        //TODO: Add an else case, and modify the function return type so that it returns text that says: The performance is already in user's watched list.
+
+    }
+
+    /**
+     * Removes a performance from the user's "watched" list.
+     *
+     * @param dto The DTO containing the user ID and performance ID.
+     * @throws PerformanceNotFoundByIdException If a performance with the
+     *                                           specified ID is not found.
+     * @throws PerformanceNotInUsersWatchedListException If the performance is not
+     *                                                    in the watched list.
+     */
+    @Transactional
+    public void deleteItemFromWatched(final WatchPerformanceItemDTO dto)
+            throws PerformanceNotFoundByIdException {
+
+        Performance performance = performanceRepository.findById(dto.performanceId())
+                .orElseThrow(() -> new PerformanceNotFoundByIdException(dto.performanceId()));
+
+        if (watchedPerformanceRepository.existsByUserIdAndPerformanceId(dto.userId(), performance.getId())) {
+            watchedPerformanceRepository.deleteByUserIdAndPerformanceId(dto.userId(), performance.getId());
+        } else {
+            throw new PerformanceNotInUsersWatchedListException(dto.userId(), performance.getId());
+        }
+    }
+
+    /**
+     * Gets a page of PerformanceCardDTOs from the user's "watched" list.
+     *
+     * @param userId The ID of a valid user, filtered before reaching the
+     *                controller.
+     * @param pageable The pagination and sorting information.
+     * @return A page of performance card DTOs.
+     */
+    public Page<PerformanceCardDTO> getWatchedPerformanceCards(final Long userId, final Pageable pageable) {
+
+        Page<WatchedPerformanceItem> watchedPage = watchedPerformanceRepository.findByUserId(userId, pageable);
+        return watchedPage.map(mapper::fromWatchedItemEntityToPerformanceCardDTO);
+    }
+
+    /**
      * Returns true if performance with id is in the user's watched list.
      *
-     * @param userId The ID of the user received in the HTTP header.
-     * @param performanceId The ID of the performance that is checked.
+     * @param userId The ID of a valid user, filtered before reaching the
+     *                controller.
+     * @param performanceId The ID of the performance.
      * @return True if the performance is in the list, false otherwise.
+     * @throws PerformanceNotFoundByIdException If a performance with the
+     *                                           specified ID is not found.
      */
-    public Boolean isPerformanceInWatched(final Long userId, final Long performanceId) throws UserNotFoundByIdException, PerformanceNotFoundByIdException {
-        if (!userRepository.existsById(userId)) {
-            throw new UserNotFoundByIdException(userId);
-        }
+    public Boolean isPerformanceInWatched(final Long userId, final Long performanceId)
+            throws PerformanceNotFoundByIdException {
 
         if (!performanceRepository.existsById(performanceId)) {
             throw new PerformanceNotFoundByIdException(performanceId);
@@ -196,16 +195,12 @@ public class UserService {
     /**
      * Gets the list of performances reviewed by a user.
      *
-     * @param userId The ID of the user received in the HTTP header.
-     * @param pageable The pagination and sorting information (page number, size, sort criteria).
-     * @return Returns a page of performance cards that have been reviewed by the querying user identified by his id.
-     * @throws UserNotFoundByIdException If a user with the specified ID is not found.
+     * @param userId The ID of a valid user, filtered before reaching the
+     *                controller.
+     * @param pageable The pagination and sorting information.
+     * @return A page of performance card DTOs.
      */
-    public Page<PerformanceCardDTO> getReviewedPerformanceCards(final Long userId, final Pageable pageable)
-            throws UserNotFoundByIdException {
-        if (!userRepository.existsById(userId)) {
-            throw new UserNotFoundByIdException(userId);
-        }
+    public Page<PerformanceCardDTO> getReviewedPerformanceCards(final Long userId, final Pageable pageable) {
 
         Page<Performance> reviewedPerformances = reviewRepository.findPerformancesReviewedByUserId(userId, pageable);
         return reviewedPerformances.map(mapper::fromPerformanceEntityToPerformanceCardDTO);

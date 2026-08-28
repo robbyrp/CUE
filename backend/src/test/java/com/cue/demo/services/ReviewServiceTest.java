@@ -65,7 +65,7 @@ public final class ReviewServiceTest {
         ReviewDTO expectedReviewDTO = ReviewDTO.builder().id(newReviewId).stars(starsNumber).text(description).isSpoiler(spoiler).build();
 
         Mockito.when(reviewRepository.existsByUser_IdAndPerformance_Id(requestHeaderUserId, existingPerformanceId)).thenReturn(false);
-        Mockito.when(userRepository.findById(requestHeaderUserId)).thenReturn(Optional.of(testUser));
+        Mockito.when(userRepository.getReferenceById(requestHeaderUserId)).thenReturn(testUser);
         Mockito.when(performanceRepository.findById(existingPerformanceId)).thenReturn(Optional.of(performanceMock));
         Mockito.when(reviewRepository.saveAndFlush(Mockito.any(Review.class))).thenReturn(reviewMock);
         Mockito.when(reviewMapper.fromReviewToReviewDTO(reviewMock)).thenReturn(expectedReviewDTO);
@@ -74,6 +74,7 @@ public final class ReviewServiceTest {
 
         Assertions.assertNotNull(result);
         Assertions.assertEquals(expectedReviewDTO, result);
+        Mockito.verify(userRepository, Mockito.times(1)).getReferenceById(requestHeaderUserId);
         Mockito.verify(reviewMapper).fromReviewToReviewDTO(reviewMock);
     }
 
@@ -100,10 +101,12 @@ public final class ReviewServiceTest {
         ReviewDTO requestBodyReviewDTO = ReviewDTO.builder().build();
 
         Mockito.when(reviewRepository.existsByUser_IdAndPerformance_Id(requestHeaderUserId, existingPerformanceId)).thenReturn(false);
-        Mockito.when(userRepository.findById(requestHeaderUserId)).thenReturn(Optional.of(testUser));
+        Mockito.when(userRepository.getReferenceById(requestHeaderUserId)).thenReturn(testUser);
         Mockito.when(performanceRepository.findById(existingPerformanceId)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(PerformanceNotFoundByIdException.class, () -> service.createReview(requestHeaderUserId, existingPerformanceId, requestBodyReviewDTO));
+
+        Mockito.verify(userRepository, Mockito.times(1)).getReferenceById(requestHeaderUserId);
     }
 
     /**
@@ -129,7 +132,7 @@ public final class ReviewServiceTest {
         ReviewDTO expectedNewReviewDto = ReviewDTO.builder().id(pathVariableReviewId).stars(newStarsNumber).text(newDescription).isSpoiler(spoiler).build();
 
         Mockito.when(reviewRepository.findById(pathVariableReviewId)).thenReturn(Optional.of(oldReviewMock));
-        Mockito.when(userRepository.findById(requestHeaderUserId)).thenReturn(Optional.of(testUser));
+        Mockito.when(userRepository.getReferenceById(requestHeaderUserId)).thenReturn(testUser);
         Mockito.when(reviewRepository.save(Mockito.any(Review.class))).thenReturn(newReviewMock);
         Mockito.when(reviewMapper.fromReviewToReviewDTO(newReviewMock)).thenReturn(expectedNewReviewDto);
 
@@ -137,6 +140,7 @@ public final class ReviewServiceTest {
 
         Assertions.assertNotNull(result);
         Assertions.assertEquals(expectedNewReviewDto, result);
+        Mockito.verify(userRepository, Mockito.times(1)).getReferenceById(requestHeaderUserId);
         Mockito.verify(reviewMapper).fromReviewToReviewDTO(newReviewMock);
     }
 
@@ -165,7 +169,7 @@ public final class ReviewServiceTest {
         ReviewDTO expectedNewReviewDto = ReviewDTO.builder().id(pathVariableReviewId).stars(newStarsNumber).text(newDescription).isSpoiler(spoiler).build();
 
         Mockito.when(reviewRepository.findById(pathVariableReviewId)).thenReturn(Optional.of(oldReviewMock));
-        Mockito.when(userRepository.findById(requestHeaderAdminUserId)).thenReturn(Optional.of(adminUser));
+        Mockito.when(userRepository.getReferenceById(requestHeaderAdminUserId)).thenReturn(adminUser);
         Mockito.when(reviewRepository.save(Mockito.any(Review.class))).thenReturn(newReviewMock);
         Mockito.when(reviewMapper.fromReviewToReviewDTO(newReviewMock)).thenReturn(expectedNewReviewDto);
 
@@ -173,6 +177,7 @@ public final class ReviewServiceTest {
 
         Assertions.assertNotNull(result);
         Assertions.assertEquals(expectedNewReviewDto, result);
+        Mockito.verify(userRepository, Mockito.times(1)).getReferenceById(requestHeaderAdminUserId);
         Mockito.verify(reviewMapper).fromReviewToReviewDTO(newReviewMock);
     }
 
@@ -207,11 +212,12 @@ public final class ReviewServiceTest {
                 .build();
 
         Mockito.when(reviewRepository.findById(pathVariableReviewId)).thenReturn(Optional.of(existingReview));
-        Mockito.when(userRepository.findById(requestHeaderUserId)).thenReturn(Optional.of(requester));
+        Mockito.when(userRepository.getReferenceById(requestHeaderUserId)).thenReturn(requester);
 
         Assertions.assertThrows(UserNotAuthorizedException.class, () ->
                 service.updateReview(requestHeaderUserId, pathVariableReviewId, reviewDtoMock));
 
+        Mockito.verify(userRepository, Mockito.times(1)).getReferenceById(requestHeaderUserId);
         Mockito.verify(reviewRepository, Mockito.never()).save(Mockito.any(Review.class));
     }
 
@@ -337,12 +343,13 @@ public final class ReviewServiceTest {
         User requester = User.builder().id(requestHeaderUserId).role(UserRole.USER).build();
         Review reviewMock = Review.builder().id(pathVariableReviewId).build();
 
-        Mockito.when(userRepository.findById(requestHeaderUserId)).thenReturn(Optional.of(requester));
+        Mockito.when(userRepository.getReferenceById(requestHeaderUserId)).thenReturn(requester);
         Mockito.when(reviewRepository.findById(pathVariableReviewId)).thenReturn(Optional.of(reviewMock));
 
         service.toggleHeartReview(requestHeaderUserId, pathVariableReviewId);
 
         Assertions.assertTrue(reviewMock.getHeartedByUsers().contains(requester));
+        Mockito.verify(userRepository, Mockito.times(1)).getReferenceById(requestHeaderUserId);
         Mockito.verify(reviewRepository).save(reviewMock);
     }
 
@@ -356,12 +363,13 @@ public final class ReviewServiceTest {
         hearts.add(requester);
         Review reviewMock = Review.builder().id(pathVariableReviewId).heartedByUsers(hearts).build();
 
-        Mockito.when(userRepository.findById(requestHeaderUserId)).thenReturn(Optional.of(requester));
+        Mockito.when(userRepository.getReferenceById(requestHeaderUserId)).thenReturn(requester);
         Mockito.when(reviewRepository.findById(pathVariableReviewId)).thenReturn(Optional.of(reviewMock));
 
         service.toggleHeartReview(requestHeaderUserId, pathVariableReviewId);
 
         Assertions.assertFalse(reviewMock.getHeartedByUsers().contains(requester));
+        Mockito.verify(userRepository, Mockito.times(1)).getReferenceById(requestHeaderUserId);
         Mockito.verify(reviewRepository).save(reviewMock);
     }
 
@@ -372,12 +380,13 @@ public final class ReviewServiceTest {
     void givenInvalidReviewId_whenToggleHeartReview_thenThrowReviewNotFoundException() {
         User requester = User.builder().id(requestHeaderUserId).role(UserRole.USER).build();
 
-        Mockito.when(userRepository.findById(requestHeaderUserId)).thenReturn(Optional.of(requester));
+        Mockito.when(userRepository.getReferenceById(requestHeaderUserId)).thenReturn(requester);
         Mockito.when(reviewRepository.findById(pathVariableReviewId)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(ReviewNotFoundException.class, () ->
                 service.toggleHeartReview(requestHeaderUserId, pathVariableReviewId));
 
+        Mockito.verify(userRepository, Mockito.times(1)).getReferenceById(requestHeaderUserId);
         Mockito.verify(reviewRepository, Mockito.never()).save(Mockito.any());
     }
 
@@ -389,11 +398,12 @@ public final class ReviewServiceTest {
         User author = User.builder().id(requestHeaderUserId).role(UserRole.USER).build();
         Review reviewMock = Review.builder().id(pathVariableReviewId).user(author).build();
 
-        Mockito.when(userRepository.findById(requestHeaderUserId)).thenReturn(Optional.of(author));
+        Mockito.when(userRepository.getReferenceById(requestHeaderUserId)).thenReturn(author);
         Mockito.when(reviewRepository.findById(pathVariableReviewId)).thenReturn(Optional.of(reviewMock));
 
         service.deleteReview(requestHeaderUserId, pathVariableReviewId);
 
+        Mockito.verify(userRepository, Mockito.times(1)).getReferenceById(requestHeaderUserId);
         Mockito.verify(reviewRepository).delete(reviewMock);
     }
 
@@ -407,11 +417,12 @@ public final class ReviewServiceTest {
         User author = User.builder().id(authorId).role(UserRole.USER).build();
         Review reviewMock = Review.builder().id(pathVariableReviewId).user(author).build();
 
-        Mockito.when(userRepository.findById(requestHeaderAdminUserId)).thenReturn(Optional.of(admin));
+        Mockito.when(userRepository.getReferenceById(requestHeaderAdminUserId)).thenReturn(admin);
         Mockito.when(reviewRepository.findById(pathVariableReviewId)).thenReturn(Optional.of(reviewMock));
 
         service.deleteReview(requestHeaderAdminUserId, pathVariableReviewId);
 
+        Mockito.verify(userRepository, Mockito.times(1)).getReferenceById(requestHeaderAdminUserId);
         Mockito.verify(reviewRepository).delete(reviewMock);
     }
 
@@ -426,12 +437,13 @@ public final class ReviewServiceTest {
         User otherUser = User.builder().id(otherUserId).role(UserRole.USER).build();
         Review reviewMock = Review.builder().id(pathVariableReviewId).user(otherUser).build();
 
-        Mockito.when(userRepository.findById(requestHeaderUserId)).thenReturn(Optional.of(requester));
+        Mockito.when(userRepository.getReferenceById(requestHeaderUserId)).thenReturn(requester);
         Mockito.when(reviewRepository.findById(pathVariableReviewId)).thenReturn(Optional.of(reviewMock));
 
         Assertions.assertThrows(UserNotAuthorizedException.class, () ->
                 service.deleteReview(requestHeaderUserId, pathVariableReviewId));
 
+        Mockito.verify(userRepository, Mockito.times(1)).getReferenceById(requestHeaderUserId);
         Mockito.verify(reviewRepository, Mockito.never()).delete(Mockito.any());
     }
 
@@ -440,9 +452,7 @@ public final class ReviewServiceTest {
      */
     @Test
     void givenInvalidReviewId_whenDeleteReview_thenThrowReviewNotFoundException() {
-        User requester = User.builder().id(requestHeaderUserId).role(UserRole.USER).build();
 
-        Mockito.when(userRepository.findById(requestHeaderUserId)).thenReturn(Optional.of(requester));
         Mockito.when(reviewRepository.findById(pathVariableReviewId)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(ReviewNotFoundException.class, () ->

@@ -27,27 +27,32 @@ public class ReviewService {
     private final ReviewMapper mapper;
 
     /**
+     * Creates a new review for a performance.
      *
-     * @param userId Provided in the request header.
-     * @param performanceId PerformanceId in query param.
-     * @param reviewDTO Review object exposed to the frontend.
-     * @return Returns the newly created reviewDTO object.
-     * @throws ReviewAlreadyExistsException The user has already left a review for the performance.
+     * @param userId The ID of a valid user, filtered before reaching the
+     *                controller.
+     * @param performanceId The ID of the performance.
+     * @param reviewDTO The DTO containing the review data.
+     * @return The newly created review DTO.
+     * @throws ReviewAlreadyExistsException If the user has already left a review
+     *                                      for the performance.
+     * @throws PerformanceNotFoundByIdException If a performance with the
+     *                                           specified ID is not found.
      */
     @Transactional
     public ReviewDTO createReview(final Long userId, final Long performanceId, final ReviewDTO reviewDTO)
-            throws ReviewAlreadyExistsException, UserNotFoundByIdException, PerformanceNotFoundByIdException {
+            throws ReviewAlreadyExistsException, PerformanceNotFoundByIdException {
 
-        if (hasUserReviewedPerformance(userId, performanceId)) throw new ReviewAlreadyExistsException(userId, performanceId);
+        if (hasUserReviewedPerformance(userId, performanceId))
+            throw new ReviewAlreadyExistsException(userId, performanceId);
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(()-> new UserNotFoundByIdException(userId));
+        User userProxy = userRepository.getReferenceById(userId);
         Performance performance = performanceRepository.findById(performanceId)
                 .orElseThrow(()-> new PerformanceNotFoundByIdException(performanceId));
 
         Review review = Review.builder()
                 .performance(performance)
-                .user(user)
+                .user(userProxy)
                 .stars(reviewDTO.stars())
                 .text(reviewDTO.text())
                 .isSpoiler(reviewDTO.isSpoiler())
@@ -59,23 +64,27 @@ public class ReviewService {
     }
 
     /**
-     * IMPORTANT: This method can only update the Text comment or the Stars number!
-     * @param userId Provided in the request header. Is compared to the Review.user.id member for auth reasons.
-     * @param reviewId The SST for which review the user modifies is this path variable.
-     *                 This also allows an Admin to edit any user's reviews.
-     * @param reviewDTO The review object which contains the new fields.
-     * @return Returns the newly updated reviewDTO object.
-     * @throws ReviewAlreadyExistsException The user has already left a review for the performance.
+     * Updates an existing review. Only the text and stars can be modified.
+     *
+     * @param userId The ID of a valid user, filtered before reaching the
+     *                controller.
+     * @param reviewId The ID of the review.
+     * @param reviewDTO The DTO containing the review data.
+     * @return The updated review DTO.
+     * @throws ReviewNotFoundException If a review with the specified ID is not
+     *                                 found.
+     * @throws UserNotAuthorizedException If the user is not authorized to update
+     *                                     this review.
      */
     @Transactional
     public ReviewDTO updateReview(final Long userId, final Long reviewId, final ReviewDTO reviewDTO)
             throws ReviewNotFoundException, UserNotAuthorizedException {
+
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewNotFoundException(reviewId));
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundByIdException(userId));
+        User userProxy = userRepository.getReferenceById(userId);
 
-        if (!review.isCreatedBy(userId) && !user. isAdmin()) {
+        if (!review.isCreatedBy(userId) && !userProxy. isAdmin()) {
             throw new UserNotAuthorizedException(userId);
         }
 
@@ -87,13 +96,17 @@ public class ReviewService {
     }
 
     /**
-     * Gets the reviews of a certain performance identified by the Path variable performanceId.
-     * @param performanceId PerformanceId in query param.
-     * @param pageable The pagination and sorting information (page number, size, sort criteria).
-     * @return Returns a page of ReviewDTO.
-     * @throws PerformanceNotFoundByIdException Throws it if the performance with the given ID does not exist in the database.
+     * Gets the reviews of a certain performance.
+     *
+     * @param performanceId The ID of the performance.
+     * @param pageable The pagination and sorting information.
+     * @return A page of review DTOs.
+     * @throws PerformanceNotFoundByIdException If a performance with the
+     *                                           specified ID is not found.
      */
-    public Page<ReviewDTO> getPerformanceReviews(final Long performanceId, final Pageable pageable) throws PerformanceNotFoundByIdException {
+    public Page<ReviewDTO> getPerformanceReviews(final Long performanceId, final Pageable pageable)
+            throws PerformanceNotFoundByIdException {
+
         if (!performanceRepository.existsById(performanceId)) {
             throw new PerformanceNotFoundByIdException(performanceId);
         }
@@ -103,10 +116,12 @@ public class ReviewService {
     }
 
     /**
-     * Gets the user's review from a performance.
-     * @param performanceId PerformanceId in query param.
-     * @param userId The ID of the user received in the HTTP Request header.
-     * @return The user's own review as a ReviewDTO object or Optional.empty() if the user did not review the performance.
+     * Gets the user's review for a specific performance.
+     *
+     * @param userId The ID of a valid user, filtered before reaching the
+     *                controller.
+     * @param performanceId The ID of the performance.
+     * @return An Optional containing the review DTO, or empty if not found.
      */
     public Optional<ReviewDTO> getMyReview(final Long userId, final Long performanceId) {
         Optional<Review> review = reviewRepository.findByUser_IdAndPerformance_Id(userId, performanceId);
@@ -114,24 +129,27 @@ public class ReviewService {
     }
 
     /**
-     * Adds the user to the review's list of unique hearts.
-     * @param userId Provided in the request header. Is compared to the Review.user.id member for auth reasons.
-     * @param reviewId Provided in the query param. The review is identified by its id, not the unique pair <user, performance>
-     * @throws UserNotFoundByIdException If a user with the specified ID is not found.
-     * @throws ReviewNotFoundException If a review with the specified ID is not found.
+     * Toggles the heart (like) on a review for a user.
+     *
+     * @param userId The ID of a valid user, filtered before reaching the
+     *                controller.
+     * @param reviewId The ID of the review.
+     * @throws ReviewNotFoundException If a review with the specified ID is not
+     *                                 found.
      */
     @Transactional
     public void toggleHeartReview(final Long userId, final Long reviewId)
-            throws UserNotFoundByIdException, ReviewNotFoundException {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundByIdException(userId));
+            throws ReviewNotFoundException {
+
+        User userProxy = userRepository.getReferenceById(userId);
+
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewNotFoundException(reviewId));
 
-        if (review.getHeartedByUsers().contains(user)) {
-            review.getHeartedByUsers().remove(user);
+        if (review.getHeartedByUsers().contains(userProxy)) {
+            review.getHeartedByUsers().remove(userProxy);
         } else {
-            review.getHeartedByUsers().add(user);
+            review.getHeartedByUsers().add(userProxy);
         }
 
         reviewRepository.save(review);
@@ -139,18 +157,25 @@ public class ReviewService {
 
     /**
      * Deletes a review.
-     * @param userId Provided in the request header. Is compared to the Review.user.id member for auth reasons.
-     * @param reviewId Provided in the query param. The review is identified by its id, not the unique pair <user, performance>
+     *
+     * @param userId The ID of a valid user, filtered before reaching the
+     *                controller.
+     * @param reviewId The ID of the review.
+     * @throws ReviewNotFoundException If a review with the specified ID is not
+     *                                 found.
+     * @throws UserNotAuthorizedException If the user is not authorized to delete
+     *                                     this review.
      */
     @Transactional
-    public void deleteReview(final Long userId, final Long reviewId) throws
-            UserNotFoundByIdException, ReviewNotFoundException, UserNotAuthorizedException {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundByIdException(userId));
+    public void deleteReview(final Long userId, final Long reviewId)
+            throws ReviewNotFoundException, UserNotAuthorizedException {
+
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewNotFoundException(reviewId));
 
-        if (review.isCreatedBy(userId) || user.isAdmin()) {
+        User userProxy = userRepository.getReferenceById(userId);
+
+        if (review.isCreatedBy(userId) || userProxy.isAdmin()) {
             reviewRepository.delete(review);
         } else {
             throw new UserNotAuthorizedException(userId);
@@ -158,10 +183,13 @@ public class ReviewService {
     }
 
     /**
-     * Internal helper method, checks if user has already reviewed a performance.
-     * @param userId Provided in the request header.
-     * @param performanceId PerformanceId in query param.
-     * @return True or False
+     * Internal helper method to check if a user has already reviewed a
+     * performance.
+     *
+     * @param userId The ID of a valid user, filtered before reaching the
+     *                controller.
+     * @param performanceId The ID of the performance.
+     * @return True if the user has reviewed the performance, false otherwise.
      */
     private boolean hasUserReviewedPerformance(final Long userId, final Long performanceId) {
         return reviewRepository.existsByUser_IdAndPerformance_Id(userId, performanceId);

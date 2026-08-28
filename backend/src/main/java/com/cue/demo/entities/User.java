@@ -28,6 +28,9 @@ public class User {
     private UserRole role = UserRole.USER;
 
     private String username;
+
+    private String passwordHash;
+
     @Column(name="phone_number")
     private String phoneNumber;
     @Column(name="profile_picture_url")

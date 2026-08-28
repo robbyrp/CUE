@@ -3,7 +3,6 @@ package com.cue.demo.services;
 import com.cue.demo.dtos.PerformanceCardDTO;
 import com.cue.demo.dtos.PerformanceDTO;
 import com.cue.demo.entities.Performance;
-import com.cue.demo.entities.User;
 import com.cue.demo.exceptions.*;
 import com.cue.demo.dtos.SearchSuggestion;
 import com.cue.demo.mapper.PerformanceMapper;
@@ -23,21 +22,21 @@ import java.util.Objects;
 @Transactional(readOnly = true)
 public class PerformanceService {
     private final PerformanceRepository performanceRepository;
-    private final UserRepository userRepository;
     private final PerformanceMapper mapper;
 
     /**
-     * Creates and saves the Performance Entity in the database after checking validity.
-     * The user MUST be an Admin, and there can be no performance duplicates.
-     * Performances are identified by both title and director (At the moment).
-     * @param userId Provided in the request header.
-     * @param performanceDTO Performance Object received from the POST request.
+     * Creates and saves the Performance Entity in the database after checking
+     * validity. The user MUST be an Admin, and there can be no performance
+     * duplicates. Performances are identified by both title and director.
+     *
+     * @param performanceDTO The DTO containing the performance data.
+     * @throws PerformanceAlreadyExistsException If the performance already
+     *                                           exists.
      */
     @Transactional
-    public void createPerformance(final Long userId, final PerformanceDTO performanceDTO)
+    public void createPerformance (final PerformanceDTO performanceDTO)
             throws PerformanceAlreadyExistsException {
 
-        verifyAdminStatus(userId);
         checkNoDuplicate(performanceDTO);
 
         Performance performance = Performance.builder()
@@ -60,12 +59,13 @@ public class PerformanceService {
     }
 
     /**
-     * Returns the performance with the id given as a parameter.
-     * @param id The ID of the performance, given as a path variable in the URL.
-     * @return DTO
-     * @throws PerformanceNotFoundByIdException Throws it if the performance with the given ID does not exist in the database.
+     * Returns the performance with the ID given as a parameter.
+     *
+     * @param id The ID of the performance.
+     * @return The performance DTO.
+     * @throws PerformanceNotFoundByIdException If a performance with the
+     *                                           specified ID is not found.
      */
-
     public PerformanceDTO getPerformanceById(final Long id)
             throws PerformanceNotFoundByIdException {
         Performance p =  performanceRepository.findById(id)
@@ -74,10 +74,10 @@ public class PerformanceService {
     }
 
     /**
+     * Gets all performances from the database within a page.
      *
-     * @param pageable The pagination and sorting information (page number, size, sort criteria).
-     * @return Returns a dynamically sized page of PerformanceDTO's. Returns an empty array
-     * if there are no performances in the database.
+     * @param pageable The pagination and sorting information.
+     * @return A page of performance DTOs.
      */
     public Page<PerformanceDTO> getPerformances(Pageable pageable) {
         Page<Performance> performancePage = performanceRepository.findAll(pageable);
@@ -85,15 +85,15 @@ public class PerformanceService {
     }
 
     /**
-     * Sets the "deleted" column of the performance to true.
-     * @param userId Provided in the request header.
-     * @param id ID of the performance to be deleted.
-     * @throws PerformanceNotFoundByIdException Throws it if the performance with the given ID does not exist in the database.
+     * Deletes the performance with the specified ID.
+     *
+     * @param id The ID of the performance.
+     * @throws PerformanceNotFoundByIdException If a performance with the
+     *                                           specified ID is not found.
      */
     @Transactional
-    public void deletePerformanceById(final Long userId, final Long id)
+    public void deletePerformanceById(final Long id)
             throws PerformanceNotFoundByIdException {
-        verifyAdminStatus(userId);
 
         if (!performanceRepository.existsById(id)) {
             throw new PerformanceNotFoundByIdException(id);
@@ -103,19 +103,20 @@ public class PerformanceService {
     }
 
     /**
-     * Handles the PUT Request meant to update an existing Performance Entity.
-     * @param userId Provided in the request header.
-     * @param id ID of performance, given as a query param.
-     * @param performanceDTO DTO containing the old fields and the fields to be updated.
-     * @return Returns the newly updated Entity, mapped as a DTO.
-     * @throws PerformanceNotFoundByIdException Throws it if the performance with the given ID does not exist in the database.
+     * Updates an existing performance entity.
+     *
+     * @param id The ID of the performance.
+     * @param performanceDTO The DTO containing the performance data.
+     * @return The updated performance DTO.
+     * @throws PerformanceNotFoundByIdException If a performance with the
+     *                                           specified ID is not found.
+     * @throws PerformanceIdMismatchException If the provided ID does not match
+     *                                         the ID in the DTO.
      */
     @Transactional
-    public PerformanceDTO updatePerformanceById(final Long userId, final Long id,
+    public PerformanceDTO updatePerformanceById(final Long id,
                                                 final PerformanceDTO performanceDTO)
             throws PerformanceIdMismatchException, PerformanceNotFoundByIdException {
-
-        verifyAdminStatus(userId);
 
         if (!Objects.equals(id, performanceDTO.id())) {
             throw new PerformanceIdMismatchException(id, performanceDTO.id());
@@ -129,9 +130,10 @@ public class PerformanceService {
     }
 
     /**
+     * Performs a global search across the title field.
      *
-     * @param title String the user has typed until the method was called
-     * @return Returns the first 6 pairs of (title-id) title suggestions by relevance.
+     * @param title The title of the performance.
+     * @return A list of search suggestions.
      */
     public List<SearchSuggestion> getSearchTitleSuggestions(String title) {
         if (title == null || title.trim().isEmpty()) {
@@ -142,47 +144,24 @@ public class PerformanceService {
     }
 
     /**
-     * Performs a global search across multiple textual fields (title, director, location) using
-     * a single keyword. The search is case-insensitive and matches partial strings.
-     * <p>
-     * <b>Performance Note:</b> Although this JPQL query references Java entity fields,
-     * the underlying PostgreSQL engine will automatically map them to the database columns
-     * and use the defined B-Tree indexes (e.g., 'idx_title', 'idx_director', 'location')
-     * to highly optimize the execution plan whenever possible.
-     * </p>
+     * Performs a global search across multiple textual fields (title, director,
+     * location) using a single keyword. The search is case-insensitive and
+     * matches partial strings.
      *
-     * @param keyword  The text fragment to search for across the fields.
-     * @param pageable The pagination and sorting information (page number, size, sort criteria).
-     * @return A paginated list of {@link Performance} entities matching the given keyword.
+     * @param keyword The text fragment to search for across the fields.
+     * @param pageable The pagination and sorting information.
+     * @return A paginated list of performance card DTOs.
      */
     public Page<PerformanceCardDTO> getSearchResults(Pageable pageable, String keyword) {
         return performanceRepository.searchProducts(keyword, pageable).map(mapper::fromPerformanceEntityToPerformanceCardDTO);
     }
 
     /**
-     * Helper method.
-     * Checks if the user corresponding to the userId
-     * has the Admin Role.
-     * @param userIdRequestHeader User ID received in the Request Header.
-     * @throws UserNotFoundByIdException If a user with the specified ID is not found.
-     * @throws UserNotAuthorizedException If the user is not an Admin.
-     */
-    private void verifyAdminStatus(Long userIdRequestHeader)
-            throws UserNotFoundByIdException, UserNotAuthorizedException{
-        User user = userRepository.findById(userIdRequestHeader)
-                .orElseThrow(() -> new UserNotFoundByIdException(userIdRequestHeader));
-        if (!user.isAdmin()) {
-            throw new UserNotAuthorizedException(userIdRequestHeader);
-        }
-    }
-
-    /**
-     * Helper method
-     * Checks if a performance already exists: performances are identified
-     * by both title and director (At the moment).
-     * @param performanceDTO The Performance Object received from the POST request.
-     * @throws PerformanceAlreadyExistsException Throws it if the performance the admin
-     * introduces already exists in the database.
+     * Checks if a performance already exists by title and director.
+     *
+     * @param performanceDTO The DTO containing the performance data.
+     * @throws PerformanceAlreadyExistsException If the performance already
+     *                                           exists.
      */
     private void checkNoDuplicate(final PerformanceDTO performanceDTO)
             throws PerformanceAlreadyExistsException {
