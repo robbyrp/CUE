@@ -58,7 +58,7 @@ public class ReviewController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NO_CONTENT).body(null));
     }
 
-    @PutMapping("/heart/{reviewId}")
+    @PutMapping("/{reviewId}/heart")
     public ResponseEntity<Void> toggleHeartReview (@PathVariable Long reviewId,
                                                    @AuthenticationPrincipal UserSecurityAdapter principal) {
 
@@ -74,6 +74,15 @@ public class ReviewController {
         final Long userId = principal.getId();
         service.deleteReview(userId, reviewId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    }
+
+    @GetMapping("/me/all")
+    public ResponseEntity<Page<ReviewDTO>> getMyReviews(@AuthenticationPrincipal UserSecurityAdapter principal,
+                                                        final Pageable pageable) {
+
+        final Long userId = principal.getId();
+        Page<ReviewDTO> reviewDTOPage = service.getMyReviews(userId, pageable);
+        return ResponseEntity.ok().body(reviewDTOPage);
     }
 
 }

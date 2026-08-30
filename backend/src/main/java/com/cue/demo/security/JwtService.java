@@ -15,7 +15,7 @@ import java.util.function.Function;
 @Service
 public final class JwtService {
 
-    @Value("${security.kew.secret-key}")
+    @Value("${security.jwt.secret-key}")
     private String secretKey;
 
     /**

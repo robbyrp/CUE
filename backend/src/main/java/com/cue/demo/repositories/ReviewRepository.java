@@ -16,4 +16,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     @Query("SELECT r.performance FROM Review r WHERE r.user.id = :userId")
     Page<Performance> findPerformancesReviewedByUserId(Long userId, final Pageable pageable);
+
+    Page<Review> findByUser_Id(final Long userId, final Pageable pageable);
 }

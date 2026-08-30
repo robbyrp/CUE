@@ -31,8 +31,6 @@ public class User {
 
     private String passwordHash;
 
-    @Column(name="phone_number")
-    private String phoneNumber;
     @Column(name="profile_picture_url")
     private String profilePictureUrl;
 

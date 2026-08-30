@@ -183,6 +183,21 @@ public class ReviewService {
     }
 
     /**
+     * Gets a page from all the user's reviews.
+     *
+     * @param userId The ID of a valid user, filtered before reaching the
+     *                controller.
+     * @param pageable The pagination and sorting information.
+     * @return A page of review DTOs.
+     */
+    @Transactional
+    public Page<ReviewDTO> getMyReviews(final Long userId, final Pageable pageable)
+    {
+        Page<Review> reviews = reviewRepository.findByUser_Id(userId, pageable);
+        return reviews.map(mapper::fromReviewToReviewDTO);
+    }
+
+    /**
      * Internal helper method to check if a user has already reviewed a
      * performance.
      *
