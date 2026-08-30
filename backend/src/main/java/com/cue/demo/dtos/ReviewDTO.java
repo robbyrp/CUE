@@ -13,7 +13,7 @@ public record ReviewDTO(
     LocalDateTime createdAt,
     @Min(0) @Max(5) Integer stars,
     @Min(0) Integer hearts,
-    @NotBlank String text,
-    @NotNull Boolean isSpoiler
+    @NotBlank(message = "text cannot be empty") String text,
+    @NotNull(message = "isSpoiler cannot be empty") Boolean isSpoiler
 ) {
 }

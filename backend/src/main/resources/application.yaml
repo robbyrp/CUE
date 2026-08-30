@@ -21,3 +21,6 @@ logging:
           orm:
             jdbc:
               bind: TRACE
+security:
+  jwt:
+    secret-key: 232b2c9536bd685d1b84da22853bd9592375c1d8b9d791ec22ae3971019828ea
