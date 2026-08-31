@@ -1,6 +1,5 @@
 package com.cue.demo.dtos;
 
-import com.cue.demo.entities.Review;
 import com.cue.demo.enums.UserRole;
 import lombok.Builder;
 
@@ -17,6 +16,6 @@ public record UserProfileDTO(
         String city,
         String profilePictureUrl,
         String bio,
-        Set<Review> reviews
+        Set<ReviewDTO> reviews
 ) {
 }

@@ -18,7 +18,7 @@ public class UserDatabaseSeeder implements CommandLineRunner {
 
     @Override
     public void run (final String... args) {
-      if (userRepository.count() != 6) {
+      if (userRepository.count() != 0) {
           User maria = User.builder()
                   .role(UserRole.ADMIN)
                   .username("maria_surubaru1")

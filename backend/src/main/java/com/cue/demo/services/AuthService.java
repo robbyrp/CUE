@@ -1,13 +1,11 @@
 package com.cue.demo.services;
 
-import com.cue.demo.dtos.LoginRequestDTO;
-import com.cue.demo.dtos.LoginResponseDTO;
-import com.cue.demo.dtos.RegisterUserRequestDTO;
-import com.cue.demo.dtos.UserProfileDTO;
+import com.cue.demo.dtos.*;
 import com.cue.demo.entities.User;
 import com.cue.demo.enums.UserRole;
 import com.cue.demo.exceptions.UserNotFoundException;
 import com.cue.demo.exceptions.UsernameAlreadyInUseException;
+import com.cue.demo.mapper.ReviewMapper;
 import com.cue.demo.repositories.UserRepository;
 import com.cue.demo.security.JwtService;
 import com.cue.demo.security.UserSecurityAdapter;
@@ -20,6 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -29,6 +30,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ReviewMapper reviewMapper;
 
     public LoginResponseDTO login(final LoginRequestDTO request) {
 
@@ -45,6 +47,7 @@ public class AuthService {
         return new LoginResponseDTO(token);
     }
 
+    @Transactional
     public LoginResponseDTO register(final RegisterUserRequestDTO request)
     throws UsernameAlreadyInUseException {
 
@@ -71,7 +74,12 @@ public class AuthService {
 
     public UserProfileDTO getCurrentUserProfileById(final Long userId)
     throws UserNotFoundException {
+
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        Set<ReviewDTO> reviewDTOS = user.getReviews().stream()
+                .map(reviewMapper::fromReviewToReviewDTO)
+                .collect(Collectors.toSet());
+
         return UserProfileDTO.builder()
                 .id(user.getId())
                 .role(user.getRole())
@@ -82,7 +90,7 @@ public class AuthService {
                 .city(user.getCity())
                 .profilePictureUrl(user.getProfilePictureUrl())
                 .bio(user.getBio())
-                .reviews(user.getReviews())
+                .reviews(reviewDTOS)
                 .build();
     }
 
