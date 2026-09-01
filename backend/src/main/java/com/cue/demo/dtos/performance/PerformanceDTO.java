@@ -1,4 +1,4 @@
-package com.cue.demo.dtos;
+package com.cue.demo.dtos.performance;
 
 import com.cue.demo.entities.Credit;
 import com.cue.demo.entities.Review;

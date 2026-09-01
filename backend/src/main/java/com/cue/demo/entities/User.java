@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -31,16 +32,18 @@ public class User {
 
     private String passwordHash;
 
-    @Column(name="profile_picture_url")
+    @Setter @Column(name="profile_picture_url")
     private String profilePictureUrl;
 
+    @Setter
     private String bio;
-    @Column(name="first_name")
+    @Setter @Column(name="first_name")
     private String firstName;
-    @Column(name="last_name")
+    @Setter @Column(name="last_name")
     private String lastName;
+    @Setter
     private String email;
-    @Builder.Default
+    @Setter @Builder.Default
     private String city = "Constanța";
 
     @OneToMany(mappedBy="user")

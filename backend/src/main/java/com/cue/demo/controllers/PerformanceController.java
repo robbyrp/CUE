@@ -1,6 +1,6 @@
 package com.cue.demo.controllers;
 
-import com.cue.demo.dtos.PerformanceDTO;
+import com.cue.demo.dtos.performance.PerformanceDTO;
 import com.cue.demo.services.PerformanceService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;

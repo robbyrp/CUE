@@ -1,6 +1,6 @@
 package com.cue.demo.services;
 
-import com.cue.demo.dtos.ReviewDTO;
+import com.cue.demo.dtos.review.ReviewDTO;
 import com.cue.demo.entities.Performance;
 import com.cue.demo.entities.Review;
 import com.cue.demo.entities.User;

@@ -1,7 +1,7 @@
 package com.cue.demo.controllers;
 
-import com.cue.demo.dtos.PerformanceCardDTO;
-import com.cue.demo.dtos.WatchPerformanceItemDTO;
+import com.cue.demo.dtos.performance.PerformanceCardDTO;
+import com.cue.demo.dtos.performance.WatchPerformanceItemDTO;
 import com.cue.demo.security.UserSecurityAdapter;
 import com.cue.demo.services.UserService;
 import org.springframework.data.domain.Page;

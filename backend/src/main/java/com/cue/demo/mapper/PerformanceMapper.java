@@ -1,7 +1,7 @@
 package com.cue.demo.mapper;
 
-import com.cue.demo.dtos.PerformanceCardDTO;
-import com.cue.demo.dtos.PerformanceDTO;
+import com.cue.demo.dtos.performance.PerformanceCardDTO;
+import com.cue.demo.dtos.performance.PerformanceDTO;
 import com.cue.demo.entities.Performance;
 import com.cue.demo.entities.WatchLaterPerformanceItem;
 import com.cue.demo.entities.WatchedPerformanceItem;

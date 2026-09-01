@@ -1,7 +1,7 @@
 package com.cue.demo.services;
 
-import com.cue.demo.dtos.PerformanceCardDTO;
-import com.cue.demo.dtos.WatchPerformanceItemDTO;
+import com.cue.demo.dtos.performance.PerformanceCardDTO;
+import com.cue.demo.dtos.performance.WatchPerformanceItemDTO;
 import com.cue.demo.entities.Performance;
 import com.cue.demo.entities.User;
 import com.cue.demo.entities.WatchLaterPerformanceItem;

@@ -1,6 +1,5 @@
 package com.cue.demo.entities;
 
-import com.cue.demo.dtos.PerformanceDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

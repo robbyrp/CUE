@@ -1,7 +1,7 @@
 package com.cue.demo.repositories;
 
 import com.cue.demo.entities.Performance;
-import com.cue.demo.dtos.SearchSuggestion;
+import com.cue.demo.dtos.search.SearchSuggestion;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

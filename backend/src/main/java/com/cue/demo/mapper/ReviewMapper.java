@@ -1,6 +1,6 @@
 package com.cue.demo.mapper;
 
-import com.cue.demo.dtos.ReviewDTO;
+import com.cue.demo.dtos.review.ReviewDTO;
 import com.cue.demo.entities.Review;
 import org.springframework.stereotype.Component;
 

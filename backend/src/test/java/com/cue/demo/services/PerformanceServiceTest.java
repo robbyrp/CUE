@@ -1,8 +1,8 @@
 package com.cue.demo.services;
 
-import com.cue.demo.dtos.PerformanceCardDTO;
-import com.cue.demo.dtos.PerformanceDTO;
-import com.cue.demo.dtos.SearchSuggestion;
+import com.cue.demo.dtos.performance.PerformanceCardDTO;
+import com.cue.demo.dtos.performance.PerformanceDTO;
+import com.cue.demo.dtos.search.SearchSuggestion;
 import com.cue.demo.entities.Performance;
 import com.cue.demo.exceptions.PerformanceAlreadyExistsException;
 import com.cue.demo.exceptions.PerformanceIdMismatchException;

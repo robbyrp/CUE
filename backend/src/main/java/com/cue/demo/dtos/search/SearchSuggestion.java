@@ -1,4 +1,4 @@
-package com.cue.demo.dtos;
+package com.cue.demo.dtos.search;
 
 public interface SearchSuggestion {
     Long getId();

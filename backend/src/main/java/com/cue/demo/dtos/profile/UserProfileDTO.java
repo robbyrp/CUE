@@ -1,14 +1,9 @@
-package com.cue.demo.dtos;
+package com.cue.demo.dtos.profile;
 
-import com.cue.demo.enums.UserRole;
 import lombok.Builder;
-
-import java.util.Set;
 
 @Builder
 public record UserProfileDTO(
-        Long id,
-        UserRole role,
         String username,
         String firstName,
         String lastName,
@@ -16,6 +11,8 @@ public record UserProfileDTO(
         String city,
         String profilePictureUrl,
         String bio,
-        Set<ReviewDTO> reviews
+        Integer reviewedCount,
+        Integer watchLaterCount,
+        Integer watchedCount
 ) {
 }

@@ -28,4 +28,6 @@ public interface WatchLaterPerformanceItemRepository extends JpaRepository<Watch
      * @return A Page of watch later performance item objects.
      */
     Page<WatchLaterPerformanceItem> findByUserId(Long userId, Pageable pageable);
+
+    Integer countByUser_Id(final Long userId);
 }

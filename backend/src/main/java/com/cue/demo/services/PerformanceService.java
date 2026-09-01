@@ -1,13 +1,12 @@
 package com.cue.demo.services;
 
-import com.cue.demo.dtos.PerformanceCardDTO;
-import com.cue.demo.dtos.PerformanceDTO;
+import com.cue.demo.dtos.performance.PerformanceCardDTO;
+import com.cue.demo.dtos.performance.PerformanceDTO;
 import com.cue.demo.entities.Performance;
 import com.cue.demo.exceptions.*;
-import com.cue.demo.dtos.SearchSuggestion;
+import com.cue.demo.dtos.search.SearchSuggestion;
 import com.cue.demo.mapper.PerformanceMapper;
 import com.cue.demo.repositories.PerformanceRepository;
-import com.cue.demo.repositories.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

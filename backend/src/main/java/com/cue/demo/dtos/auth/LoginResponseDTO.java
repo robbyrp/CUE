@@ -1,3 +1,3 @@
-package com.cue.demo.dtos;
+package com.cue.demo.dtos.auth;
 
 public record LoginResponseDTO (String token){ }

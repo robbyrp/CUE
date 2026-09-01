@@ -1,4 +1,4 @@
-package com.cue.demo.dtos;
+package com.cue.demo.dtos.performance;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

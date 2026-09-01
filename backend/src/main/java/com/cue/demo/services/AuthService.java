@@ -1,11 +1,11 @@
 package com.cue.demo.services;
 
-import com.cue.demo.dtos.*;
+import com.cue.demo.dtos.auth.LoginRequestDTO;
+import com.cue.demo.dtos.auth.LoginResponseDTO;
+import com.cue.demo.dtos.auth.RegisterUserRequestDTO;
 import com.cue.demo.entities.User;
 import com.cue.demo.enums.UserRole;
-import com.cue.demo.exceptions.UserNotFoundException;
 import com.cue.demo.exceptions.UsernameAlreadyInUseException;
-import com.cue.demo.mapper.ReviewMapper;
 import com.cue.demo.repositories.UserRepository;
 import com.cue.demo.security.JwtService;
 import com.cue.demo.security.UserSecurityAdapter;
@@ -18,9 +18,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-
+/**
+ * Service for managing authentication and registration processes.
+ * Handles credential verification and JWT token generation.
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -30,8 +31,13 @@ public class AuthService {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ReviewMapper reviewMapper;
 
+    /**
+     * Authenticates a user based on their username and password.
+     *
+     * @param request DTO containing the username and password.
+     * @return A {@link LoginResponseDTO} containing the generated JWT token.
+     */
     public LoginResponseDTO login(final LoginRequestDTO request) {
 
         authenticationManager.authenticate(
@@ -47,6 +53,13 @@ public class AuthService {
         return new LoginResponseDTO(token);
     }
 
+    /**
+     * Registers a new user in the system.
+     *
+     * @param request DTO containing the data required for registration.
+     * @return A {@link LoginResponseDTO} containing the JWT token for the new user.
+     * @throws UsernameAlreadyInUseException If the chosen username is already in use.
+     */
     @Transactional
     public LoginResponseDTO register(final RegisterUserRequestDTO request)
     throws UsernameAlreadyInUseException {
@@ -72,26 +85,6 @@ public class AuthService {
         return new LoginResponseDTO(token);
     }
 
-    public UserProfileDTO getCurrentUserProfileById(final Long userId)
-    throws UserNotFoundException {
 
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        Set<ReviewDTO> reviewDTOS = user.getReviews().stream()
-                .map(reviewMapper::fromReviewToReviewDTO)
-                .collect(Collectors.toSet());
-
-        return UserProfileDTO.builder()
-                .id(user.getId())
-                .role(user.getRole())
-                .username(user.getUsername())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .email(user.getEmail())
-                .city(user.getCity())
-                .profilePictureUrl(user.getProfilePictureUrl())
-                .bio(user.getBio())
-                .reviews(reviewDTOS)
-                .build();
-    }
 
 }

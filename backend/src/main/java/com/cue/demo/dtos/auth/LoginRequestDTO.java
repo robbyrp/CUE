@@ -1,4 +1,4 @@
-package com.cue.demo.dtos;
+package com.cue.demo.dtos.auth;
 
 import jakarta.validation.constraints.NotBlank;
 

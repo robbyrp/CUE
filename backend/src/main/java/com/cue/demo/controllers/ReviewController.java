@@ -1,6 +1,6 @@
 package com.cue.demo.controllers;
 
-import com.cue.demo.dtos.ReviewDTO;
+import com.cue.demo.dtos.review.ReviewDTO;
 import com.cue.demo.security.UserSecurityAdapter;
 import com.cue.demo.services.ReviewService;
 import jakarta.validation.Valid;
