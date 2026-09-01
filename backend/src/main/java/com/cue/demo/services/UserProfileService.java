@@ -46,26 +46,28 @@ public class UserProfileService {
      * Updates the current user's profile.
      * Allows updates only if the user is an admin or is updating their own profile.
      *
-     * @param userId The ID of the user performing the update (or the target ID).
+     * @param principalUserId The ID of the user performing the update.
+     *                        It can differ from request.id(), since
+     *                        an admin can edit anyone's profile.
      * @param request New data for updating the profile.
      * @return A {@link UserProfileDTO} reflecting the changes made.
      * @throws UserNotFoundException If the user is not found.
      * @throws UserNotAuthorizedException If the user does not have permission to edit this profile.
      */
     @Transactional
-    public UserProfileDTO updateCurrentUserProfile(final Long userId, final UserProfileUpdateRequestDTO request)
+    public UserProfileDTO updateCurrentUserProfile(final Long principalUserId, final UserProfileUpdateRequestDTO request)
             throws UserNotFoundException, UserNotAuthorizedException
     {
+        User principal = userRepository.findById(principalUserId).orElseThrow(() -> new UserNotFoundException(principalUserId));
+        User targetUser = userRepository.findById(request.userId()).orElseThrow(() -> new UserNotFoundException(request.userId()));
 
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        boolean canEdit = principal.isAdmin() || principal.getId().equals(targetUser.getId());
 
-        boolean canEdit = user.isAdmin() || user.getId().equals(userId);
+        if (!canEdit) { throw new UserNotAuthorizedException(principalUserId); }
 
-        if (!canEdit) { throw new UserNotAuthorizedException(user.getId());}
+        userProfileMapper.updateUserEntityFromUserProfileDTO(targetUser, request);
 
-        userProfileMapper.updateUserEntityFromUserProfileDTO(user, request);
-
-        return getUserProfileDTO(userId, user);
+        return getUserProfileDTO(request.userId(), targetUser);
     }
 
     /**

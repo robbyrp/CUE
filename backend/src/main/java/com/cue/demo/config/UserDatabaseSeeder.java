@@ -18,7 +18,7 @@ public class UserDatabaseSeeder implements CommandLineRunner {
 
     @Override
     public void run (final String... args) {
-      if (userRepository.count() != 0) {
+      if (userRepository.count() < 5) {
           User maria = User.builder()
                   .role(UserRole.ADMIN)
                   .username("maria_surubaru1")
@@ -88,23 +88,7 @@ public class UserDatabaseSeeder implements CommandLineRunner {
                   .email("test.user@example.com")
                   .city("Constanța")
                   .build();
-//
-//              Performance testPerformance = Performance.builder()
-//                      .id(100L)
-//                      .title("Spectacol test")
-//                      .director("Director test")
-//                      .location("TNB Test")
-//                      .theaterName("Teatrul de stat Constanta Test")
-//                      .startDateTime(LocalDateTime.parse("2027-10-10T10:10:00"))
-//                      .coverImageURL("https://example.com/images/dance.jpg")
-//                      .ageLimit(10)
-//                      .duration(100)
-//                      .fullCoverImageURL("https://example.com/images/dance-banner.jpg")
-//                      .purchaseTicketLink("https://cndb.ro/bilete/sincronicitate/test")
-//                      .description("Un spectacol Test impresionant din toate punctele de vedere.")
-//                      .creditList(List.of())
-//                      .build();
-//
+
           userRepository.saveAll(List.of(maria, iris, andrew, robert, cosmin, testUser));
 
           }
