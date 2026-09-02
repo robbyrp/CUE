@@ -22,7 +22,9 @@ public class UserProfileController {
 
     @GetMapping("/me")
     public ResponseEntity<UserProfileDTO> getCurrentUser (@AuthenticationPrincipal UserSecurityAdapter principal) {
-        UserProfileDTO profile = service.getCurrentUserProfileById(principal.getId());
+
+        final Long userId = principal.getId();
+        UserProfileDTO profile = service.getCurrentUserProfileById(userId);
         return ResponseEntity.status(HttpStatus.OK).body(profile);
     }
 

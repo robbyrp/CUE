@@ -84,6 +84,7 @@ public class UserProfileService {
         Integer watchedPerformanceCount = watchedPerformanceItemRepository.countByUser_Id(userId);
 
         return UserProfileDTO.builder()
+                .id(userId)
                 .username(user.getUsername())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
