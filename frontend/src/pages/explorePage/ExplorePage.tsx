@@ -1,11 +1,12 @@
 import styles from './ExplorePage.module.scss';
-import {useState, useEffect} from 'react';
-import {PerformancePortalService} from '../../services/PerformancePortalService';
+import { useState, useEffect } from 'react';
+import { PerformanceService } from '../../services/ReviewService';
 import PerformanceCardComponent from '../../components/performanceCardComponent/PerformanceCardComponent';
-import type PerformancePortal from '../../types/PerformancePortal';
+import type PerformancePortal from '../../types/Performance';
 import { useNavigate } from 'react-router-dom';
 import DesktopHeader from '../../common/components/DesktopHeader/DesktopHeader';
 import DesktopFooter from '../../common/components/DesktopFooter/DesktopFooter';
+import type { PageRequest } from '../../types/PageRequest';
 
 
 function ExplorePage() {
@@ -17,7 +18,12 @@ function ExplorePage() {
     useEffect(() => {
         const loadData = async () => {
             try {
-                const response = await PerformancePortalService.getAllPerformances(PAGE_NUMBER, PAGE_SIZE);
+                const requestQueryParams: PageRequest = {
+                    page: PAGE_NUMBER,
+                    size: PAGE_SIZE,
+                    sort: "averageRating.desc" //TODO: EXPLORE PAGE CUSTOM CU MAI MULTE CATEGORII DE SORT
+                }
+                const response = await PerformanceService.getPerformancesByCategory(requestQueryParams);
                 setPerformanceDTOS(response.content);
             } catch (error) {
                 console.error("Eroare la aducerea spectacolelor", error);
@@ -31,17 +37,17 @@ function ExplorePage() {
     }
     return (
         <>
-            <DesktopHeader/>
-            <div className = {styles.ListContainer}>
-            {performanceDTOS.map((dto: PerformancePortal) => (
-                <div key = {dto.id} onClick={() => navigate(`/spectacole/${dto.id}`)} style={{cursor: `pointer`}}>
-                    <PerformanceCardComponent data = {dto} />
-                </div>
-            ))}
+            <DesktopHeader />
+            <div className={styles.ListContainer}>
+                {performanceDTOS.map((dto: PerformancePortal) => (
+                    <div key={dto.id} onClick={() => navigate(`/spectacole/${dto.id}`)} style={{ cursor: `pointer` }}>
+                        <PerformanceCardComponent data={dto} />
+                    </div>
+                ))}
             </div>
             <DesktopFooter />
         </>
-        
+
     )
 }
 export default ExplorePage;

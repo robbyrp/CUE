@@ -2,11 +2,13 @@ import styles from './MyActivityPage.module.scss';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CategoryCarousel from '../../common/components/categoryCarousel/CategoryCarousel';
-import {PerformancePortalService} from '../../services/PerformancePortalService'
+import { PerformanceService } from '../../services/PerformanceService';
+import { UserService } from '../../services/UserService';
 import PerformanceCardComponent from '../../components/performanceCardComponent/PerformanceCardComponent';
 import DesktopHeader from '../../common/components/DesktopHeader/DesktopHeader';
 import DesktopFooter from '../../common/components/DesktopFooter/DesktopFooter';
-import type PerformancePortal from '../../types/PerformancePortal';
+import type PerformancePortal from '../../types/Performance';
+import type { PageRequest } from '../../types/PageRequest';
 
 function MyActivityPage() {
     const [watchLaterPerformanceDTOs, setWatchLaterPerformanceDTOs] =
@@ -19,7 +21,12 @@ function MyActivityPage() {
 
     const PAGE_NUMBER = 0;
     const PAGE_SIZE = 10;
-    const MOCK_PERFORMANCES_PAGE_SIZE = 2;
+
+    const requestQueryParams: PageRequest = {
+        page: PAGE_NUMBER,
+        size: PAGE_SIZE,
+        sort: "averageRating.desc" //TODO: EXPLORE PAGE CUSTOM CU MAI MULTE CATEGORII DE SORT
+    };
 
     const getFallbackContent = (
         content: PerformancePortal[] | undefined,
@@ -37,10 +44,10 @@ function MyActivityPage() {
                     watchedResponse,
                     reviewedResponse
                 ] = await Promise.all([
-                    PerformancePortalService.getAllPerformances(PAGE_NUMBER, MOCK_PERFORMANCES_PAGE_SIZE),
-                    PerformancePortalService.getWatchLaterPerformances(PAGE_NUMBER, PAGE_SIZE),
-                    PerformancePortalService.getWatchedPerformances(PAGE_NUMBER, PAGE_SIZE),
-                    PerformancePortalService.getReviewedPerformances(PAGE_NUMBER, PAGE_SIZE)
+                    PerformanceService.getPerformancesByCategory(requestQueryParams),
+                    UserService.getWatchLaterPerformances(requestQueryParams),
+                    UserService.getWatchedPerformances(requestQueryParams),
+                    UserService.getReviewedPerformances(requestQueryParams)
                 ]);
 
                 const mockPerformances = mockResponse.content;
@@ -67,39 +74,39 @@ function MyActivityPage() {
 
     return (
         <div className={styles.myActivityPage}>
-            <DesktopHeader/>
+            <DesktopHeader />
             <div className={styles.myActivityContainer}>
 
                 <CategoryCarousel
-                    title = "WATCH LATER">
+                    title="WATCH LATER">
                     {watchLaterPerformanceDTOs.map((dto: PerformancePortal) => (
-                        <div key = {dto.id} onClick={() => navigate(`/spectacole/${dto.id}`)} style={{cursor: `pointer`}}>
+                        <div key={dto.id} onClick={() => navigate(`/spectacole/${dto.id}`)} style={{ cursor: `pointer` }}>
                             <PerformanceCardComponent data={dto} />
                         </div>
                     ))}
                 </CategoryCarousel>
 
                 <CategoryCarousel
-                    title = "WATCHED">
+                    title="WATCHED">
                     {watchedPerformanceDTOs.map((dto: PerformancePortal) => (
-                        <div key = {dto.id} onClick={() => navigate(`/spectacole/${dto.id}`)} style={{cursor: `pointer`}}>
+                        <div key={dto.id} onClick={() => navigate(`/spectacole/${dto.id}`)} style={{ cursor: `pointer` }}>
                             <PerformanceCardComponent data={dto} />
                         </div>
                     ))}
                 </CategoryCarousel>
 
                 <CategoryCarousel
-                    title = "REVIEWED">
+                    title="REVIEWED">
                     {reviewedPerformanceDTOs.map((dto: PerformancePortal) => (
-                        <div key = {dto.id} onClick={() => navigate(`/spectacole/${dto.id}`)} style={{cursor: `pointer`}}>
+                        <div key={dto.id} onClick={() => navigate(`/spectacole/${dto.id}`)} style={{ cursor: `pointer` }}>
                             <PerformanceCardComponent data={dto} />
                         </div>
                     ))}
                 </CategoryCarousel>
 
             </div>
-            <DesktopFooter/>
-    </div>
+            <DesktopFooter />
+        </div>
     )
 }
 

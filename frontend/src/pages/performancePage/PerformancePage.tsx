@@ -1,7 +1,7 @@
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import styles from './PerformancePage.module.scss'
-import type PerformancePortal from '../../types/PerformancePortal';
-import {PerformancePortalService} from '../../services/PerformancePortalService';
+import type PerformancePortal from '../../types/Performance';
+import { PerformanceService } from '../../services/ReviewService';
 import PerformanceComponent from '../../components/performanceComponent/performanceComponent';
 import { useParams } from 'react-router-dom';
 import DesktopHeader from '../../common/components/DesktopHeader/DesktopHeader';
@@ -15,13 +15,13 @@ function PerformancePage() {
             if (id) {
                 try {
                     const idNumber = Number(id);
-                    const response = await PerformancePortalService.getPerformanceById(idNumber);
+                    const response = await PerformanceService.getPerformanceById(idNumber);
                     setPerformanceDTO(response);
                 } catch (error) {
                     console.error("Eroare la aducerea spectacolului", error, id);
                 }
             }
-            
+
         };
         loadData();
     }, [id]);
@@ -33,10 +33,10 @@ function PerformancePage() {
     return (
         <>
             <DesktopHeader />
-            <div className = {styles.PerformanceComponentContainer} >
-                <PerformanceComponent data = {performanceDTO} />
+            <div className={styles.PerformanceComponentContainer} >
+                <PerformanceComponent data={performanceDTO} />
             </div>
-            <DesktopFooter/>
+            <DesktopFooter />
         </>
 
     )
