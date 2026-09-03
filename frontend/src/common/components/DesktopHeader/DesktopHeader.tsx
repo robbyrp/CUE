@@ -3,34 +3,34 @@ import LogoIcon from "./assets/logoIcon.svg";
 import exploreIcon from "./assets/whiteStarIcon.svg";
 import calendarIcon from "./assets/whiteCalendarIcon.svg";
 import profileIcon from "./assets/whiteProfileIcon.svg";
-import type {SearchSuggestion} from '../../../types/SearchSuggestion';
+import type { SearchSuggestion } from '../../../types/SearchSuggestion';
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { PerformancePortalService } from "../../../services/PerformancePortalService";
+import { PerformanceService } from "../../../services/ReviewService";
 
 function DesktopHeader() {
   const [searchValue, setSearchValue] = useState("");
   const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const showSearchDropdown = searchValue.trim().length > 0;
 
   useEffect(() => {
     const timer = setTimeout(async () => {
-        if (searchValue.trim().length > 0) {
-            try {
-              const results = await PerformancePortalService.getSearchTitleSuggestions(searchValue);
-              setSuggestions(results);
-            } catch (e) {
-              console.error("Error bringing suggestions", e);
-            }
-        } else {
-            setSuggestions([]);
+      if (searchValue.trim().length > 0) {
+        try {
+          const results = await PerformanceService.getSearchTitleSuggestions(searchValue);
+          setSuggestions(results);
+        } catch (e) {
+          console.error("Error bringing suggestions", e);
         }
+      } else {
+        setSuggestions([]);
+      }
     }, 300); // 300 ms
 
     return () => clearTimeout(timer);
-    
-}, [searchValue]);
+
+  }, [searchValue]);
 
   return (
     <div className={styles.header}>
@@ -51,10 +51,10 @@ function DesktopHeader() {
           {showSearchDropdown && (
             <div className={styles.searchDropdown}>
               {suggestions.map((row: SearchSuggestion) => (
-               <div key={row.id} className={styles.searchOption} 
-               onClick={() => navigate(`/spectacole/${row.id}`)} style={{cursor: 'pointer'}}>
+                <div key={row.id} className={styles.searchOption}
+                  onClick={() => navigate(`/spectacole/${row.id}`)} style={{ cursor: 'pointer' }}>
                   {row.title.toLowerCase()}
-                </div> 
+                </div>
               ))
               }
             </div>

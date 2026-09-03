@@ -1,8 +1,8 @@
 import styles from './PerformanceComponent.module.scss';
-import type PerformancePortal from "../../types/PerformancePortal";
+import type PerformancePortal from "../../types/Performance";
 import { useState, useEffect } from "react";
 import { getAgeIcon } from '../../utils/ageHelper';
-import { PerformancePortalService } from "../../services/PerformancePortalService";
+import { PerformanceService } from "../../services/ReviewService";
 import type { MouseEvent } from "react";
 import { useAuth } from '../../context/AuthContext';
 
@@ -38,8 +38,8 @@ function PerformanceComponent({ data }: { data: PerformancePortal }) {
                 setIsButtonsLoading(true);
 
                 const [watchedStatus, watchLaterStatus] = await Promise.all([
-                    PerformancePortalService.isInWatched(data.id),
-                    PerformancePortalService.isInWatchLater(data.id)
+                    PerformanceService.isInWatched(data.id),
+                    PerformanceService.isInWatchLater(data.id)
                 ]);
 
                 setIsPerformanceWatched(watchedStatus);
@@ -60,10 +60,10 @@ function PerformanceComponent({ data }: { data: PerformancePortal }) {
         try {
             setActiveButton("watched");
             if (isPerformanceWatched) {
-                await PerformancePortalService.deleteFromWatched(data.id);
+                await PerformanceService.deleteFromWatched(data.id);
                 setIsPerformanceWatched(false);
             } else {
-                await PerformancePortalService.addToWatched(data.id);
+                await PerformanceService.addToWatched(data.id);
                 setIsPerformanceWatched(true);
             }
         } catch (error) {
@@ -80,10 +80,10 @@ function PerformanceComponent({ data }: { data: PerformancePortal }) {
         try {
             setActiveButton("watchLater");
             if (isPerformanceInWatchLater) {
-                await PerformancePortalService.deleteFromWatchLater(data.id);
+                await PerformanceService.deleteFromWatchLater(data.id);
                 setIsPerformanceInWatchLater(false);
             } else {
-                await PerformancePortalService.addToWatchLater(data.id);
+                await PerformanceService.addToWatchLater(data.id);
                 setIsPerformanceInWatchLater(true);
             }
         } catch (error) {

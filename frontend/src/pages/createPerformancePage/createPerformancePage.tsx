@@ -1,43 +1,44 @@
 // noinspection JSAnnotator
 
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import styles from './createPerformancePage.module.scss'
-import type PerformancePortal from '../../types/PerformancePortal';
-import { PerformancePortalService } from '../../services/PerformancePortalService';
+import type PerformancePortal from '../../types/Performance';
+import { PerformanceService } from '../../services/ReviewService';
 
 function CreatePerformancePage() {
     const [performanceDTO, setPerformanceDTO] = useState<PerformancePortal>
-                                                ({title:"",
-                                                 director:"",
-                                                 coverImageURL:"",
-                                                 ageLimit:0,
-                                                 duration:0,
-                                                 location:"",
-                                                 startDateTime:"",
-                                                 fullCoverImageURL:"",
-                                                 purchaseTicketLink:"",
-                                                 theaterName:"",
-                                                 description:"",
-                                                 credits:[],
-                                                 reviews:[]
-                                                });
-    
-    const handleChange = (event : React.ChangeEvent<HTMLInputElement>) => {
-        const {name, value, valueAsNumber} = event.currentTarget;
+        ({
+            title: "",
+            director: "",
+            coverImageURL: "",
+            ageLimit: 0,
+            duration: 0,
+            location: "",
+            startDateTime: "",
+            fullCoverImageURL: "",
+            purchaseTicketLink: "",
+            theaterName: "",
+            description: "",
+            credits: [],
+            reviews: []
+        });
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value, valueAsNumber } = event.currentTarget;
         if (name === 'ageLimit' || name === 'duration') {
-            setPerformanceDTO( {
+            setPerformanceDTO({
                 ...performanceDTO,
-                [name]:Number.isNaN(valueAsNumber) ? 0 : valueAsNumber
+                [name]: Number.isNaN(valueAsNumber) ? 0 : valueAsNumber
             });
             return;
         }
-        setPerformanceDTO( {
+        setPerformanceDTO({
             ...performanceDTO,
-             [name] : value
+            [name]: value
         });
     };
 
-    const handleSubmit = async (event : React.ChangeEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.ChangeEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         if (performanceDTO.title.trim() === '') {
@@ -84,8 +85,8 @@ function CreatePerformancePage() {
             alert('Link-ul pentru bilete este obligatoriu');
             return;
         }
-        
-        if (performanceDTO.theaterName.trim() === '' ) {
+
+        if (performanceDTO.theaterName.trim() === '') {
             alert('Numele teatrului este obligatoriu');
             return;
         }
@@ -101,15 +102,15 @@ function CreatePerformancePage() {
             const formattedDate = new Date(performanceDTO.startDateTime!).toISOString();
             const payload = {
                 ...performanceDTO,
-                startDateTime:formattedDate,
-                reviews:[],
-                credits:[ {
+                startDateTime: formattedDate,
+                reviews: [],
+                credits: [{
                     role: 'Regizor',
                     names: [performanceDTO.director || 'Necunoscut']
                 }]
 
             };
-            await PerformancePortalService.createPerformance(payload as PerformancePortal);
+            await PerformanceService.createPerformance(payload as PerformancePortal);
             alert("Spectacol creat cu succes!");
             //TODO: CREATE ENDPOINT THAT RETURNS ID WHEN PERFORMANCE IS SUCCESSFULLY CREATED
             // SO THAT THE USER CAN BE REDIRECTED TO THE PERFORMANCE HE JUST CREATED
@@ -117,13 +118,13 @@ function CreatePerformancePage() {
             console.error("Eroare la salvare" + error);
             alert("A aparut o eroare la salvare");
         }
-        
+
     }
 
 
     return (
         <div className={styles.PageContainer}>
-            <form className={styles.FormContainer} onSubmit={handleSubmit}> 
+            <form className={styles.FormContainer} onSubmit={handleSubmit}>
                 <h1>
                     Adauga spectacol
                 </h1>
@@ -197,7 +198,7 @@ function CreatePerformancePage() {
                         value={performanceDTO.location}
                         onChange={handleChange}
                         placeholder="Introdu locatia"
-                        //TODO MAKE A CALL TO AN API FOR A GOOGLE LOCATION OR SMTH
+                    //TODO MAKE A CALL TO AN API FOR A GOOGLE LOCATION OR SMTH
                     />
                 </div>
 
