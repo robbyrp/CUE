@@ -29,7 +29,7 @@ public class UserProfileController {
     }
 
     @PutMapping("/me/update")
-    public ResponseEntity<UserProfileDTO> updateCurrentUserProfile(@AuthenticationPrincipal UserSecurityAdapter principal,
+    public ResponseEntity<UserProfileDTO> updateUserProfile(@AuthenticationPrincipal UserSecurityAdapter principal,
                                                                    @RequestBody @Valid UserProfileUpdateRequestDTO request) {
 
         final Long userId = principal.getId();

@@ -62,18 +62,9 @@ public class ReviewController {
     public ResponseEntity<Void> toggleHeartReview (@PathVariable Long reviewId,
                                                    @AuthenticationPrincipal UserSecurityAdapter principal) {
 
-        final Long  userId = principal.getId();
+         final Long  userId = principal.getId();
          service.toggleHeartReview(userId, reviewId);
          return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{reviewId}")
-    public ResponseEntity<ReviewDTO> deleteReview(@PathVariable Long reviewId,
-                                                  @AuthenticationPrincipal UserSecurityAdapter principal) {
-
-        final Long userId = principal.getId();
-        service.deleteReview(userId, reviewId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
     @GetMapping("/me/all")
@@ -83,6 +74,15 @@ public class ReviewController {
         final Long userId = principal.getId();
         Page<ReviewDTO> reviewDTOPage = service.getMyReviews(userId, pageable);
         return ResponseEntity.ok().body(reviewDTOPage);
+    }
+
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<ReviewDTO> deleteReview(@PathVariable Long reviewId,
+                                                  @AuthenticationPrincipal UserSecurityAdapter principal) {
+
+        final Long userId = principal.getId();
+        service.deleteReview(userId, reviewId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
 }
