@@ -18,8 +18,10 @@ import java.util.List;
 @Entity @Table(name="spectacol", indexes={
         @Index(name="idx_title", columnList="title, average_rating DESC"),
         @Index(name="idx_director", columnList="director, average_rating DESC"),
-        @Index(name="location", columnList="location, average_rating DESC"),
-        @Index(name="views", columnList="views_count DESC, average_rating DESC")
+        @Index(name="idx_date", columnList ="start_date_time DESC"),
+        @Index(name="idx_location", columnList = "location"),
+        @Index(name="idx_views_count", columnList="views_count DESC, average_rating DESC"),
+        @Index(name="idx_average_rating", columnList = "average_rating DESC")
 })
 @SQLDelete(sql="UPDATE spectacol SET deleted = true WHERE id=?")
 @SQLRestriction("deleted=false")
@@ -73,7 +75,7 @@ public class Performance {
     @Column(name="views_count")
     private Integer viewsCount = 0;
 
-    @Builder.Default
+    @Builder.Default @Setter
     @Column(name="average_rating")
     private Double averageRating = 0.0;
 
@@ -86,5 +88,10 @@ public class Performance {
     private boolean deleted = false;
 
     protected Performance() {}
+
+    public void increaseViewsCount() {
+        this.viewsCount++;
+    }
+
 
 }

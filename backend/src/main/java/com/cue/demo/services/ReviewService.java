@@ -60,6 +60,11 @@ public class ReviewService {
 
         review = reviewRepository.saveAndFlush(review);
 
+        Double newAverage = reviewRepository.getAverageRatingByPerformance_Id(performanceId);
+        performance.setAverageRating(newAverage);
+        performance.increaseViewsCount();
+        performanceRepository.saveAndFlush(performance);
+
         return mapper.fromReviewToReviewDTO(review);
     }
 

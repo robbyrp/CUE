@@ -65,10 +65,12 @@ public class PerformanceService {
      * @throws PerformanceNotFoundByIdException If a performance with the
      *                                           specified ID is not found.
      */
+    @Transactional
     public PerformanceDTO getPerformanceById(final Long id)
             throws PerformanceNotFoundByIdException {
         Performance p =  performanceRepository.findById(id)
                 .orElseThrow(() -> new PerformanceNotFoundByIdException(id));
+        p.increaseViewsCount();
         return mapper.fromPerformanceEntityToPerformanceDTO(p);
     }
 

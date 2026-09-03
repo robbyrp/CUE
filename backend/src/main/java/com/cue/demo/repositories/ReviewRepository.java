@@ -19,4 +19,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> findByUser_Id(final Long userId, final Pageable pageable);
 
     Integer countByUser_Id(final Long userId);
+
+    @Query("SELECT COALESCE(AVG(r.stars), 0.0) FROM Review r WHERE r.performance.id = :performanceId")
+    Double getAverageRatingByPerformance_Id(final Long performanceId);
 }
