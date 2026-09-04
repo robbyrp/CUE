@@ -22,12 +22,6 @@ function MyActivityPage() {
     const PAGE_NUMBER = 0;
     const PAGE_SIZE = 10;
 
-    const requestQueryParams: PageRequest = {
-        page: PAGE_NUMBER,
-        size: PAGE_SIZE,
-        sort: "averageRating.desc" //TODO: EXPLORE PAGE CUSTOM CU MAI MULTE CATEGORII DE SORT
-    };
-
     const getFallbackContent = (
         content: PerformancePortal[] | undefined,
         fallback: PerformancePortal[]
@@ -37,6 +31,17 @@ function MyActivityPage() {
 
     useEffect(() => {
         const loadMyActivity = async () => {
+        
+        const requestQueryParams: PageRequest = {
+            page: PAGE_NUMBER,
+            size: PAGE_SIZE,
+            sort: "averageRating,desc" //TODO: EXPLORE PAGE CUSTOM CU MAI MULTE CATEGORII DE SORT
+        };
+        const watchItemRequestQueryParams: PageRequest = {
+            page: PAGE_NUMBER,
+            size: PAGE_SIZE,
+        };
+
             try {
                 const [
                     mockResponse,
@@ -45,9 +50,9 @@ function MyActivityPage() {
                     reviewedResponse
                 ] = await Promise.all([
                     PerformanceService.getPerformancesByCategory(requestQueryParams),
-                    UserService.getWatchLaterPerformances(requestQueryParams),
-                    UserService.getWatchedPerformances(requestQueryParams),
-                    UserService.getReviewedPerformances(requestQueryParams)
+                    UserService.getWatchLaterPerformances(watchItemRequestQueryParams),
+                    UserService.getWatchedPerformances(watchItemRequestQueryParams),
+                    UserService.getReviewedPerformances(watchItemRequestQueryParams)
                 ]);
 
                 const mockPerformances = mockResponse.content;

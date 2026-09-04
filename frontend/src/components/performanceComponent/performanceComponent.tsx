@@ -2,9 +2,9 @@ import styles from './PerformanceComponent.module.scss';
 import type PerformancePortal from "../../types/Performance";
 import { useState, useEffect } from "react";
 import { getAgeIcon } from '../../utils/ageHelper';
-import { PerformanceService } from "../../services/ReviewService";
 import type { MouseEvent } from "react";
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../auth/AuthContext';
+import { UserService } from '../../services/UserService';
 
 function ReviewsPlaceholder() {
     return (
@@ -20,8 +20,10 @@ function ReviewsPlaceholder() {
 }
 
 function PerformanceComponent({ data }: { data: PerformancePortal }) {
-    const { userId } = useAuth();
+    const { isAuthenticated } = useAuth();
+
     const currentAgeIcon = getAgeIcon(data.ageLimit);
+
     const [isPerformanceWatched, setIsPerformanceWatched] = useState(false);
     const [isPerformanceInWatchLater, setIsPerformanceInWatchLater] = useState(false);
     const [isButtonsLoading, setIsButtonsLoading] = useState(true);
@@ -29,7 +31,7 @@ function PerformanceComponent({ data }: { data: PerformancePortal }) {
 
     useEffect(() => {
         const loadPerformanceStatus = async () => {
-            if (!data.id || !userId) {
+            if (!data.id || !isAuthenticated) {
                 setIsButtonsLoading(false);
                 return;
             }
@@ -38,8 +40,8 @@ function PerformanceComponent({ data }: { data: PerformancePortal }) {
                 setIsButtonsLoading(true);
 
                 const [watchedStatus, watchLaterStatus] = await Promise.all([
-                    PerformanceService.isInWatched(data.id),
-                    PerformanceService.isInWatchLater(data.id)
+                    UserService.isInWatched(data.id),
+                    UserService.isInWatchLater(data.id)
                 ]);
 
                 setIsPerformanceWatched(watchedStatus);
@@ -51,7 +53,7 @@ function PerformanceComponent({ data }: { data: PerformancePortal }) {
             }
         };
         loadPerformanceStatus();
-    }, [data.id, userId]);
+    }, [data.id, isAuthenticated]);
 
     const handleWatchedClick = async (event: MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
@@ -60,10 +62,10 @@ function PerformanceComponent({ data }: { data: PerformancePortal }) {
         try {
             setActiveButton("watched");
             if (isPerformanceWatched) {
-                await PerformanceService.deleteFromWatched(data.id);
+                await UserService.deleteFromWatched(data.id);
                 setIsPerformanceWatched(false);
             } else {
-                await PerformanceService.addToWatched(data.id);
+                await UserService.addToWatched(data.id);
                 setIsPerformanceWatched(true);
             }
         } catch (error) {
@@ -80,10 +82,10 @@ function PerformanceComponent({ data }: { data: PerformancePortal }) {
         try {
             setActiveButton("watchLater");
             if (isPerformanceInWatchLater) {
-                await PerformanceService.deleteFromWatchLater(data.id);
+                await UserService.deleteFromWatchLater(data.id);
                 setIsPerformanceInWatchLater(false);
             } else {
-                await PerformanceService.addToWatchLater(data.id);
+                await UserService.addToWatchLater(data.id);
                 setIsPerformanceInWatchLater(true);
             }
         } catch (error) {
@@ -119,7 +121,7 @@ function PerformanceComponent({ data }: { data: PerformancePortal }) {
                     <div> {`${data.duration} min`} </div>
                 </div>
 
-                {userId && (
+                {isAuthenticated && (
                     <div className={styles.ActionButtonsGroup}>
                         <button
                             type="button"

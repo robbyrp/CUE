@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import styles from './createPerformancePage.module.scss'
 import type PerformancePortal from '../../types/Performance';
-import { PerformanceService } from '../../services/ReviewService';
+import { PerformanceService } from '../../services/PerformanceService';
 
 function CreatePerformancePage() {
     const [performanceDTO, setPerformanceDTO] = useState<PerformancePortal>

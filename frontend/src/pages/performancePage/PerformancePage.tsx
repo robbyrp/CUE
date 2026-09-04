@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import styles from './PerformancePage.module.scss'
 import type PerformancePortal from '../../types/Performance';
-import { PerformanceService } from '../../services/ReviewService';
+import { PerformanceService } from '../../services/PerformanceService';
 import PerformanceComponent from '../../components/performanceComponent/performanceComponent';
 import { useParams } from 'react-router-dom';
 import DesktopHeader from '../../common/components/DesktopHeader/DesktopHeader';

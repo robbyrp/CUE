@@ -1,26 +1,26 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../auth/AuthContext';
 import styles from './LoginPage.module.scss';
+import type { LoginRequest } from '../../types/LoginInterfaces';
 
 function LoginPage() {
-    const [userId, setUserId] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const { login } = useAuth();
     const navigate = useNavigate();
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        const trimmedUserId = userId.trim();
-
-        if (!trimmedUserId) {
-            setError('Please enter a user ID.');
-            return;
+        try {
+            const request: LoginRequest = { username, password };
+            await login(request);
+            navigate('/profil/vizualizare');
+        } catch (error) {
+            setError("Incorrect credentials!");
         }
-
-        login(trimmedUserId);
-        navigate('/profil/vizualizare');
     };
 
     return (
@@ -34,24 +34,30 @@ function LoginPage() {
                     </div>
 
                     <form className={styles.loginForm} onSubmit={handleSubmit}>
-                        <h1 id="login-title" className={styles.title}>
-                            Sign In
-                        </h1>
 
                         <div className={styles.formGroup}>
-                            <label htmlFor="userId">User ID</label>
+                            <label htmlFor="Login">User ID</label>
                             <input
-                                id="userId"
-                                name="userId"
-                                type="number"
-                                min="1"
-                                value={userId}
-                                onChange={(event) => {
-                                    setUserId(event.target.value);
-                                    setError('');
-                                }}
-                                placeholder="Enter your user ID"
+                                type="text"
+                                id="user"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
                             />
+                            
+                            <h2 id="login-title" className={styles.title}>
+                                Username
+                            </h2>
+
+                             <input
+                                type="password"
+                                id="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+
+                            <h2 id="login-title" className={styles.title}>
+                                Password
+                            </h2>
                         </div>
 
                         {error && <p className={styles.errorMessage}>{error}</p>}

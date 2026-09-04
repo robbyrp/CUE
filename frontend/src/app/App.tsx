@@ -4,7 +4,7 @@ import PerformancePage from '../pages/performancePage/PerformancePage';
 import MyActivityPage from '../pages/myActivityPage/MyActivityPage'
 import CreatePerformancePage from '../pages/createPerformancePage/createPerformancePage';
 import LoginPage from '../pages/loginPage/LoginPage';
-import AuthProvider from '../context/AuthContext'
+import AuthProvider from '../auth/AuthContext'
 
 function App() {
   return (

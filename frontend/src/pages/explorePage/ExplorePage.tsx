@@ -1,6 +1,6 @@
 import styles from './ExplorePage.module.scss';
 import { useState, useEffect } from 'react';
-import { PerformanceService } from '../../services/ReviewService';
+import { PerformanceService } from '../../services/PerformanceService';
 import PerformanceCardComponent from '../../components/performanceCardComponent/PerformanceCardComponent';
 import type PerformancePortal from '../../types/Performance';
 import { useNavigate } from 'react-router-dom';
@@ -21,7 +21,7 @@ function ExplorePage() {
                 const requestQueryParams: PageRequest = {
                     page: PAGE_NUMBER,
                     size: PAGE_SIZE,
-                    sort: "averageRating.desc" //TODO: EXPLORE PAGE CUSTOM CU MAI MULTE CATEGORII DE SORT
+                    sort: "averageRating,desc" //TODO: EXPLORE PAGE CUSTOM CU MAI MULTE CATEGORII DE SORT
                 }
                 const response = await PerformanceService.getPerformancesByCategory(requestQueryParams);
                 setPerformanceDTOS(response.content);

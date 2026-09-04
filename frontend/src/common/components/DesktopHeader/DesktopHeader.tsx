@@ -6,7 +6,7 @@ import profileIcon from "./assets/whiteProfileIcon.svg";
 import type { SearchSuggestion } from '../../../types/SearchSuggestion';
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { PerformanceService } from "../../../services/ReviewService";
+import { SearchService } from "../../../services/SearchService";
 
 function DesktopHeader() {
   const [searchValue, setSearchValue] = useState("");
@@ -18,7 +18,7 @@ function DesktopHeader() {
     const timer = setTimeout(async () => {
       if (searchValue.trim().length > 0) {
         try {
-          const results = await PerformanceService.getSearchTitleSuggestions(searchValue);
+          const results = await SearchService.getSearchTitleSuggestions(searchValue);
           setSuggestions(results);
         } catch (e) {
           console.error("Error bringing suggestions", e);
@@ -43,6 +43,7 @@ function DesktopHeader() {
             <span className={styles.searchIcon} aria-hidden="true" />
             <input
               type="text"
+              id="text"
               placeholder="Search"
               value={searchValue}
               onChange={(event) => setSearchValue(event.target.value)}
