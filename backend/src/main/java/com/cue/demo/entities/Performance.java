@@ -68,9 +68,6 @@ public class Performance {
     @JdbcTypeCode(SqlTypes.JSON) @Column(columnDefinition = "jsonb")
     private List<Credit> creditList;
 
-    @OneToMany(mappedBy = "performance", cascade = CascadeType.ALL)
-    private List<Review> reviewList;
-
     @Builder.Default
     @Column(name="views_count")
     private Integer viewsCount = 0;

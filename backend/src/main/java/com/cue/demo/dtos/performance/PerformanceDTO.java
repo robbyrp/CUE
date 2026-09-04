@@ -1,7 +1,6 @@
 package com.cue.demo.dtos.performance;
 
 import com.cue.demo.entities.Credit;
-import com.cue.demo.entities.Review;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -25,6 +24,5 @@ public record PerformanceDTO(
         @NotBlank(message = "fullCoverImageURL cannot be empty") String fullCoverImageURL,
         @NotBlank(message = "purchaseTicketLink cannot be empty") String purchaseTicketLink,
         @NotBlank(message = "description cannot be empty") String description,
-        @NotNull(message = "credits cannot be empty") List<Credit> credits,
-        List<Review> reviews
+        @NotNull(message = "credits cannot be empty") List<Credit> credits
 ) {}

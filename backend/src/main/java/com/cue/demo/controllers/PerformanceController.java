@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/spectacole")
-@CrossOrigin(origins = "http://localhost:5174")
 public final class PerformanceController {
 
     private final PerformanceService service;

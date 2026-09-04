@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table (name="watch_later_item",
-        indexes = {@Index(name = "idx_user_id", columnList = "user_id")},
         uniqueConstraints = {@UniqueConstraint(name = "unique_user_and_performance",
                           columnNames = {"user_id", "performance_id"})})
 @Getter @Builder @AllArgsConstructor

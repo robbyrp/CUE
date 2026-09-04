@@ -64,6 +64,7 @@ public final class PerformanceMapper {
      * @return Returns the newly mapped DTO object.
      */
     public PerformanceDTO fromPerformanceEntityToPerformanceDTO(final Performance p) {
+
         return PerformanceDTO.builder()
                 .id(p.getId())
                 .title(p.getTitle())
@@ -78,7 +79,6 @@ public final class PerformanceMapper {
                 .purchaseTicketLink(p.getPurchaseTicketLink())
                 .description(p.getDescription())
                 .credits(p.getCreditList())
-                .reviews(p.getReviewList())
                 .build();
     }
 

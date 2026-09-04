@@ -51,7 +51,6 @@ public class PerformanceService {
                 .purchaseTicketLink(performanceDTO.purchaseTicketLink())
                 .description(performanceDTO.description())
                 .creditList(performanceDTO.credits())
-                .reviewList(performanceDTO.reviews())
                 .build();
 
         performanceRepository.save(performance);

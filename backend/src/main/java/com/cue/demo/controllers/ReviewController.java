@@ -15,7 +15,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/reviews")
-@CrossOrigin(origins = "http://localhost:5174")
 public class ReviewController {
     private final ReviewService service;
     public ReviewController(ReviewService service) { this.service = service; }

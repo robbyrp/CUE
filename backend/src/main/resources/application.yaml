@@ -12,15 +12,15 @@ spring:
     show-sql: false
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
 logging:
     level:
       org:
         hibernate:
-          SQL: DEBUG
+          SQL: INFO
           orm:
             jdbc:
-              bind: TRACE
+              bind: INFO
 security:
   jwt:
     secret-key: 232b2c9536bd685d1b84da22853bd9592375c1d8b9d791ec22ae3971019828ea
