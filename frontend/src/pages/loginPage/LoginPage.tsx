@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext';
 import styles from './LoginPage.module.scss';
@@ -8,10 +8,17 @@ function LoginPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const { login } = useAuth();
+
+    const {login ,isAuthenticated, loading} = useAuth();
     const navigate = useNavigate();
 
-    const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
+    useEffect(() => {
+        if (!loading && isAuthenticated) {
+            navigate('/profil/vizualizare')
+        }
+    }, [isAuthenticated, loading, navigate]);
+    
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         try {
@@ -36,18 +43,15 @@ function LoginPage() {
                     <form className={styles.loginForm} onSubmit={handleSubmit}>
 
                         <div className={styles.formGroup}>
-                            <label htmlFor="Login">User ID</label>
+                            <label htmlFor="username">Username</label>
                             <input
                                 type="text"
-                                id="user"
+                                id="username"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                             />
-                            
-                            <h2 id="login-title" className={styles.title}>
-                                Username
-                            </h2>
 
+                            <label htmlFor="password">Password</label>
                              <input
                                 type="password"
                                 id="password"
@@ -63,7 +67,7 @@ function LoginPage() {
                         {error && <p className={styles.errorMessage}>{error}</p>}
 
                         <button className={styles.signInButton} type="submit">
-                            Sign In
+                            Autentificare
                         </button>
                     </form>
                 </div>

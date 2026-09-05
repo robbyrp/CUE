@@ -5,18 +5,19 @@ import MyActivityPage from '../pages/myActivityPage/MyActivityPage'
 import CreatePerformancePage from '../pages/createPerformancePage/createPerformancePage';
 import LoginPage from '../pages/loginPage/LoginPage';
 import AuthProvider from '../auth/AuthContext'
+import { ROUTES } from '../utils/constants'
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* <Route path='/' element={<Home />} /> */}
-          <Route path='/' element={< ExplorePage />} />
-          <Route path='/login' element={<LoginPage />} />
-          <Route path='/profil/vizualizare' element={<MyActivityPage />} />
-          <Route path='/spectacole/adauga' element={<CreatePerformancePage />} />
-          <Route path='/spectacole/:id' element={< PerformancePage />} />
+          {/* <Route path={ROUTES.HOME} element={<Home />} /> */}
+          <Route path={ROUTES.HOME} element={<ExplorePage />} />
+          <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+          <Route path={ROUTES.PROFIL} element={<MyActivityPage />} />
+          <Route path={ROUTES.ADAUGA_SPECTACOL} element={<CreatePerformancePage />} />
+          <Route path={ROUTES.SPECTACOL(':id')} element={<PerformancePage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
