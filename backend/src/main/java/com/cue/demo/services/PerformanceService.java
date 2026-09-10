@@ -153,7 +153,7 @@ public class PerformanceService {
      * @return A paginated list of performance card DTOs.
      */
     public Page<PerformanceCardDTO> getSearchResults(Pageable pageable, String keyword) {
-        return performanceRepository.searchProducts(keyword, pageable).map(mapper::fromPerformanceEntityToPerformanceCardDTO);
+        return performanceRepository.searchPerformances(keyword, pageable).map(mapper::fromPerformanceEntityToPerformanceCardDTO);
     }
 
     /**

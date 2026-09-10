@@ -17,8 +17,8 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
 
     @Query(nativeQuery = true,
             value= "SELECT p.id AS id, p.title AS title from spectacol p WHERE " +
-            "LOWER(unaccent(p.title)) LIKE LOWER(CONCAT('%', :keyword, '%'))  OR " +
-            "LOWER(unaccent(p.director)) LIKE LOWER(CONCAT('%', :keyword, '%'))" +
+            "LOWER(unaccent(p.title)) LIKE LOWER(unaccent(CONCAT('%', :keyword, '%')))  OR " +
+            "LOWER(unaccent(p.director)) LIKE LOWER(unaccent(CONCAT('%', :keyword, '%')))" +
                     "LIMIT 6" )
     List<SearchSuggestion> searchTitleCompletionSuggestions(String keyword);
 
@@ -27,6 +27,6 @@ public interface PerformanceRepository extends JpaRepository<Performance, Long> 
             "LOWER(unaccent(p.title)) LIKE LOWER(CONCAT('%', :keyword, '%'))  OR "+
             "LOWER(unaccent(p.director)) LIKE LOWER(CONCAT('%', :keyword, '%'))  OR "+
             "LOWER(unaccent(p.location)) LIKE LOWER(CONCAT('%', :keyword, '%'))")
-    Page<Performance> searchProducts(@Param("keyword") String keyword, Pageable pageable);
+    Page<Performance> searchPerformances(@Param("keyword") String keyword, Pageable pageable);
 
 }

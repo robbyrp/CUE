@@ -298,7 +298,7 @@ public class PerformanceServiceTest {
         PerformanceCardDTO dto1 = PerformanceCardDTO.builder().id(p1Id).title(p1Title).build();
         PerformanceCardDTO dto2 = PerformanceCardDTO.builder().id(p2Id).title(p2Title).build();
 
-        Mockito.when(performanceRepository.searchProducts(keyword, pageable)).thenReturn(performancePage);
+        Mockito.when(performanceRepository.searchPerformances(keyword, pageable)).thenReturn(performancePage);
         Mockito.when(performanceMapper.fromPerformanceEntityToPerformanceCardDTO(p1)).thenReturn(dto1);
         Mockito.when(performanceMapper.fromPerformanceEntityToPerformanceCardDTO(p2)).thenReturn(dto2);
 
@@ -309,7 +309,7 @@ public class PerformanceServiceTest {
         Assertions.assertEquals(dto1, result.getContent().getFirst());
         Assertions.assertEquals(dto2, result.getContent().getLast());
 
-        Mockito.verify(performanceRepository, Mockito.times(1)).searchProducts(keyword, pageable);
+        Mockito.verify(performanceRepository, Mockito.times(1)).searchPerformances(keyword, pageable);
         Mockito.verify(performanceMapper, Mockito.times(1)).fromPerformanceEntityToPerformanceCardDTO(p1);
         Mockito.verify(performanceMapper, Mockito.times(1)).fromPerformanceEntityToPerformanceCardDTO(p2);
     }
