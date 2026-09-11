@@ -40,6 +40,7 @@ public class UserProfileServiceTest {
         final Integer counter = 100;
         User testUser = User.builder().id(existingUserId).build();
         UserProfileDTO expected = UserProfileDTO.builder()
+                .id(existingUserId)
                 .city("Constanța")
                 .reviewedCount(counter)
                 .watchLaterCount(counter)
@@ -101,6 +102,7 @@ public class UserProfileServiceTest {
                 .build();
 
         UserProfileDTO expected = UserProfileDTO.builder()
+                .id(existingUserId)
                 .username(username)
                 .firstName("newFirstName")
                 .lastName("newLastName")
@@ -183,6 +185,7 @@ public class UserProfileServiceTest {
                 .build();
 
         UserProfileDTO expected = UserProfileDTO.builder()
+                .id(targetUserId)
                 .username(targetUsername)
                 .firstName("newNameByAdmin")
                 .lastName("newLastNameByAdmin")
