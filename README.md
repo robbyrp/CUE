@@ -1,5 +1,7 @@
 # CUE
 
+[![CI](https://github.com/robbyrp/CUE/actions/workflows/ci.yml/badge.svg)](https://github.com/robbyrp/CUE/actions/workflows/ci.yml)
+
 A Letterboxd-style mobile app for **theatre** — track plays you've seen, build a
 watchlist of plays to catch, discover theatres, and plan meet-and-greets with actors.
 
