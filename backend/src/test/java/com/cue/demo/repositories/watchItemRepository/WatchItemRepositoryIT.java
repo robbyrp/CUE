@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
-public class WatchItemRepositoryTest {
+public class WatchItemRepositoryIT {
 
     static final String CONTAINER_NAME = "postgres:15";
     static final String INIT_SCRIPT_NAME = "init-unaccent.sql";

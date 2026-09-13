@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.within;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
-public class GetAverageRatingByPerformanceIdTest {
+public class GetAverageRatingByPerformanceIdIT {
 
     static final String CONTAINER_NAME = "postgres:15";
     static final String INIT_SCRIPT_NAME = "init-unaccent.sql";

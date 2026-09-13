@@ -28,7 +28,13 @@ jobs:
       - name: Make mvnw executable
         run: chmod +x mvnw
 
+      - name: Run unit tests (Surefire, *Test.java)
+        run: ./mvnw -B test
+
       # Testcontainers pulls postgres:15 itself; ubuntu-latest ships Docker
       # already running, so no extra service/container setup is needed here.
-      - name: Build and run tests (unit + Testcontainers integration)
-        run: ./mvnw -B verify
+      # Classes are already compiled by the `test` step above, so this only
+      # needs to invoke the Failsafe goals directly, not the full `verify`
+      # lifecycle (which would re-run Surefire's unit tests too).
+      - name: Run integration tests (Failsafe + Testcontainers, *IT.java)
+        run: ./mvnw -B failsafe:integration-test failsafe:verify

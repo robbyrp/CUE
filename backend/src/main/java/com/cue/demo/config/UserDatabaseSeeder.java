@@ -77,7 +77,6 @@ public class UserDatabaseSeeder implements CommandLineRunner {
               .build();
 
       User testUser = User.builder()
-              .id(10L)
               .role(UserRole.USER)
               .username("testUser")
               .passwordHash(passwordEncoder.encode("ParolaUser123!"))
