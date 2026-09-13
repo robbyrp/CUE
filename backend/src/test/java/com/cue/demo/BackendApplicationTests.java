@@ -8,8 +8,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 /**
- * Boots the full application context against a disposable PostgreSQL Testcontainer,
- * instead of the developer's local Postgres (docker-compose.yaml, localhost:5432).
+ * Boots the full application context against a disposable PostgreSQL Testcontainer.
  * That makes the smoke test hermetic: it passes the same way on a clean CI runner
  * as it does locally, with no manually started database required.
  */
