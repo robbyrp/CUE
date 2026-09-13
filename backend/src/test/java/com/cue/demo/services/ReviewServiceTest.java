@@ -72,6 +72,7 @@ public final class ReviewServiceTest {
 
         ReviewDTO result = service.createReview(requestHeaderUserId, existingPerformanceId, requestBodyReviewDTO);
 
+        Assertions.assertNull(result);
         Assertions.assertNotNull(result);
         Assertions.assertEquals(expectedReviewDTO, result);
         Mockito.verify(userRepository, Mockito.times(1)).getReferenceById(requestHeaderUserId);
