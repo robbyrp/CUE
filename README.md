@@ -2,47 +2,55 @@
 
 [![CI](https://github.com/robbyrp/CUE/actions/workflows/ci.yml/badge.svg)](https://github.com/robbyrp/CUE/actions/workflows/ci.yml)
 
-A Letterboxd-style mobile app for **theatre** — track plays you've seen, build a
-watchlist of plays to catch, discover theatres, and plan meet-and-greets with actors.
+A Letterboxd-style portfolio web app for **theatre** — track plays you've seen, build a watchlist, search across titles/directors/locations, and leave reviews.
 
-## Repository Layout
+## Status
 
-This is a single repository with plain folders:
+**Backend: feature-complete for the core flows** (auth, performances, reviews, watchlist/watched, search) — Spring Boot API with JWT auth, a layered architecture, and a Testcontainers-backed test suite.
+**Frontend: in progress** — React + TypeScript web app, core pages (auth, explore, profile) scaffolded.
 
-| Folder      | What lives here                                            | Owner             |
-| ----------- | ---------------------------------------------------------- | ----------------- |
-| `frontend/` | The React Native + Expo mobile app                         | Frontend dev      |
-| `backend/`  | The Spring Boot + PostgreSQL API                           | Backend engineer  |
-| `docs/`     | Architecture notes & the Frontend↔Backend API contract     | Shared            |
+## Stack
 
-## Tech Stack
+- **Backend:** Spring Boot 3.5, Java 21, Spring Data JPA / Hibernate, Spring Security (JWT, self-implemented — no third-party auth SDK), PostgreSQL, Maven.
+- **Frontend:** React 19, TypeScript, Vite, React Router, Axios, SCSS Modules.
+- **Testing:** JUnit 5 + Mockito for service-layer unit tests; JUnit 5 + Testcontainers (real PostgreSQL, not H2) for repository-layer integration tests.
+- **CI:** GitHub Actions — unit tests (Surefire) and integration tests (Failsafe + Testcontainers) run as two separate steps on every push/PR.
 
-- **Frontend:** React Native, Expo, Expo Router, NativeWind (Tailwind), TypeScript,
-  Zustand (client state), TanStack Query (server state).
-- **Backend:** Spring Boot 3.5.15 (Java 25, Maven), Spring Data JPA / Hibernate,
-  PostgreSQL, Lombok, Bean Validation. _Planned:_ Firebase Auth, Cloudflare R2,
-  Sentry.
+## Architecture
+
+The backend follows a standard layered structure: `Controller → Service → Repository`, with Record-based DTOs, injectable `@Component` mappers, and centralized exception handling via a single `@RestControllerAdvice`. Authentication is a manually implemented JWT flow (`OncePerRequestFilter` + `Spring Security`, `BCrypt`-hashed passwords) instead of a third-party auth provider, and role/ownership checks (USER/ADMIN, review authorship) live in the service layer. Search is accent- and case-insensitive (Postgres `unaccent` extension) across title, director, and location, with paginated results (`Page<T>` / `Pageable`) throughout.
+
+## Testing
+
+101 tests total, split into two Maven phases so a fast local loop never needs Docker:
+
+```bash
+./mvnw test        # 48 unit tests (Mockito, no Docker)
+./mvnw verify       # + 53 integration tests (real PostgreSQL via Testcontainers)
+```
+
+Integration tests cover custom JPQL/native queries, pagination edge cases (partial last page, page past the end, sorting through associations), and DB-level behavior that a mocked repository can't catch — unique constraints, soft-delete filtering (`@SQLDelete`/`@SQLRestriction`), and one real bug a test caught before it shipped: two entities sharing the same DB constraint name, which silently meant only one of them was actually enforced.
 
 ## Getting Started
 
-> The frontend app is built up incrementally. Concrete setup steps land here as
-> `frontend/` is scaffolded.
+### Backend
+
+Requires Docker (with `docker compose`) and JDK 21.
 
 ```bash
-# Frontend (Expo app)
-cd frontend
-npm install
-npx expo start
-```
-
-```bash
-# Backend (Spring Boot API) — requires Docker + JDK 25
 cd backend
-docker compose -f src/main/resources/docker-compose.yaml up -d   # local Postgres
+cp .env.example .env
+# edit .env: set POSTGRES_PASSWORD and generate JWT_SECRET_KEY, e.g. `openssl rand -hex 32`
+
 ./mvnw spring-boot:run
 ```
 
-## Documentation
+`.env` is read both by `docker compose` (for the Postgres container, auto-started on app boot via `spring-boot-docker-compose`) and by the Spring Boot app itself — one file, no separate setup. It's gitignored; `.env.example` documents the required keys.
 
-- `DESIGN.md` — design system & tokens (created during bootstrap, not yet present).
-- `docs/` — architecture notes & the API contract (**planned, not yet created**).
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```

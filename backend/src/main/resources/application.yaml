@@ -1,10 +1,16 @@
 spring:
+  # Reads backend/.env (gitignored) as plain KEY=VALUE properties, same file
+  # docker compose already loads for the db container. "optional:" means the
+  # app still starts fine in CI, where the real values come from env vars
+  # instead of a .env file.
+  config:
+    import: "optional:file:.env[.properties]"
   application:
     name: cue
   datasource:
-    url: jdbc:postgresql://localhost:5432/cue_db
-    username: admin
-    password: password
+    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB:cue_db}
+    username: ${POSTGRES_USER:admin}
+    password: ${POSTGRES_PASSWORD:password}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -23,4 +29,7 @@ logging:
               bind: INFO
 security:
   jwt:
-    secret-key: 232b2c9536bd685d1b84da22853bd9592375c1d8b9d791ec22ae3971019828ea
+    # No fallback on purpose: the app must fail to start rather than silently
+    # sign tokens with a default/well-known key. Set JWT_SECRET_KEY in the
+    # environment (see .env.example).
+    secret-key: ${JWT_SECRET_KEY}
