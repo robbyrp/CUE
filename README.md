@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/robbyrp/CUE/actions/workflows/ci.yml/badge.svg)](https://github.com/robbyrp/CUE/actions/workflows/ci.yml)
 
-A Letterboxd-style portfolio web app for **theatre** — track plays you've seen, build a watchlist, search across titles/directors/locations, and leave reviews.
+A Letterboxd-style web app for **theatre** — track plays you've seen, build a watchlist, search across titles/directors/locations, and leave reviews.
 
 ## Status
 
