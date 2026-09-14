@@ -11,7 +11,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
-import java.util.*;
 
 
 @Builder @AllArgsConstructor
@@ -45,10 +44,6 @@ public class User {
     private String email;
     @Setter @Builder.Default
     private String city = "Constanța";
-
-    @OneToMany(mappedBy="user")
-    @Builder.Default
-    private Set<Review> reviews = new HashSet<>();
 
     @Builder.Default
     private boolean deleted = false;

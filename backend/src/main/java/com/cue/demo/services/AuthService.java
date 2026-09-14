@@ -64,18 +64,21 @@ public class AuthService {
     public LoginResponseDTO register(final RegisterUserRequestDTO request)
     throws UsernameAlreadyInUseException {
 
-        if (userRepository.existsByUsername(request.username())) {
-            throw new UsernameAlreadyInUseException(request.username());
+        String username = request.username();
+        if (userRepository.existsByUsername(username)) {
+            throw new UsernameAlreadyInUseException(username);
         }
 
+        String profilePicUrl = generateProfilePicUrl(username);
         User newUser = User.builder()
                 .role(UserRole.USER)
-                .username(request.username())
+                .username(username)
                 .passwordHash(passwordEncoder.encode(request.password()))
                 .firstName(request.firstName())
                 .lastName(request.lastName())
                 .email(request.email())
                 .city(request.city())
+                .profilePictureUrl(profilePicUrl)
                 .build();
 
         userRepository.save(newUser);
@@ -83,6 +86,10 @@ public class AuthService {
         UserSecurityAdapter adapter = new UserSecurityAdapter(newUser);
         String token = jwtService.generateToken(adapter);
         return new LoginResponseDTO(token);
+    }
+
+    private String generateProfilePicUrl(final String username) {
+        return "https://ui-avatars.com/api/?name=" + username;
     }
 
 
