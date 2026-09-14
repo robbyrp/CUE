@@ -1,2 +1,8 @@
-spring.datasource.driver-class-name=org.testcontainers.jdbc.ContainerDatabaseDriver
-spring.jpa.hibernate.ddl-auto=create
+# Only loaded when the "test" profile is active (set globally for Surefire
+# and Failsafe in pom.xml). Layered ON TOP of src/main/resources/application.yaml
+# rather than replacing it, so ddl-auto and everything else from the main
+# config still apply - this file only supplies what tests need and the
+# non-test config has no default for: the JWT secret.
+security:
+  jwt:
+    secret-key: test-only-jwt-secret-key-never-used-outside-the-test-suite
