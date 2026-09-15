@@ -12,7 +12,7 @@ import { useAuth } from "../../../auth/AuthContext";
 import { ROUTES } from "../../../utils/constants";
 
 function DesktopHeader() {
-  const {isAuthenticated, logout} = useAuth();
+  const {isAuthenticated, isAdmin, logout} = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
@@ -103,16 +103,18 @@ function DesktopHeader() {
             </div>
           </div>
         </Link>
-        <Link to={ROUTES.CREEAZA_SPECTACOL}>
-          <div className={styles.route}>
-            <div className={styles.routeIcon}>
-              <img src={calendarIcon} alt="calendar" />
+        {isAdmin && (
+          <Link to={ROUTES.CREEAZA_SPECTACOL}>
+            <div className={styles.route}>
+              <div className={styles.routeIcon}>
+                <img src={calendarIcon} alt="calendar" />
+              </div>
+              <div className={styles.routeLabel}>
+                <span>ADAUGA</span>
+              </div>
             </div>
-            <div className={styles.routeLabel}>
-              <span>ADAUGA</span>
-            </div>
-          </div>
-        </Link>
+          </Link>
+        )}
         {isAuthenticated ? (
           <div className={styles.profileContainer} ref={dropdownRef}>
             <Link to={ROUTES.PROFIL} className={styles.profileLink}>

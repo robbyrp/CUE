@@ -1,11 +1,15 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { LoginRequest } from '../types/LoginInterfaces';
+import type { UserRole } from '../types/UserRole';
 import { LOCAL_STORAGE_TOKEN_NAME } from '../services/Api';
 import { AuthService } from '../services/AuthService';
+import { decodeUserRole } from './jwt';
 
 interface AuthContextType {
     isAuthenticated: boolean;
+    role: UserRole | null;
+    isAdmin: boolean;
     login: (request: LoginRequest) => Promise<void>
     logout: () => void;
     loading: boolean;
@@ -19,12 +23,15 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
+    const [role, setRole] = useState<UserRole | null>(null);
+
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         const savedToken = localStorage.getItem(LOCAL_STORAGE_TOKEN_NAME);
         if (savedToken) {
             setIsAuthenticated(true);
+            setRole(decodeUserRole(savedToken));
         }
         setLoading(false);
     }, []);
@@ -33,16 +40,18 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         const response = await AuthService.login(request);
         localStorage.setItem(LOCAL_STORAGE_TOKEN_NAME, response.token);
         setIsAuthenticated(true);
+        setRole(decodeUserRole(response.token));
     };
 
     const logout = () => {
         localStorage.removeItem(LOCAL_STORAGE_TOKEN_NAME);
         setIsAuthenticated(false);
+        setRole(null);
     };
 
     return (
         <AuthContext.Provider
-            value={{ isAuthenticated, login, logout, loading }}>
+            value={{ isAuthenticated, role, isAdmin: role === 'ADMIN', login, logout, loading }}>
             {children}
         </AuthContext.Provider>
     );
