@@ -1,0 +1,53 @@
+@use '../../../../styles/abstracts' as *;
+@use '../../../../styles/base/' as *;
+
+.shows {
+    background-color: $dark-blue;
+    display: flex;
+    flex-direction: column;
+    padding: $space-12;
+
+    @include respond-above('laptop') {
+        padding: $space-14;
+    }
+
+    @include respond-above('desktop') {
+        padding: $space-16;
+    }
+
+    .centeredContent {
+        display: flex;
+        flex-direction: column;
+        gap: $space-16;
+        width: 100%;
+        margin: 0 auto;
+        max-width: $content-max-width;
+
+        .title {
+            font-family: $font-primary;
+            font-size: $font-size-lg;
+            font-weight: 400;
+            color: $color-white;
+
+            letter-spacing: 0.10rem;
+
+            @include respond-above('laptop') {
+                font-size: $font-size-xl;
+            }
+
+            @include respond-above('desktop') {
+                font-size: $font-size-3xl;
+            }
+        }
+
+        .carouselContainer {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: $space-12;
+            padding: 0 $space-4;
+            margin-bottom: 2rem;
+        }
+    }
+}

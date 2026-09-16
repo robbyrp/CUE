@@ -4,8 +4,8 @@ import type PerformancePortal from '../../types/Performance';
 import { PerformanceService } from '../../services/PerformanceService';
 import PerformanceComponent from '../../components/performanceComponent/performanceComponent';
 import { useParams } from 'react-router-dom';
-import DesktopHeader from '../../common/components/DesktopHeader/DesktopHeader';
-import DesktopFooter from '../../common/components/DesktopFooter/DesktopFooter';
+import Header from '../../common/components/Header/Header';
+import Footer from '../../common/components/Footer/Footer';
 
 function PerformancePage() {
     const { id } = useParams();
@@ -32,11 +32,11 @@ function PerformancePage() {
 
     return (
         <>
-            <DesktopHeader />
+            <Header />
             <div className={styles.PerformanceComponentContainer} >
                 <PerformanceComponent data={performanceDTO} />
             </div>
-            <DesktopFooter />
+            <Footer />
         </>
 
     )

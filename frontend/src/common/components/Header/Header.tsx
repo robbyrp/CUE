@@ -1,8 +1,6 @@
-import styles from "./DesktopHeader.module.scss";
+import styles from "./Header.module.scss";
 import LogoIcon from "./assets/logoIcon.svg";
-import exploreIcon from "./assets/whiteStarIcon.svg";
-import calendarIcon from "./assets/whiteCalendarIcon.svg";
-import profileIcon from "./assets/whiteProfileIcon.svg";
+import NavIcon from "./NavIcon";
 import arrowDownIcon from "./assets/whiteArrowDownIcon.svg";
 import type { SearchSuggestion } from '../../../types/SearchSuggestion';
 import { useState, useEffect, useRef } from "react";
@@ -11,7 +9,7 @@ import { SearchService } from "../../../services/SearchService";
 import { useAuth } from "../../../auth/AuthContext";
 import { ROUTES } from "../../../utils/constants";
 
-function DesktopHeader() {
+function Header() {
   const {isAuthenticated, isAdmin, logout} = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -96,7 +94,17 @@ function DesktopHeader() {
         <Link to={ROUTES.HOME}>
           <div className={styles.route}>
             <div className={styles.routeIcon}>
-              <img src={exploreIcon} alt="explore" />
+              <NavIcon name="house" label="acasa" />
+            </div>
+            <div className={styles.routeLabel}>
+              <span>ACASA</span>
+            </div>
+          </div>
+        </Link>
+        <Link to={ROUTES.EXPLOREAZA}>
+          <div className={styles.route}>
+            <div className={styles.routeIcon}>
+              <NavIcon name="star" label="explore" />
             </div>
             <div className={styles.routeLabel}>
               <span>EXPLOREAZA</span>
@@ -107,7 +115,7 @@ function DesktopHeader() {
           <Link to={ROUTES.CREEAZA_SPECTACOL}>
             <div className={styles.route}>
               <div className={styles.routeIcon}>
-                <img src={calendarIcon} alt="calendar" />
+                <NavIcon name="calendar" label="calendar" />
               </div>
               <div className={styles.routeLabel}>
                 <span>ADAUGA</span>
@@ -120,7 +128,7 @@ function DesktopHeader() {
             <Link to={ROUTES.PROFIL} className={styles.profileLink}>
               <div className={styles.route}>
                 <div className={styles.routeIcon}>
-                  <img src={profileIcon} alt="profile" />
+                  <NavIcon name="profile" label="profile" />
                 </div>
                 <div className={styles.routeLabel}>
                   <span>CONTUL MEU</span>
@@ -155,7 +163,7 @@ function DesktopHeader() {
           <Link to={ROUTES.LOGIN}>
             <div className={styles.route}>
               <div className={styles.routeIcon}>
-                <img src={profileIcon} alt="login" />
+                <NavIcon name="profile" label="login" />
               </div>
               <div className={styles.routeLabel}>
                 <span>LOGIN</span>
@@ -168,4 +176,4 @@ function DesktopHeader() {
   );
 }
 
-export default DesktopHeader;
+export default Header;

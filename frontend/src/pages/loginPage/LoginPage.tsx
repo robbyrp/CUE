@@ -1,78 +1,83 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { User } from 'lucide-react';
 import { useAuth } from '../../auth/AuthContext';
-import styles from './LoginPage.module.scss';
+import AuthCard from '../../common/components/AuthCard/AuthCard';
+import PasswordInput from '../../common/components/AuthCard/PasswordInput';
+import styles from '../../common/components/AuthCard/AuthCard.module.scss';
 import type { LoginRequest } from '../../types/LoginInterfaces';
+import { ROUTES } from '../../utils/constants';
 
 function LoginPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const {login ,isAuthenticated, loading} = useAuth();
+    const { login, isAuthenticated, loading } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
         if (!loading && isAuthenticated) {
-            navigate('/profil/vizualizare')
+            navigate(ROUTES.PROFIL);
         }
     }, [isAuthenticated, loading, navigate]);
-    
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         try {
             const request: LoginRequest = { username, password };
             await login(request);
-            navigate('/profil/vizualizare');
+            navigate(ROUTES.PROFIL);
         } catch (error) {
-            setError("Incorrect credentials!");
+            setError('Nume de utilizator sau parolă incorecte.');
         }
     };
 
     return (
-        <main className={styles.loginPage}>
-            <section className={styles.loginPanel} aria-labelledby="login-title">
-                <p className={styles.pageLabel}>sign in</p>
-
-                <div className={styles.loginContent}>
-                    <div className={styles.logoBox} aria-hidden="true">
-                        <div className={styles.logoIcon} />
+        <AuthCard
+            titleId="login-title"
+            title="AUTENTIFICARE"
+            subtitle="Bine ai revenit! Intră în cont ca să continui."
+        >
+            <form className={styles.loginForm} onSubmit={handleSubmit}>
+                <div className={styles.field}>
+                    <label htmlFor="username">Nume utilizator</label>
+                    <div className={styles.inputWrapper}>
+                        <User className={styles.inputIcon} size={20} />
+                        <input
+                            type="text"
+                            id="username"
+                            autoComplete="username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
                     </div>
-
-                    <form className={styles.loginForm} onSubmit={handleSubmit}>
-
-                        <div className={styles.formGroup}>
-                            <label htmlFor="username">Username</label>
-                            <input
-                                type="text"
-                                id="username"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                            />
-
-                            <label htmlFor="password">Password</label>
-                             <input
-                                type="password"
-                                id="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-
-                            <h2 id="login-title" className={styles.title}>
-                                Password
-                            </h2>
-                        </div>
-
-                        {error && <p className={styles.errorMessage}>{error}</p>}
-
-                        <button className={styles.signInButton} type="submit">
-                            Autentificare
-                        </button>
-                    </form>
                 </div>
-            </section>
-        </main>
+
+                <div className={styles.field}>
+                    <label htmlFor="password">Parolă</label>
+                    <PasswordInput
+                        id="password"
+                        autoComplete="current-password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                </div>
+
+                {error && <p className={styles.errorMessage}>{error}</p>}
+
+                <button className={styles.signInButton} type="submit">
+                    Autentificare
+                </button>
+            </form>
+
+            <p className={styles.switchAuth}>
+                Nu ai cont? <Link to={ROUTES.REGISTER}>Înregistrează-te</Link>
+            </p>
+        </AuthCard>
     );
 }
 

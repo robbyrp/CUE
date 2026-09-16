@@ -1,0 +1,66 @@
+@use '../../../../styles/abstracts/' as *;
+@use '../../../../styles/base/' as *;
+
+.contact {
+    padding: $space-12;
+    background-color: $color-white;
+
+    @include respond-above('laptop') {
+        padding: $space-14;
+    }
+
+    @include respond-above('desktop') {
+        padding: $space-16;
+    }
+
+    .centeredContent {
+        display: flex;
+        flex-direction: column;
+        gap: $space-8;
+        width: 100%;
+        margin: 0 auto;
+        max-width: $content-max-width;
+
+        .title {
+            font-family: $font-primary;
+            font-size: $font-size-lg;
+            font-weight: 400;
+            letter-spacing: 0.15rem;
+            color: $black;
+            margin-bottom: $space-4;
+
+            @include respond-above('laptop') {
+                font-size: $font-size-xl;
+            }
+
+            @include respond-above('desktop') {
+                font-size: $font-size-3xl;
+            }
+        }
+
+        .contactInfo {
+            font-family: $font-primary;
+            font-size: $font-size-base;
+            line-height: $line-height-base;
+            color: $black;
+            display: flex;
+            flex-direction: column;
+            gap: $space-2;
+
+            p {
+                margin: 0;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: underline;
+                transition: transform 0.2s ease;
+                display: inline-block;
+
+                &:hover {
+                    transform: translateX(4px);
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,110 @@
+@use '../../../../styles/abstracts/' as *;
+@use '../../../../styles/base/' as *;
+
+.about {
+    padding: $space-12;
+    background-color: $color-white;
+    overflow: hidden;
+
+    @include respond-above('laptop') {
+        padding: $space-14;
+    }
+
+    @include respond-above('desktop') {
+        padding: $space-16;
+    }
+
+    justify-content: center;
+
+    .centeredContent {
+        display: flex;
+        justify-self: center;
+        width: 100%;
+        max-height: 400px;
+        max-width: $content-max-width;
+        gap: $space-8;
+        margin: 0 auto;
+
+        .leftSection {
+            flex: 1.2;
+            display: flex;
+            gap: $space-6;
+            align-items: flex-start;
+
+            .content {
+                flex: 1.2;
+                display: flex;
+                justify-content: space-between;
+                flex-direction: column;
+                align-items: flex-start;
+                height: 100%;
+
+                .title {
+                    font-family: $font-primary;
+                    font-size: $font-size-lg;
+                    font-weight: 400;
+                    letter-spacing: 0.15rem;
+                    color: $black;
+                    padding: $space-4;
+                    flex-wrap: wrap;
+
+                    @include respond-above('laptop') {
+                        font-size: $font-size-xl;
+                    }
+
+                    @include respond-above('desktop') {
+                        font-size: $font-size-3xl;
+                    }
+                }
+
+                .description {
+                    font-family: $font-primary;
+                    font-size: $font-size-base;
+                    line-height: $line-height-base;
+                    color: $black;
+                    max-width: 320px;
+                    padding: $space-4;
+                    flex-wrap: wrap;
+
+                    @include respond-above('laptop') {
+                        font-size: $font-size-md;
+                    }
+
+                    @include respond-above('desktop') {
+                        font-size: $font-size-lg;
+                    }
+                }
+            }
+        }
+
+        .rightSection {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: $space-6;
+            position: relative;
+
+            .arrow {
+                color: $dark-blue;
+                cursor: pointer;
+                transition: $transition-fast;
+
+                &:hover {
+                    transform: scale(1.1);
+                    opacity: 0.8;
+                }
+            }
+
+            .carouselPhoto {
+                width: 100%;
+                aspect-ratio: 1.5 / 1;
+                background-color: $replace-gray;
+                background-size: cover;
+                background-position: center;
+                overflow: hidden;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+        }
+    }
+}

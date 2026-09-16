@@ -1,0 +1,239 @@
+@use '../../../styles/abstracts/' as *;
+@use 'sass:color';
+
+.loginPage {
+  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: $space-8;
+  font-family: $font-primary;
+  background:
+    linear-gradient(rgba($dark-blue, 0.88), rgba($onyx-black, 0.92)),
+    url('https://images.unsplash.com/photo-1670796114660-0b81963df999?auto=format&fit=crop&w=1920&q=80') center / cover no-repeat;
+}
+
+.loginCard {
+  width: min(100%, 480px);
+
+  &.wide {
+    width: min(100%, 600px);
+  }
+
+  background-color: $light-yellow;
+  border-radius: $radius-lg;
+  padding: $space-12 $space-10;
+  box-shadow: 0 24px 60px rgba($black, 0.45);
+  display: flex;
+  flex-direction: column;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-3;
+  margin-bottom: $space-10;
+
+  .logo {
+    width: 44px;
+    height: 44px;
+  }
+
+  .brandName {
+    font-size: $font-size-2xl;
+    letter-spacing: 0.3rem;
+    color: $dark-blue;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+
+  .title {
+    margin: 0;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-regular;
+    letter-spacing: 0.15rem;
+    color: $black;
+    white-space: nowrap;
+  }
+
+  .titleLine {
+    flex: 1;
+    height: 2px;
+    background-color: $dark-blue;
+    opacity: 0.8;
+  }
+}
+
+.subtitle {
+  margin: $space-3 0 $space-8;
+  color: $color-primary-light;
+  font-size: $font-size-base;
+  text-align: center;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-4;
+
+  @media (max-width: 520px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: $space-2;
+
+  label {
+    color: $dark-blue;
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+    letter-spacing: 0.05rem;
+  }
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  input {
+    width: 100%;
+    height: 54px;
+    padding: 0 $space-12 0 $space-12;
+    border: 1.5px solid rgba($dark-blue, 0.25);
+    border-radius: $radius-xs;
+    background-color: $color-white;
+    color: $onyx-black;
+    font-family: $font-primary;
+    font-size: $font-size-md;
+    outline: none;
+    transition: border-color $transition-fast, box-shadow $transition-fast;
+
+    &:focus {
+      border-color: $dark-blue;
+      box-shadow: 0 0 0 3px rgba($light-blue, 0.35);
+    }
+  }
+
+  input.noIcon {
+    padding-left: $space-4;
+  }
+
+  input:user-invalid {
+    border-color: $bright-red;
+  }
+
+  .inputIcon {
+    position: absolute;
+    left: $space-4;
+    color: $light-blue;
+    pointer-events: none;
+  }
+
+  &:focus-within .inputIcon {
+    color: $dark-blue;
+  }
+}
+
+.togglePassword {
+  position: absolute;
+  right: $space-3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $space-2;
+  border: none;
+  border-radius: $radius-full;
+  background: transparent;
+  color: $light-blue;
+  cursor: pointer;
+  transition: color $transition-fast, background-color $transition-fast;
+
+  &:hover {
+    color: $dark-blue;
+    background-color: rgba($light-blue, 0.15);
+  }
+}
+
+.errorMessage {
+  margin: -$space-2 0 0;
+  padding: $space-3 $space-4;
+  border-left: 3px solid $bright-red;
+  border-radius: $radius-xs;
+  background-color: rgba($bright-red, 0.08);
+  color: $dark-red;
+  font-size: $font-size-base;
+}
+
+.signInButton {
+  margin-top: $space-2;
+  width: 100%;
+  height: 54px;
+  border: none;
+  border-radius: $radius-xs;
+  background-color: $dark-red;
+  color: $color-white;
+  font-family: $font-primary;
+  font-size: $font-size-md;
+  letter-spacing: 0.15rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color $transition-fast, transform $transition-fast;
+
+  &:hover {
+    background-color: color.adjust($dark-red, $lightness: -6%);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: wait;
+  }
+}
+
+.switchAuth {
+  margin: $space-8 0 0;
+  text-align: center;
+  color: $color-primary-light;
+  font-size: $font-size-base;
+
+  a {
+    color: $dark-red;
+    font-weight: $font-weight-bold;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color $transition-fast;
+
+    &:hover {
+      border-bottom-color: $dark-red;
+    }
+  }
+}
+
+@media (max-width: 520px) {
+  .loginPage {
+    padding: $space-4;
+  }
+
+  .loginCard {
+    padding: $space-10 $space-6;
+  }
+}

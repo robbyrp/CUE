@@ -5,8 +5,8 @@ import CategoryCarousel from '../../common/components/categoryCarousel/CategoryC
 import { PerformanceService } from '../../services/PerformanceService';
 import { UserService } from '../../services/UserService';
 import PerformanceCardComponent from '../../components/performanceCardComponent/PerformanceCardComponent';
-import DesktopHeader from '../../common/components/DesktopHeader/DesktopHeader';
-import DesktopFooter from '../../common/components/DesktopFooter/DesktopFooter';
+import Header from '../../common/components/Header/Header';
+import Footer from '../../common/components/Footer/Footer';
 import type PerformancePortal from '../../types/Performance';
 import type { PageRequest } from '../../types/PageRequest';
 
@@ -79,7 +79,7 @@ function MyActivityPage() {
 
     return (
         <div className={styles.myActivityPage}>
-            <DesktopHeader />
+            <Header />
             <div className={styles.myActivityContainer}>
 
                 <CategoryCarousel
@@ -110,7 +110,7 @@ function MyActivityPage() {
                 </CategoryCarousel>
 
             </div>
-            <DesktopFooter />
+            <Footer />
         </div>
     )
 }

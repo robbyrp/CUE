@@ -10,7 +10,7 @@
 .myActivityContainer {
   flex: 1;
   width: 100%;
-  max-width: calc($desktop-content-max-width + 2 * $space-16);
+  max-width: calc($content-max-width + 2 * $space-16);
   margin: 0 auto;
   padding: $space-12;
   display: flex;

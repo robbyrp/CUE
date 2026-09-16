@@ -1,0 +1,37 @@
+@use '../../../../styles/abstracts/' as *;
+
+.exploreList {
+  padding: $space-12;
+  background-color: white;
+  overflow: hidden;
+
+  @include respond-above('laptop') {
+    padding: $space-14;
+  }
+
+  @include respond-above('desktop') {
+    padding: $space-16;
+  }
+
+  .centeredContent {
+    width: 100%;
+    max-width: calc($content-max-width + 2 * $space-16);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: $space-10;
+    border-radius: $radius-xl;
+
+    .carouselContainer {
+      background: white;
+      // padding mic pastrat ca overflow: hidden sa nu taie umbra cardurilor
+      padding: $space-2 0 $space-4 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card {
+      cursor: pointer;
+    }
+  }
+}

@@ -1,0 +1,129 @@
+@use '../../../../styles/abstracts/' as *;
+@use '../../../../styles/base/' as *;
+
+.questionsContainer {
+    background-color: $light-blue;
+    width: 100%;
+    padding: $space-12;
+
+    @include respond-above('laptop') {
+        padding: $space-14;
+    }
+
+    @include respond-above('desktop') {
+        padding: $space-16;
+    }
+
+    .centeredContent {
+        display: flex;
+        flex-direction: column;
+        gap: $space-12;
+        width: 100%;
+        margin: 0 auto;
+        max-width: $content-max-width;
+
+        .title {
+            font-family: $font-primary;
+            font-size: $font-size-lg;
+            font-weight: 400;
+            color: $black;
+            letter-spacing: 0.10rem;
+            margin: 0;
+
+            @include respond-above('laptop') {
+                font-size: $font-size-xl;
+            }
+
+            @include respond-above('desktop') {
+                font-size: $font-size-3xl;
+            }
+        }
+
+        .gridContainer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: $space-12;
+            row-gap: $space-6;
+            width: 100%;
+        }
+    }
+}
+
+.questionEntry {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .questionHeader {
+        background-color: $light-yellow;
+        color: $dark-blue;
+        padding: $space-4 $space-6;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+        z-index: 2;
+
+        .question {
+            font-family: $font-primary;
+            font-size: $font-size-md;
+            font-weight: 400;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            @include respond-above('laptop') {
+                font-size: $font-size-lg;
+            }
+
+            @include respond-above('desktop') {
+                font-size: $font-size-xl;
+            }
+        }
+
+        .icon {
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease;
+
+            &.rotateUp {
+                transform: rotate(180deg);
+            }
+        }
+    }
+
+    .answer {
+        overflow: hidden;
+        transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+
+        &.hide {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        &.show {
+            max-height: 500px;
+            opacity: 1;
+        }
+
+        .answerContent {
+            background-color: $color-white;
+            color: $black;
+            padding: $space-6;
+            margin-top: -4px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            font-family: $font-primary;
+            font-size: $font-size-base;
+            line-height: $line-height-base;
+
+            @include respond-above('laptop') {
+                font-size: $font-size-md;
+            }
+
+            @include respond-above('desktop') {
+                font-size: $font-size-lg;
+            }
+        }
+    }
+}

@@ -1,0 +1,47 @@
+@use '../../styles/abstracts/' as *;
+
+.card {
+    width: 24%;
+    aspect-ratio: 1 / 1.5;
+    background-color: $color-white;
+    outline-width: 0.3rem;
+    outline-style: solid;
+    outline-color: $color-white;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: transform $transition-fast, box-shadow $transition-fast;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .image {
+        width: 100%;
+        height: 90%;
+        overflow: hidden;
+        border-top-left-radius: 0.2rem;
+        border-top-right-radius: 0.2rem;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    .info {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: none;
+        font-family: $font-primary;
+        font-size: $font-size-lg;
+        text-align: center;
+        color: $black;
+        padding: $space-2;
+    }
+}

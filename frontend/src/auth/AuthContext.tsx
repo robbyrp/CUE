@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import type { LoginRequest } from '../types/LoginInterfaces';
+import type { LoginRequest, LoginResponse } from '../types/LoginInterfaces';
+import type { RegisterUserRequest } from '../types/RegisterUserRequest';
 import type { UserRole } from '../types/UserRole';
 import { LOCAL_STORAGE_TOKEN_NAME } from '../services/Api';
 import { AuthService } from '../services/AuthService';
@@ -11,6 +12,7 @@ interface AuthContextType {
     role: UserRole | null;
     isAdmin: boolean;
     login: (request: LoginRequest) => Promise<void>
+    register: (request: RegisterUserRequest) => Promise<void>;
     logout: () => void;
     loading: boolean;
 }
@@ -36,11 +38,18 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         setLoading(false);
     }, []);
 
-    const login = async (request: LoginRequest): Promise<void> => {
-        const response = await AuthService.login(request);
+    const saveSession = (response: LoginResponse) => {
         localStorage.setItem(LOCAL_STORAGE_TOKEN_NAME, response.token);
         setIsAuthenticated(true);
         setRole(decodeUserRole(response.token));
+    };
+
+    const login = async (request: LoginRequest): Promise<void> => {
+        saveSession(await AuthService.login(request));
+    };
+
+    const register = async (request: RegisterUserRequest): Promise<void> => {
+        saveSession(await AuthService.register(request));
     };
 
     const logout = () => {
@@ -51,7 +60,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
     return (
         <AuthContext.Provider
-            value={{ isAuthenticated, role, isAdmin: role === 'ADMIN', login, logout, loading }}>
+            value={{ isAuthenticated, role, isAdmin: role === 'ADMIN', login, register, logout, loading }}>
             {children}
         </AuthContext.Provider>
     );

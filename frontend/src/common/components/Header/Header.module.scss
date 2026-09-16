@@ -1,7 +1,7 @@
 @use '../../../styles/abstracts/' as *;
 
 .header {
-    background-color: $color-footer-background;
+    background-color: $replace-gray;
     height: $navbar-height;
     display: flex;
     flex-direction: row;
@@ -141,11 +141,22 @@
                 align-content: center;
 
 
-                img {
-                    color: white;
+                .navIcon {
                     height: 24px;
                     width: 24px;
+                    overflow: visible;
                 }
+
+                .fillRect {
+                    transform: scaleY(0);
+                    transform-box: fill-box;
+                    transform-origin: bottom;
+                    transition: transform 350ms ease-out;
+                }
+            }
+
+            &:hover .fillRect {
+                transform: scaleY(1);
             }
 
             .routeLabel {

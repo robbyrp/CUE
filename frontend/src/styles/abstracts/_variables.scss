@@ -1,8 +1,10 @@
 // ----- Base Colors -----
 $light-blue: #669BBC;
+$light-yellow: #FDF0D5;
 $onyx-black: #131313;
 $black: #000000;
 $replace-gray:#939393;
+$bright-red: #C1111F;
 $dark-red: #7D262A;
 $dark-blue: #003049;
 
@@ -23,11 +25,13 @@ $font-weight-medium: 500;
 $font-weight-bold: 700;
 
 // Type scale (rem-based, responsive via html font-size in _typography.scss)
+$font-size-sm: 0.8rem;
 $font-size-base: 1rem;
 $font-size-md: 1.2rem;
 $font-size-lg: 1.4rem;
 $font-size-xl: 1.7rem;
 $font-size-2xl: 2rem;
+$font-size-3xl: 2.5rem;
 
 $line-height-tight: 1.2;
 $line-height-base: 1.5;
@@ -80,5 +84,6 @@ $transition-fast: 150ms ease;
 // ----- Layout -----
 $navbar-height: 6vh;
 $footer-height: 6vh;
+$hero-section-height: 70vh;
 
-$desktop-content-max-width: $breakpoint-desktop;
+$content-max-width: $breakpoint-desktop;
