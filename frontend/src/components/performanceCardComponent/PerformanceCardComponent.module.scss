@@ -1,83 +1,218 @@
 @use '../../styles/abstracts/' as *;
 
-.CardContainer {
-    --brand-red: #7D262A;
+$card-radius: 18px;
+$card-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+$card-duration: 450ms;
 
+// Spatiu in jurul cardului, ca ridicarea si umbra de la hover
+// sa nu fie taiate de overflow: hidden din carusel
+.CardShell {
+    width: 100%;
+    padding: $space-3 $space-2 $space-6;
+    display: flex;
+    justify-content: center;
+}
+
+.CardContainer {
+    position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    width: 100%;
+    max-width: 460px;
 
-    width: 85vw;
-    max-width: 400px;
-    aspect-ratio: 1.49;
-    margin: 0 auto;
+    background-color: $light-yellow;
+    border: 1px solid rgba($dark-blue, 0.14);
+    border-radius: $card-radius;
+    overflow: hidden;
 
-    background-color: white;
+    box-shadow:
+        0 1px 2px rgba($onyx-black, 0.06),
+        0 8px 24px -8px rgba($dark-blue, 0.18);
 
+    transition:
+        transform $card-duration $card-ease,
+        box-shadow $card-duration $card-ease,
+        border-color $card-duration $card-ease;
+    will-change: transform;
+
+    &:hover {
+        transform: translateY(-6px);
+        border-color: rgba($dark-red, 0.45);
+        box-shadow:
+            0 2px 4px rgba($onyx-black, 0.08),
+            0 22px 40px -12px rgba($dark-blue, 0.35);
+    }
+
+    // ----- Imagine -----
     .ImageContainer {
+        position: relative;
         width: 100%;
-        height: 150px;
-        flex-shrink: 0;
-        border-radius: $radius-lg;
-        background-color: #D9D9D9;
-
-        border: 2px solid var(--brand-red);
-        border-radius: 10px;
+        aspect-ratio: 16 / 10;
         overflow: hidden;
+        background: linear-gradient(135deg, $light-blue, $dark-blue);
 
-        img {
+        > img:first-child {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            display: block;
+            opacity: 0;
+            transform: scale(1.02);
+            transition:
+                opacity 600ms ease,
+                transform 900ms $card-ease;
+
+            &.Loaded {
+                opacity: 1;
+            }
         }
     }
 
+    &:hover .ImageContainer > img:first-child {
+        transform: scale(1.07);
+    }
+
+    .ImageOverlay {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(
+            to top,
+            rgba($onyx-black, 0.55) 0%,
+            rgba($onyx-black, 0) 45%
+        );
+    }
+
+    .AgeImage {
+        position: absolute;
+        top: $space-3;
+        right: $space-3;
+        width: 34px;
+        height: 34px;
+        filter: drop-shadow(0 2px 6px rgba($onyx-black, 0.45));
+    }
+
+    .DurationPill {
+        position: absolute;
+        left: $space-3;
+        bottom: $space-3;
+        display: inline-flex;
+        align-items: center;
+        gap: $space-1;
+        padding: $space-1 $space-3;
+
+        font-family: $font-primary;
+        font-size: 0.85rem;
+        line-height: 1;
+        letter-spacing: 0.04rem;
+        color: $color-white;
+
+        background-color: rgba($onyx-black, 0.45);
+        border: 1px solid rgba($color-white, 0.25);
+        border-radius: $radius-full;
+        backdrop-filter: blur(6px);
+    }
+
+    // Linie rosie care se extinde la hover, la baza imaginii
+    .AccentLine {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 3px;
+        width: 100%;
+        background-color: $dark-red;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform $card-duration $card-ease;
+    }
+
+    &:hover .AccentLine {
+        transform: scaleX(1);
+    }
+
+    // ----- Text -----
     .ContentContainer {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
-        flex: 1;
+        gap: $space-2;
+        padding: $space-5 $space-5 $space-6;
+        font-family: $font-primary;
+        color: $onyx-black;
+    }
 
-        padding: 1rem;
-        gap: 1.2rem;
+    .Title {
+        margin: 0;
+        font-size: $font-size-lg;
+        font-weight: $font-weight-bold;
+        line-height: $line-height-tight;
+        letter-spacing: 0.06rem;
+        text-transform: uppercase;
+        color: $dark-blue;
 
-        margin-left: -3px;
-        margin-right: -3px;
-        margin-top: -3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
-        color: $black;
-        background-color: #FDF0D5;
+        transition: color $card-duration $card-ease;
+    }
 
-        border: 2px solid #000000;
-        border-radius: 10px;
-        box-shadow: -1px -18px 18.3px -10px #00000087;
+    &:hover .Title {
+        color: $dark-red;
+    }
 
-        .NameAndAgeRow {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: $font-size-lg;
-            
-            .Title {
-                font-weight: 500;
-                text-transform: uppercase;
-            }
+    .Director {
+        display: flex;
+        align-items: baseline;
+        gap: $space-2;
+        font-size: $font-size-base;
+        color: $color-primary-light;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .DirectorLabel {
+        font-size: 0.75rem;
+        font-weight: $font-weight-bold;
+        letter-spacing: 0.12rem;
+        text-transform: uppercase;
+        color: $dark-red;
+    }
+
+    .Venue {
+        display: flex;
+        align-items: center;
+        gap: $space-2;
+        margin-top: $space-2;
+        padding-top: $space-3;
+        border-top: 1px solid rgba($dark-blue, 0.12);
+
+        font-size: 0.85rem;
+        color: $replace-gray;
+
+        svg {
+            flex-shrink: 0;
+            color: $light-blue;
         }
 
-        .DirectorAndTimeRow {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: $font-size-md;
-
-            .Director {
-                font-weight: 400;
-                text-transform: uppercase;
-            }
-
-            .Time {
-                color: var(--brand-red);
-            }
+        span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .CardContainer,
+    .CardContainer .ImageContainer > img:first-child,
+    .CardContainer .AccentLine {
+        transition: none;
+    }
+
+    .CardContainer:hover,
+    .CardContainer:hover .ImageContainer > img:first-child {
+        transform: none;
     }
 }
