@@ -22,7 +22,7 @@ public final class PerformanceMapper {
                 .id(p.getId())
                 .title(p.getTitle())
                 .director(p.getDirector())
-                .coverImageUrl(p.getCoverImageURL())
+                .coverImageURL(p.getCoverImageURL())
                 .ageLimit(p.getAgeLimit())
                 .duration(p.getDuration())
                 .build();

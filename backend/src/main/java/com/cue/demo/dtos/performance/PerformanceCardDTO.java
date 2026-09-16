@@ -11,7 +11,7 @@ public record PerformanceCardDTO(
     @Min(0) Long id,
     @NotBlank(message = "title cannot be empty") String title,
     @NotBlank(message = "director cannot be empty") String director,
-    @NotNull(message = "coverImageUrl cannot be empty") String coverImageUrl,
+    @NotNull(message = "coverImageURL cannot be empty") String coverImageURL,
     @Min(0) @Max(22) Integer ageLimit,
     @NotNull(message = "duration cannot be empty") @Min(0) @Max(481)Integer duration
 ) {}
