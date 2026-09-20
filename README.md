@@ -16,6 +16,10 @@ A Letterboxd-style web app for **theatre** — track plays you've seen, build a 
 - **Testing:** JUnit 5 + Mockito for service-layer unit tests; JUnit 5 + Testcontainers (real PostgreSQL, not H2) for repository-layer integration tests.
 - **CI:** GitHub Actions — unit tests (Surefire) and integration tests (Failsafe + Testcontainers) run as two separate steps on every push/PR.
 
+## Diagram
+<a href="https://gitdiagram.com/robbyrp/cue" > <img width="5162" height="6198" alt="diagram" src="https://github.com/user-attachments/assets/2971414f-5830-499d-8ae7-21c6ffdd8bc2" />
+</a>
+
 ## Architecture
 
 The backend follows a standard layered structure: `Controller → Service → Repository`, with Record-based DTOs, injectable `@Component` mappers, and centralized exception handling via a single `@RestControllerAdvice`. Authentication is a manually implemented JWT flow (`OncePerRequestFilter` + `Spring Security`, `BCrypt`-hashed passwords) instead of a third-party auth provider, and role/ownership checks (USER/ADMIN, review authorship) live in the service layer. Search is accent- and case-insensitive (Postgres `unaccent` extension) across title, director, and location, with paginated results (`Page<T>` / `Pageable`) throughout.
