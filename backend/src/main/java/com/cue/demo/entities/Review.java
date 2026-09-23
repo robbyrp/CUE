@@ -46,6 +46,7 @@ public class Review {
     @Column(columnDefinition = "TEXT")
     private String text;
 
+    @Setter
     private boolean isSpoiler;
 
     /** Number of times it has been reported **/

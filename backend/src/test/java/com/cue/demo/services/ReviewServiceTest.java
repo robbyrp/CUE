@@ -1,6 +1,7 @@
 package com.cue.demo.services;
 
 import com.cue.demo.dtos.review.ReviewDTO;
+import com.cue.demo.dtos.review.ReviewRequestDTO;
 import com.cue.demo.entities.Performance;
 import com.cue.demo.entities.Review;
 import com.cue.demo.entities.User;
@@ -60,7 +61,7 @@ public final class ReviewServiceTest {
 
         User testUser = User.builder().id(requestHeaderUserId).role(UserRole.USER).build();
         Performance performanceMock = Performance.builder().id(existingPerformanceId).build();
-        ReviewDTO requestBodyReviewDTO = ReviewDTO.builder().stars(starsNumber).text(description).isSpoiler(spoiler).build();
+        ReviewRequestDTO requestBody = ReviewRequestDTO.builder().stars(starsNumber).text(description).isSpoiler(spoiler).build();
         Review reviewMock = Review.builder().id(newReviewId).performance(performanceMock).user(testUser).stars(starsNumber).text(description).isSpoiler(spoiler).build();
         ReviewDTO expectedReviewDTO = ReviewDTO.builder().id(newReviewId).stars(starsNumber).text(description).isSpoiler(spoiler).build();
 
@@ -70,7 +71,7 @@ public final class ReviewServiceTest {
         Mockito.when(reviewRepository.saveAndFlush(Mockito.any(Review.class))).thenReturn(reviewMock);
         Mockito.when(reviewMapper.fromReviewToReviewDTO(reviewMock)).thenReturn(expectedReviewDTO);
 
-        ReviewDTO result = service.createReview(requestHeaderUserId, existingPerformanceId, requestBodyReviewDTO);
+        ReviewDTO result = service.createReview(requestHeaderUserId, existingPerformanceId, requestBody);
 
         Assertions.assertNotNull(result);
         Assertions.assertEquals(expectedReviewDTO, result);
@@ -84,11 +85,11 @@ public final class ReviewServiceTest {
     @Test
     void givenDuplicateUserIdAndPerformanceId_whenCreateReview_thenThrowReviewAlreadyExistsException ()
     {
-        ReviewDTO requestBodyReviewDTO = ReviewDTO.builder().build();
+        ReviewRequestDTO requestBody = ReviewRequestDTO.builder().build();
 
         Mockito.when(reviewRepository.existsByUser_IdAndPerformance_Id(requestHeaderUserId, existingPerformanceId)).thenReturn(true);
 
-        Assertions.assertThrows(ReviewAlreadyExistsException.class, () -> service.createReview(requestHeaderUserId, existingPerformanceId, requestBodyReviewDTO));
+        Assertions.assertThrows(ReviewAlreadyExistsException.class, () -> service.createReview(requestHeaderUserId, existingPerformanceId, requestBody));
     }
 
     /**
@@ -98,13 +99,13 @@ public final class ReviewServiceTest {
     void givenInvalidPerformanceId_whenCreateReview_thenThrowPerformanceNotFoundByIdException ()
     {
         User testUser = User.builder().id(requestHeaderUserId).role(UserRole.USER).build();
-        ReviewDTO requestBodyReviewDTO = ReviewDTO.builder().build();
+        ReviewRequestDTO requestBody = ReviewRequestDTO.builder().build();
 
         Mockito.when(reviewRepository.existsByUser_IdAndPerformance_Id(requestHeaderUserId, existingPerformanceId)).thenReturn(false);
         Mockito.when(userRepository.getReferenceById(requestHeaderUserId)).thenReturn(testUser);
         Mockito.when(performanceRepository.findById(existingPerformanceId)).thenReturn(Optional.empty());
 
-        Assertions.assertThrows(PerformanceNotFoundByIdException.class, () -> service.createReview(requestHeaderUserId, existingPerformanceId, requestBodyReviewDTO));
+        Assertions.assertThrows(PerformanceNotFoundByIdException.class, () -> service.createReview(requestHeaderUserId, existingPerformanceId, requestBody));
 
         Mockito.verify(userRepository, Mockito.times(1)).getReferenceById(requestHeaderUserId);
     }
@@ -121,11 +122,10 @@ public final class ReviewServiceTest {
         final Integer oldStarsNumber = 3;
         final String oldDescription = "Test description";
         final boolean spoiler = false;
-        final Long pathVariableReviewId = 1L;
 
         User testUser = User.builder().id(requestHeaderUserId).role(UserRole.USER).build();
         Performance performanceMock = Performance.builder().id(existingPerformanceId).build();
-        ReviewDTO reviewDtoMock = ReviewDTO.builder().id(pathVariableReviewId).stars(newStarsNumber).text(newDescription).isSpoiler(spoiler).build();
+        ReviewRequestDTO requestBody = ReviewRequestDTO.builder().stars(newStarsNumber).text(newDescription).isSpoiler(spoiler).build();
 
         Review oldReviewMock = Review.builder().id(pathVariableReviewId).performance(performanceMock).user(testUser).stars(oldStarsNumber).text(oldDescription).isSpoiler(spoiler).build();
         Review newReviewMock = Review.builder().id(pathVariableReviewId).performance(performanceMock).user(testUser).stars(newStarsNumber).text(newDescription).isSpoiler(spoiler).build();
@@ -136,7 +136,7 @@ public final class ReviewServiceTest {
         Mockito.when(reviewRepository.save(Mockito.any(Review.class))).thenReturn(newReviewMock);
         Mockito.when(reviewMapper.fromReviewToReviewDTO(newReviewMock)).thenReturn(expectedNewReviewDto);
 
-        ReviewDTO result = service.updateReview(requestHeaderUserId, pathVariableReviewId, reviewDtoMock);
+        ReviewDTO result = service.updateReview(requestHeaderUserId, pathVariableReviewId, requestBody);
 
         Assertions.assertNotNull(result);
         Assertions.assertEquals(expectedNewReviewDto, result);
@@ -162,7 +162,7 @@ public final class ReviewServiceTest {
 
         User testUser = User.builder().id(reviewAuthorUserId).role(UserRole.USER).build();
         Performance performanceMock = Performance.builder().id(existingPerformanceId).build();
-        ReviewDTO reviewDtoMock = ReviewDTO.builder().id(pathVariableReviewId).stars(newStarsNumber).text(newDescription).isSpoiler(spoiler).build();
+        ReviewRequestDTO requestBody = ReviewRequestDTO.builder().stars(newStarsNumber).text(newDescription).isSpoiler(spoiler).build();
 
         Review oldReviewMock = Review.builder().id(pathVariableReviewId).performance(performanceMock).user(testUser).stars(oldStarsNumber).text(oldDescription).isSpoiler(spoiler).build();
         Review newReviewMock = Review.builder().id(pathVariableReviewId).performance(performanceMock).user(testUser).stars(newStarsNumber).text(newDescription).isSpoiler(spoiler).build();
@@ -173,7 +173,7 @@ public final class ReviewServiceTest {
         Mockito.when(reviewRepository.save(Mockito.any(Review.class))).thenReturn(newReviewMock);
         Mockito.when(reviewMapper.fromReviewToReviewDTO(newReviewMock)).thenReturn(expectedNewReviewDto);
 
-        ReviewDTO result = service.updateReview(requestHeaderAdminUserId, pathVariableReviewId, reviewDtoMock);
+        ReviewDTO result = service.updateReview(requestHeaderAdminUserId, pathVariableReviewId, requestBody);
 
         Assertions.assertNotNull(result);
         Assertions.assertEquals(expectedNewReviewDto, result);
@@ -197,8 +197,7 @@ public final class ReviewServiceTest {
         User requester = User.builder().id(requestHeaderUserId).role(UserRole.USER).build();
         User otherUser = User.builder().id(otherUserId).role(UserRole.USER).build();
 
-        ReviewDTO reviewDtoMock = ReviewDTO.builder()
-                .id(pathVariableReviewId)
+        ReviewRequestDTO requestBody = ReviewRequestDTO.builder()
                 .stars(newStarsNumber)
                 .text(newDescription)
                 .isSpoiler(false)
@@ -215,7 +214,7 @@ public final class ReviewServiceTest {
         Mockito.when(userRepository.getReferenceById(requestHeaderUserId)).thenReturn(requester);
 
         Assertions.assertThrows(UserNotAuthorizedException.class, () ->
-                service.updateReview(requestHeaderUserId, pathVariableReviewId, reviewDtoMock));
+                service.updateReview(requestHeaderUserId, pathVariableReviewId, requestBody));
 
         Mockito.verify(userRepository, Mockito.times(1)).getReferenceById(requestHeaderUserId);
         Mockito.verify(reviewRepository, Mockito.never()).save(Mockito.any(Review.class));
@@ -227,12 +226,12 @@ public final class ReviewServiceTest {
      */
     @Test
     void givenInvalidReviewId_whenUpdateReview_thenThrowReviewNotFoundException() {
-        ReviewDTO reviewDtoMock = ReviewDTO.builder().id(pathVariableReviewId).build();
+        ReviewRequestDTO requestBody = ReviewRequestDTO.builder().build();
 
         Mockito.when(reviewRepository.findById(pathVariableReviewId)).thenReturn(Optional.empty());
 
         Assertions.assertThrows(ReviewNotFoundException.class, () ->
-                service.updateReview(requestHeaderUserId, pathVariableReviewId, reviewDtoMock));
+                service.updateReview(requestHeaderUserId, pathVariableReviewId, requestBody));
 
         Mockito.verify(userRepository, Mockito.never()).findById(Mockito.anyLong());
         Mockito.verify(reviewRepository, Mockito.never()).save(Mockito.any(Review.class));

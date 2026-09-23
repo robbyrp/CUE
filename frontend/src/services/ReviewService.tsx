@@ -1,7 +1,7 @@
 import apiClient from './Api.tsx'
 import type PageResponse from '../types/PageResponse.ts';
 import type { PageRequest } from '../types/PageRequest.ts';
-import type { Review } from '../types/Review.ts';
+import type { Review, ReviewRequest } from '../types/Review.ts';
 
 
 const ENDPOINTS = {
@@ -19,13 +19,13 @@ const ENDPOINTS = {
 
 
 export const ReviewService = {
-    createReview: async (performanceId: number, request: Review): Promise<Review> => {
+    createReview: async (performanceId: number, request: ReviewRequest): Promise<Review> => {
         const response = await apiClient.post(ENDPOINTS.CREATE_REVIEW(performanceId), request);
         return response.data;
     },
 
-    updateReview: async (reviewId: number, request: Review): Promise<Review> => {
-        const response = await apiClient.post(ENDPOINTS.UPDATE_REVIEW(reviewId), request);
+    updateReview: async (reviewId: number, request: ReviewRequest): Promise<Review> => {
+        const response = await apiClient.put(ENDPOINTS.UPDATE_REVIEW(reviewId), request);
         return response.data;
     },
 
@@ -36,9 +36,10 @@ export const ReviewService = {
         return response.data;
     },
 
-    getMyReview: async (performanceId: number): Promise<Review> => {
+    // Backend-ul raspunde cu 204 No Content daca userul nu a scris review
+    getMyReview: async (performanceId: number): Promise<Review | null> => {
         const response = await apiClient.get(ENDPOINTS.GET_MY_REVIEW(performanceId));
-        return response.data;
+        return response.status === 204 || !response.data ? null : response.data;
     },
 
     toggleHeartReview: async (reviewId: number): Promise<void> => {

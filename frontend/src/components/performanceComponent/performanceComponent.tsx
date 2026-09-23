@@ -5,19 +5,7 @@ import { getAgeIcon } from '../../utils/ageHelper';
 import type { MouseEvent } from "react";
 import { useAuth } from '../../auth/AuthContext';
 import { UserService } from '../../services/UserService';
-
-function ReviewsPlaceholder() {
-    return (
-        <section className={styles.ReviewsSection}>
-            <div className={styles.ReviewsEmptyState}>
-                <div className={styles.EmptyStateTitle}>Reviews nu sunt implementate inca.</div>
-                <div className={styles.EmptyStateText}>
-                    Componentul este pregatit pentru lista de review-uri, dar momentan afiseaza doar acest placeholder.
-                </div>
-            </div>
-        </section>
-    );
-}
+import ReviewsPanel from '../reviewsPanel/ReviewsPanel';
 
 function PerformanceComponent({ data }: { data: PerformancePortal }) {
     const { isAuthenticated } = useAuth();
@@ -161,7 +149,7 @@ function PerformanceComponent({ data }: { data: PerformancePortal }) {
 
                 <div className={styles.RightColumn}>
                     <div className={styles.CreditsContainer}>
-                        <div className={styles.SectionTitle}>CREDITS</div>
+                        <div className={styles.SectionTitle}>CREDITE</div>
                         {data.credits.map((credit, index) => (
                             <div key={`${credit.role}-${index}`} className={styles.Credit}>
                                 <div className={styles.Role}>{credit.role.toUpperCase() + ':'}</div>
@@ -170,9 +158,7 @@ function PerformanceComponent({ data }: { data: PerformancePortal }) {
                         ))}
                     </div>
 
-                    <div className={styles.ReviewsScrollArea}>
-                        <ReviewsPlaceholder />
-                    </div>
+                    {data.id !== undefined && <ReviewsPanel performanceId={data.id} />}
                 </div>
             </div>
 

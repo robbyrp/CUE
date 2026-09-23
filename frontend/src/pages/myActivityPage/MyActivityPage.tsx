@@ -83,7 +83,7 @@ function MyActivityPage() {
             <div className={styles.myActivityContainer}>
 
                 <CategoryCarousel
-                    title="WATCH LATER">
+                    title="DE VĂZUT">
                     {watchLaterPerformanceDTOs.map((dto: PerformancePortal) => (
                         <div key={dto.id} onClick={() => navigate(`/spectacole/${dto.id}`)} style={{ cursor: `pointer` }}>
                             <PerformanceCardComponent data={dto} />
@@ -92,7 +92,7 @@ function MyActivityPage() {
                 </CategoryCarousel>
 
                 <CategoryCarousel
-                    title="WATCHED">
+                    title="VIZIONATE">
                     {watchedPerformanceDTOs.map((dto: PerformancePortal) => (
                         <div key={dto.id} onClick={() => navigate(`/spectacole/${dto.id}`)} style={{ cursor: `pointer` }}>
                             <PerformanceCardComponent data={dto} />
@@ -101,7 +101,7 @@ function MyActivityPage() {
                 </CategoryCarousel>
 
                 <CategoryCarousel
-                    title="REVIEWED">
+                    title="RECENZII">
                     {reviewedPerformanceDTOs.map((dto: PerformancePortal) => (
                         <div key={dto.id} onClick={() => navigate(`/spectacole/${dto.id}`)} style={{ cursor: `pointer` }}>
                             <PerformanceCardComponent data={dto} />
