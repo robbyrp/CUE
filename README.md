@@ -4,10 +4,11 @@
 
 A Letterboxd-style web app for **theatre** — track plays you've seen, build a watchlist, search across titles/directors/locations, and leave reviews.
 
-## Status
+## Gallery
+<img width="2833" height="1531" alt="screenshot2" src="https://github.com/user-attachments/assets/a92be4cb-d855-4e7b-bf88-86998c8591e6" />
+<img width="2833" height="1484" alt="screenshot4" src="https://github.com/user-attachments/assets/ceb46044-ad5a-4258-ae2d-da9807c56173" />
 
-**Backend: feature-complete for the core flows** (auth, performances, reviews, watchlist/watched, search) — Spring Boot API with JWT auth, a layered architecture, and a Testcontainers-backed test suite.
-**Frontend: in progress** — React + TypeScript web app, core pages (auth, explore, profile) scaffolded.
+
 
 ## Stack
 
@@ -23,6 +24,10 @@ A Letterboxd-style web app for **theatre** — track plays you've seen, build a 
 ## Architecture
 
 The backend follows a standard layered structure: `Controller → Service → Repository`, with Record-based DTOs, injectable `@Component` mappers, and centralized exception handling via a single `@RestControllerAdvice`. Authentication is a manually implemented JWT flow (`OncePerRequestFilter` + `Spring Security`, `BCrypt`-hashed passwords) instead of a third-party auth provider, and role/ownership checks (USER/ADMIN, review authorship) live in the service layer. Search is accent- and case-insensitive (Postgres `unaccent` extension) across title, director, and location, with paginated results (`Page<T>` / `Pageable`) throughout.
+
+## Credits
+
+The images used for the performance cover pictures are from <a href="unsplash.com"> unsplash.com </a> .
 
 ## Testing
 
