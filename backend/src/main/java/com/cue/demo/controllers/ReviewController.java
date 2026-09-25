@@ -1,5 +1,6 @@
 package com.cue.demo.controllers;
 
+import com.cue.demo.dtos.review.ReviewRequestDTO;
 import com.cue.demo.dtos.review.ReviewDTO;
 import com.cue.demo.security.UserSecurityAdapter;
 import com.cue.demo.services.ReviewService;
@@ -21,21 +22,21 @@ public class ReviewController {
 
     @PostMapping("/spectacole/{performanceId}")
     public ResponseEntity<ReviewDTO> createReview(@PathVariable Long performanceId,
-                                               @AuthenticationPrincipal UserSecurityAdapter principal,
-                                               @RequestBody @Valid ReviewDTO reviewDTO) {
+                                                  @AuthenticationPrincipal UserSecurityAdapter principal,
+                                                  @RequestBody @Valid ReviewRequestDTO requestDTO) {
 
         final Long userId = principal.getId();
-        ReviewDTO created = service.createReview(userId, performanceId, reviewDTO);
+        ReviewDTO created = service.createReview(userId, performanceId, requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{reviewId}")
     public ResponseEntity<ReviewDTO> updateReview(@PathVariable Long reviewId,
                                                   @AuthenticationPrincipal UserSecurityAdapter principal,
-                                                  @RequestBody @Valid ReviewDTO reviewDTO) {
+                                                  @RequestBody @Valid ReviewRequestDTO requestDTO) {
 
         final  Long userId = principal.getId();
-        ReviewDTO updated = service.updateReview(userId, reviewId, reviewDTO);
+        ReviewDTO updated = service.updateReview(userId, reviewId, requestDTO);
         return ResponseEntity.ok().body(updated);
     }
 

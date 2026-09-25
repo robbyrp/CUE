@@ -1,6 +1,7 @@
 package com.cue.demo.services;
 
 import com.cue.demo.dtos.review.ReviewDTO;
+import com.cue.demo.dtos.review.ReviewRequestDTO;
 import com.cue.demo.entities.Performance;
 import com.cue.demo.entities.Review;
 import com.cue.demo.entities.User;
@@ -32,7 +33,7 @@ public class ReviewService {
      * @param userId The ID of a valid user, filtered before reaching the
      *                controller.
      * @param performanceId The ID of the performance.
-     * @param reviewDTO The DTO containing the review data.
+     * @param requestDTO The DTO containing the review data.
      * @return The newly created review DTO.
      * @throws ReviewAlreadyExistsException If the user has already left a review
      *                                      for the performance.
@@ -40,7 +41,7 @@ public class ReviewService {
      *                                           specified ID is not found.
      */
     @Transactional
-    public ReviewDTO createReview(final Long userId, final Long performanceId, final ReviewDTO reviewDTO)
+    public ReviewDTO createReview(final Long userId, final Long performanceId, final ReviewRequestDTO requestDTO)
             throws ReviewAlreadyExistsException, PerformanceNotFoundByIdException {
 
         if (hasUserReviewedPerformance(userId, performanceId))
@@ -53,9 +54,9 @@ public class ReviewService {
         Review review = Review.builder()
                 .performance(performance)
                 .user(userProxy)
-                .stars(reviewDTO.stars())
-                .text(reviewDTO.text())
-                .isSpoiler(reviewDTO.isSpoiler())
+                .stars(requestDTO.stars())
+                .text(requestDTO.text())
+                .isSpoiler(requestDTO.isSpoiler())
                 .build();
 
         review = reviewRepository.saveAndFlush(review);
@@ -74,7 +75,7 @@ public class ReviewService {
      * @param userId The ID of a valid user, filtered before reaching the
      *                controller.
      * @param reviewId The ID of the review.
-     * @param reviewDTO The DTO containing the review data.
+     * @param requestDTO The DTO containing the review data.
      * @return The updated review DTO.
      * @throws ReviewNotFoundException If a review with the specified ID is not
      *                                 found.
@@ -82,7 +83,7 @@ public class ReviewService {
      *                                     this review.
      */
     @Transactional
-    public ReviewDTO updateReview(final Long userId, final Long reviewId, final ReviewDTO reviewDTO)
+    public ReviewDTO updateReview(final Long userId, final Long reviewId, final ReviewRequestDTO requestDTO)
             throws ReviewNotFoundException, UserNotAuthorizedException {
 
         Review review = reviewRepository.findById(reviewId)
@@ -93,8 +94,9 @@ public class ReviewService {
             throw new UserNotAuthorizedException(userId);
         }
 
-        review.setStars(reviewDTO.stars());
-        review.setText(reviewDTO.text());
+        review.setStars(requestDTO.stars());
+        review.setText(requestDTO.text());
+        review.setSpoiler(requestDTO.isSpoiler());
 
         review = reviewRepository.save(review);
         return mapper.fromReviewToReviewDTO(review);

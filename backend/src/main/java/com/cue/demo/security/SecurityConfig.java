@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/spectacole/admin").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/spectacole/*/admin").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,"/api/spectacole/").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/spectacole/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/reviews/spectacole/*").permitAll()
                         .requestMatchers("/api/reviews/**").hasRole("USER")
                         .requestMatchers("/api/user/**").hasRole("USER")
