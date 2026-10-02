@@ -4,6 +4,7 @@ import com.cue.demo.dtos.review.ReviewDTO;
 import com.cue.demo.dtos.review.ReviewRequestDTO;
 import com.cue.demo.entities.Performance;
 import com.cue.demo.entities.Review;
+import com.cue.demo.entities.ReviewHeartItem;
 import com.cue.demo.entities.User;
 import com.cue.demo.enums.UserRole;
 import com.cue.demo.exceptions.PerformanceNotFoundByIdException;
@@ -12,11 +13,13 @@ import com.cue.demo.exceptions.ReviewNotFoundException;
 import com.cue.demo.exceptions.UserNotAuthorizedException;
 import com.cue.demo.mapper.ReviewMapper;
 import com.cue.demo.repositories.PerformanceRepository;
+import com.cue.demo.repositories.ReviewHeartItemRepository;
 import com.cue.demo.repositories.ReviewRepository;
 import com.cue.demo.repositories.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -33,6 +36,7 @@ import java.util.Optional;
 public final class ReviewServiceTest {
 
     @Mock private ReviewRepository reviewRepository;
+    @Mock private ReviewHeartItemRepository reviewHeartItemRepository;
     @Mock private PerformanceRepository performanceRepository;
     @Mock private UserRepository userRepository;
     @Mock private ReviewMapper reviewMapper;
@@ -339,17 +343,25 @@ public final class ReviewServiceTest {
      */
     @Test
     void givenUserHeartsReview_whenToggleHeartReview_thenAddHeart() {
+        ArgumentCaptor<ReviewHeartItem> captor = ArgumentCaptor.forClass(ReviewHeartItem.class);
+
         User requester = User.builder().id(requestHeaderUserId).role(UserRole.USER).build();
         Review reviewMock = Review.builder().id(pathVariableReviewId).build();
 
         Mockito.when(userRepository.getReferenceById(requestHeaderUserId)).thenReturn(requester);
         Mockito.when(reviewRepository.findById(pathVariableReviewId)).thenReturn(Optional.of(reviewMock));
+        Mockito.when(reviewHeartItemRepository.findByUser_IdAndReview_Id(requestHeaderUserId, pathVariableReviewId)).thenReturn(Optional.empty());
 
         service.toggleHeartReview(requestHeaderUserId, pathVariableReviewId);
 
-        Assertions.assertTrue(reviewMock.getHeartedByUsers().contains(requester));
-        Mockito.verify(userRepository, Mockito.times(1)).getReferenceById(requestHeaderUserId);
-        Mockito.verify(reviewRepository).save(reviewMock);
+        Mockito.verify(userRepository).getReferenceById(requestHeaderUserId);
+        Mockito.verify(reviewRepository).findById(pathVariableReviewId);
+        Mockito.verify(reviewHeartItemRepository).save(captor.capture());
+        ReviewHeartItem captured = captor.getValue();
+
+        Assertions.assertSame(requester, captured.getUser());
+        Assertions.assertSame(reviewMock, captured.getReview());
+        Mockito.verify(reviewHeartItemRepository, Mockito.never()).delete(captor.getValue());
     }
 
     /**
@@ -358,18 +370,24 @@ public final class ReviewServiceTest {
     @Test
     void givenUserUnheartsReview_whenToggleHeartReview_thenRemoveHeart() {
         User requester = User.builder().id(requestHeaderUserId).role(UserRole.USER).build();
-        java.util.Set<User> hearts = new java.util.HashSet<>();
-        hearts.add(requester);
-        Review reviewMock = Review.builder().id(pathVariableReviewId).heartedByUsers(hearts).build();
+        Review reviewMock = Review.builder().id(pathVariableReviewId).build();
+
+        ReviewHeartItem reviewHeartItemMock = ReviewHeartItem.builder()
+                .user(requester)
+                .review(reviewMock)
+                .build();
+
 
         Mockito.when(userRepository.getReferenceById(requestHeaderUserId)).thenReturn(requester);
         Mockito.when(reviewRepository.findById(pathVariableReviewId)).thenReturn(Optional.of(reviewMock));
+        Mockito.when(reviewHeartItemRepository.findByUser_IdAndReview_Id(requestHeaderUserId, pathVariableReviewId)).thenReturn(Optional.of(reviewHeartItemMock));
 
         service.toggleHeartReview(requestHeaderUserId, pathVariableReviewId);
 
-        Assertions.assertFalse(reviewMock.getHeartedByUsers().contains(requester));
-        Mockito.verify(userRepository, Mockito.times(1)).getReferenceById(requestHeaderUserId);
-        Mockito.verify(reviewRepository).save(reviewMock);
+        Mockito.verify(userRepository).getReferenceById(requestHeaderUserId);
+        Mockito.verify(reviewRepository).findById(pathVariableReviewId);
+        Mockito.verify(reviewHeartItemRepository).delete(reviewHeartItemMock);
+        Mockito.verify(reviewHeartItemRepository, Mockito.never()).save(reviewHeartItemMock);
     }
 
     /**

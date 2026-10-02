@@ -11,7 +11,9 @@ import org.hibernate.annotations.SQLRestriction;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="watched_item")
+@Table(name="watched_item",
+        uniqueConstraints = {@UniqueConstraint(name="unique_watched_performance_by_user_and_performance",
+        columnNames = {"user_id", "performance_id"})})
 @Builder @AllArgsConstructor
 @SQLDelete(sql = "UPDATE watched_item SET deleted=true WHERE id=?")
 @SQLRestriction("deleted = false")
