@@ -36,7 +36,6 @@ export const ReviewService = {
         return response.data;
     },
 
-    // Backend-ul raspunde cu 204 No Content daca userul nu a scris review
     getMyReview: async (performanceId: number): Promise<Review | null> => {
         const response = await apiClient.get(ENDPOINTS.GET_MY_REVIEW(performanceId));
         return response.status === 204 || !response.data ? null : response.data;

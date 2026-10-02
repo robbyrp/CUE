@@ -115,18 +115,8 @@ export default function ReviewsPanel({ performanceId }: ReviewsPanelProps) {
 
         try {
             await ReviewService.toggleHeartReview(reviewId);
-
-            const fresh = await fetchReviews(page);
-            const updated = fresh.find((r) => r.id === reviewId);
-            if (updated) {
-                setHeartedIds((prev) => {
-                    const next = new Set(prev);
-                    if (updated.hearts > heartsBefore) next.add(reviewId); else next.delete(reviewId);
-                    return next;
-                });
-            }
         } catch (error) {
-            console.error('Eroare la aprecierea review-ului', error);
+            console.error('Eroare la aprecierea review-ului, facem rollback...', error);
             await fetchReviews(page).catch(() => undefined);
         }
     };

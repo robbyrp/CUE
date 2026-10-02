@@ -66,7 +66,7 @@ public class UserDatabaseSeeder implements CommandLineRunner {
 
       User robert = User.builder()
               .role(UserRole.USER)
-              .username("rpul")
+              .username("rp-ul")
               .passwordHash(passwordEncoder.encode("ParolaUser123!"))
               .profilePictureUrl("https://ui-avatars.com/api/?name=Robert+Pana")
               .bio("Eat sleep gym repeat")

@@ -4,10 +4,12 @@ import com.cue.demo.dtos.review.ReviewDTO;
 import com.cue.demo.dtos.review.ReviewRequestDTO;
 import com.cue.demo.entities.Performance;
 import com.cue.demo.entities.Review;
+import com.cue.demo.entities.ReviewHeartItem;
 import com.cue.demo.entities.User;
 import com.cue.demo.exceptions.*;
 import com.cue.demo.mapper.ReviewMapper;
 import com.cue.demo.repositories.PerformanceRepository;
+import com.cue.demo.repositories.ReviewHeartItemRepository;
 import com.cue.demo.repositories.ReviewRepository;
 import com.cue.demo.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class ReviewService {
     public final ReviewRepository reviewRepository;
+    public final ReviewHeartItemRepository reviewHeartItemRepository;
     private final PerformanceRepository performanceRepository;
     private final UserRepository userRepository;
     private final ReviewMapper mapper;
@@ -149,17 +152,21 @@ public class ReviewService {
             throws ReviewNotFoundException {
 
         User userProxy = userRepository.getReferenceById(userId);
-
-        Review review = reviewRepository.findById(reviewId)
+        Review reviewProxy = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewNotFoundException(reviewId));
 
-        if (review.getHeartedByUsers().contains(userProxy)) {
-            review.getHeartedByUsers().remove(userProxy);
-        } else {
-            review.getHeartedByUsers().add(userProxy);
-        }
+        Optional<ReviewHeartItem> heartItem =
+                reviewHeartItemRepository.findByUser_IdAndReview_Id(userId, reviewId);
 
-        reviewRepository.save(review);
+        if (heartItem.isEmpty()) {
+            ReviewHeartItem item = ReviewHeartItem.builder()
+                    .user(userProxy)
+                    .review(reviewProxy)
+                    .build();
+            reviewHeartItemRepository.save(item);
+        } else {
+            reviewHeartItemRepository.delete(heartItem.get());
+        }
     }
 
     /**

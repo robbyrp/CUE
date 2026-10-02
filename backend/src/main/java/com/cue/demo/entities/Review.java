@@ -6,14 +6,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Formula;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Table (name="review",
         indexes = {@Index(name = "idx_user_id", columnList = "user_id")},
-        uniqueConstraints = {@UniqueConstraint(name = "unique_user_and_performance",
+        uniqueConstraints = {@UniqueConstraint(name = "unique_review_by_user_and_performance",
                 columnNames = {"user_id", "performance_id"})})
 @Builder @AllArgsConstructor
 @Getter @Entity
@@ -36,12 +35,6 @@ public class Review {
     @Setter
     private Integer stars;
 
-    @ManyToMany @JoinTable(name = "review_heart",
-                joinColumns = @JoinColumn(name="review_id"),
-                inverseJoinColumns = @JoinColumn(name="user_id"))
-    @Setter @Builder.Default
-    private Set<User> heartedByUsers = new HashSet<>();
-
     @Setter
     @Column(columnDefinition = "TEXT")
     private String text;
@@ -53,6 +46,10 @@ public class Review {
     @Setter
     @Builder.Default
     private Integer reports = 0;
+
+    @Builder.Default
+    @Formula("(SELECT COUNT(*) FROM review_heart rh WHERE rh.review_id = id)")
+    private int hearts = 0;
 
     protected Review() {}
 
