@@ -2,7 +2,6 @@ import styles from './MyActivityPage.module.scss';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CategoryCarousel from '../../common/components/categoryCarousel/CategoryCarousel';
-import { PerformanceService } from '../../services/PerformanceService';
 import { UserService } from '../../services/UserService';
 import PerformanceCardComponent from '../../components/performanceCardComponent/PerformanceCardComponent';
 import Header from '../../common/components/Header/Header';
@@ -32,11 +31,6 @@ function MyActivityPage() {
     useEffect(() => {
         const loadMyActivity = async () => {
         
-        const requestQueryParams: PageRequest = {
-            page: PAGE_NUMBER,
-            size: PAGE_SIZE,
-            sort: "averageRating,desc" //TODO: EXPLORE PAGE CUSTOM CU MAI MULTE CATEGORII DE SORT
-        };
         const watchItemRequestQueryParams: PageRequest = {
             page: PAGE_NUMBER,
             size: PAGE_SIZE,
@@ -49,13 +43,13 @@ function MyActivityPage() {
                     watchedResponse,
                     reviewedResponse
                 ] = await Promise.all([
-                    PerformanceService.getPerformancesByCategory(requestQueryParams),
+                    [],
                     UserService.getWatchLaterPerformances(watchItemRequestQueryParams),
                     UserService.getWatchedPerformances(watchItemRequestQueryParams),
                     UserService.getReviewedPerformances(watchItemRequestQueryParams)
                 ]);
 
-                const mockPerformances = mockResponse.content;
+                const mockPerformances = mockResponse;
 
                 setWatchLaterPerformanceDTOs(
                     getFallbackContent(watchLaterResponse.content, mockPerformances)

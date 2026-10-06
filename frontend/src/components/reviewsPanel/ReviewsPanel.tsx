@@ -102,7 +102,6 @@ export default function ReviewsPanel({ performanceId }: ReviewsPanelProps) {
 
         const reviewId = review.id;
         const wasHearted = isHearted(review);
-        const heartsBefore = review.hearts;
 
         setHeartedIds((prev) => {
             const next = new Set(prev);
