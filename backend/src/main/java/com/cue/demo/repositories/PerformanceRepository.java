@@ -15,6 +15,8 @@ import java.util.List;
 public interface PerformanceRepository extends JpaRepository<Performance, Long> {
     boolean existsByTitleAndDirector(String title, String director);
 
+    boolean existsByTitle(final String title);
+
     @Query(nativeQuery = true,
             value= "SELECT p.id AS id, p.title AS title from spectacol p WHERE " +
             "LOWER(unaccent(p.title)) LIKE LOWER(unaccent(CONCAT('%', :keyword, '%')))  OR " +

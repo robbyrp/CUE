@@ -1,14 +1,31 @@
 services:
-  db:
+  cue_db:
     image: postgres:15
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-admin}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
       POSTGRES_DB: ${POSTGRES_DB:-cue_db}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-admin} -d ${POSTGRES_DB:-cue_db}" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./db-init:/docker-entrypoint-initdb.d
+  backend_application_server:
+    build: .
+    ports: ["8080:8080"]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://cue_db:5432/cue_db
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-admin}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      SPRING_DOCKER_COMPOSE_ENABLED: "false"
+    depends_on:
+      cue_db:
+        condition: service_healthy
 volumes:
   postgres_data:
